@@ -15,13 +15,7 @@ _yellow() {
 }
 
 # what's the python alias?
-python --version 2&> /dev/null
-
-if [[ $? -eq 0 ]]; then
-    PYTHON=python
-else
-    PYTHON=python3
-fi
+PYTHON=python3
 
 # change working directory to docker-compose
 cd "$(dirname $0)/.."
