@@ -49,8 +49,8 @@ services:
     env_file:
       - ./.env
       - ./.env.secrets
-    # environment:
-    #   - PYTHONPATH=/python-packages/
+    environment:
+      - PYTHONPATH=/python-packages/
     depends_on:
       postgresql:
         condition: service_healthy
@@ -80,6 +80,7 @@ services:
       - ./.env.secrets
     environment:
       - HOST_PATH=${PWD}
+      - PYTHONPATH=/python-packages/
       - OPAL_BANNER_COLOR=black
       - OPAL_BANNER_TEXT='Banner Not Set'
     labels:
