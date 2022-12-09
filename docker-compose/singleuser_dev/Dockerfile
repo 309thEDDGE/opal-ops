@@ -1,17 +1,11 @@
-ARG SINGLE_USER_TIP_IMAGE
-FROM $SINGLE_USER_TIP_IMAGE as deploytime_singleuser
+ARG IB_SINGLEUSER_IMAGE
+FROM $IB_SINGLEUSER_IMAGE as base_singleuser
 
-ARG OPAL_BANNER_COLOR
-ARG OPAL_BANNER_TEXT
+COPY --chown=jovyan:jovyan opal /opt/data/opal
 
 
-#RUN cd /opt/data/opal/devops-software/opalbanner/opalbanner/labextension/static/ \
-    #&& sed -i "s:OPAL_BANNER_TEXT:$OPAL_BANNER_TEXT:g" lib_index_js.c5bdfaa1aff4b7b02e37.js \
-    #&& sed -i "s:OPAL_BANNER_TEXT:$OPAL_BANNER_TEXT:g" lib_index_js.c5bdfaa1aff4b7b02e37.js.map \
-    #&& sed -i "s:OPAL_BANNER_COLOR:$OPAL_BANNER_COLOR:g" style_index_js.57d21bebc1950465c344.js \
-    #&& sed -i "s:OPAL_BANNER_COLOR:$OPAL_BANNER_COLOR:g" style_index_js.57d21bebc1950465c344.js.map
-
-#RUN source /opt/conda/bin/activate \
-    #&& conda activate singleuser \
-    #&& cd /opt/data/opal/devops-software/opalbanner \
-    #&& pip install .
+RUN sed '/local-channel/s/.*/ - .\/local-channel/' /home/jovyan/local-channel/local_channel_env.yaml > /home/jovyan/singleuser_env.yaml \
+    && printf "\n  - pip:" >> /home/jovyan/singleuser_env.yaml \
+    && printf "\n    - /opt/data/opal/opal-packages" >> /home/jovyan/singleuser_env.yaml \
+    && conda env create -f /home/jovyan/singleuser_env.yaml --offline \
+    && rm -rf /home/jovyan/tip_deps_channel /home/jovyan/local-channel /home/jovyan/conf /home/jovyan/tip_channel /home/jovyan/tip_scripts
