@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jupyterhub
+  name: minio
+  labels:
+    component: datastore
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 9002
+      targetPort: 9002
+      name: console
+    - port: 9000
+      targetPort: 9000
+      name: api
+  selector:
+    component: datastore
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jupyterhub
+  name: minio
+  labels:
+    component: datastore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: datastore
+  template:
+    metadata:
+      labels:
+        component: datastore
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: minio
+          image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2022-01-28T02-28-16Z
+          command: 
+            - minio
+            - server
+            - --console-address
+            - :9002
+            - --certs-dir
+            - /home/minio/certs
+            - /home/minio/data/{1...4}
+          ports:
+            - containerPort: 9002
+              name: console
+            - containerPort: 9000
+              name: api
+          volumeMounts:
+            - name: data
+              mountPath: /home/minio/data
+              readOnly: false
+            - name: crt
+              mountPath: /home/minio/certs/CAs/tls.crt
+              subPath: tls.crt
+          envFrom:
+              - configMapRef:
+                  name: deployment-env
+              - secretRef:
+                  name: token-env
+      securityContext:
+        fsGroup: 1000
+      volumes: 
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-data-volume
+        - name: crt
+          secret:
+            secretName: minio-certs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-data-volume
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

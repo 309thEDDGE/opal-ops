@@ -1,0 +1,173 @@
+{
+    "version": "3.9",
+    "services": {
+        "postgresql": {
+            "env_file": [
+                "./.test_context.env"
+            ]
+        },
+        "opalcatalog-fe": {
+            "env_file": [
+                "./.test_context.env"
+            ],
+            "links": [
+                "traefik:keycloak.companyname.com"
+            ]
+        },
+        "opalcatalog-be": {
+            "env_file": [
+                "./.test_context.env"
+            ],
+            "links": [
+                "traefik:keycloak.companyname.com"
+            ]
+        },
+        "singleuser": {
+            "build": {
+                "context": "singleuser_dev",
+                "args": {
+                    "OPAL_BANNER_COLOR": "orange",
+                    "OPAL_BANNER_TEXT": "THIS IS A TEST BANNER"
+                }
+            }
+        },
+        "jupyterhub": {
+            "build": {
+                "args": {
+                    "OPAL_BANNER_COLOR": "orange",
+                    "OPAL_BANNER_TEXT": "THIS IS A TEST BANNER"
+                }
+            },
+            "volumes": [
+                "./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py",
+                "./jupyterhub/certs/selfsigned:/home/jovyan/work/"
+            ],
+            "env_file": [
+                "./.test_context.env"
+            ],
+            "environment": [
+                "OPAL_BANNER_COLOR=orange",
+                "OPAL_BANNER_TEXT='THIS IS A TEST BANNER'"
+            ],
+            "links": [
+                "traefik:keycloak.companyname.com"
+            ],
+            "labels": [
+                "traefik.http.routers.jupyterhub.rule=Host(`opal.companyname.com`)",
+                "traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api.companyname.com`)"
+            ],
+            "depends_on": {
+                "keycloak": {
+                    "condition": "service_healthy"
+                }
+            }
+        },
+        "traefik": {
+            "volumes": [
+                "./keycloak/certs/selfsigned:/etc/traefik/certs/"
+            ],
+            "env_file": [
+                "./.test_context.env"
+            ],
+            "depends_on": {
+                "keycloak": {
+                    "condition": "service_healthy"
+                },
+                "keycloak_setup": {
+                    "condition": "service_started"
+                }
+            }
+        },
+        "keycloak": {
+            "image": "${KEYCLOAK_IMAGE}",
+            "depends_on": {
+                "postgresql": {
+                    "condition": "service_healthy"
+                }
+            },
+            "volumes": [
+                "./keycloak/certs/selfsigned/tls.key:/etc/x509/https/tls.key",
+                "./keycloak/certs/selfsigned/tls.crt:/etc/x509/https/tls.crt"
+            ],
+            "env_file": [
+                "./.env.secrets",
+                "./.test_context.env",
+                "./.env"
+            ],
+            "healthcheck": {
+                "test": [
+                    "CMD-SHELL",
+                    "curl --fail http://localhost:9990/health"
+                ],
+                "interval": "10s",
+                "timeout": "5s",
+                "retries": 5
+            },
+            "labels": [
+                "traefik.enable=true",
+                "traefik.http.routers.keycloak.rule=Host(`keycloak.companyname.com`)",
+                "traefik.http.routers.keycloak.entrypoints=websecure",
+                "traefik.http.services.keycloak.loadbalancer.server.port=8080",
+                "traefik.http.routers.keycloak.service=keycloak"
+            ],
+            "restart": "always"
+        },
+        "keycloak_setup": {
+            "image": "${KEYCLOAK_IMAGE}",
+            "depends_on": {
+                "keycloak": {
+                    "condition": "service_healthy"
+                }
+            },
+            "env_file": [
+                "./.env.secrets",
+                "./.test_context.env",
+                "./.env"
+            ],
+            "restart": "no",
+            "volumes": [
+                "./keycloak/keycloak_script.sh:/usr/local/bin/keycloak_script.sh"
+            ],
+            "entrypoint": [
+                "sh",
+                "/usr/local/bin/keycloak_script.sh"
+            ]
+        },
+        "minio": {
+            "image": "${MINIO_IMAGE}",
+            "command": "server --console-address \":9002\" --certs-dir /home/minio/certs /home/minio/data{1...4}",
+            "env_file": [
+                "./.env.secrets",
+                "./.test_context.env",
+                "./.env"
+            ],
+            "volumes": [
+                "./keycloak/certs/selfsigned/miniotls.crt:/home/minio/certs/CAs/tls.crt"
+            ],
+            "links": [
+                "traefik:keycloak.companyname.com"
+            ],
+            "labels": [
+                "traefik.enable=true",
+                "traefik.http.routers.minio.rule=Host(`minio.companyname.com`)",
+                "traefik.http.routers.minio.entrypoints=websecure",
+                "traefik.http.services.minio.loadbalancer.server.port=9002",
+                "traefik.http.routers.minio.service=minio",
+                "traefik.http.routers.minio_api.rule=Host(`minio_api.companyname.com`)",
+                "traefik.http.routers.minio_api.entrypoints=websecure",
+                "traefik.http.services.minio_api.loadbalancer.server.port=9000",
+                "traefik.http.routers.minio_api.service=minio"
+            ],
+            "healthcheck": {
+                "test": [
+                    "CMD-SHELL",
+                    "true"
+                ],
+                "interval": "10s",
+                "timeout": "5s",
+                "retries": 5
+            },
+            "restart": "always"
+        }
+    }
+}

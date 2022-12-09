@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: jupyterhub
+  name: prepull-singleuser-torch
+spec:
+  selector:
+    matchLabels:
+      name: prepull-singleuser-torch
+  template:
+    metadata:
+      labels:
+        name: prepull-singleuser-torch
+    spec:
+      initContainers:
+      - name: prepull-singleuser-torch
+        image: docker
+        command: 
+        - docker
+        - build
+        - -f
+        - /to_build/Dockerfile
+        - -t
+        - deploytime_singleuser_torch
+        - --build-arg
+        - SINGLE_USER_TIP_IMAGE=registry.il2.dso.mil/skicamp/project-opal/tip:81c5d75e
+        - --build-arg
+        - IB_PYTORCH_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:1.13.0
+        - /to_build/
+        volumeMounts:
+        - name: docker
+          mountPath: /var/run
+        - name: docker-config
+          mountPath: /root/.docker/
+        - name: dockerfile
+          mountPath: /to_build/Dockerfile
+          subPath: Dockerfile
+        env:
+        # - name: SINGLE_USER_TIP_IMAGE
+        #   value: registry.il2.dso.mil/skicamp/project-opal/tip:89b97b79
+        # - name: IB_PYTORCH_IMAGE
+        #   value: registry1.dso.mil/ironbank/opensource/metrostar/pytorch:1.13.0
+      containers:
+      - name: pause
+        image: google/pause
+      volumes:
+        - name: docker
+          hostPath:
+            path: /var/run
+        - name: docker-config
+          secret:
+            secretName: regcred
+            items:
+              - key: .dockerconfigjson
+                path: config.json
+        - name: dockerfile
+          configMap:
+            name: singleuser-torch-dockerfile

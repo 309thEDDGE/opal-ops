@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jupyterhub
+  name: opalcatalog-fe
+  labels:
+    component: catalog-fe
+spec:
+  type: NodePort
+  ports:
+    - port: 9003
+      targetPort: 9003
+  selector:
+    component: catalog-fe
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jupyterhub
+  name: catalog-fe
+  labels:
+    component: catalog-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: catalog-fe
+  template:
+    metadata:
+      labels:
+        component: catalog-fe
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: catalog-fe
+          image: registry.il2.dso.mil/skicamp/project-opal/opal-catalog-fe:5799edaf
+          envFrom:
+            - configMapRef:
+                name: opal-env
+            - configMapRef:
+                name: deployment-env
+            - secretRef:
+                name: token-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jupyterhub
+  name: opalcatalog-be
+  labels:
+    component: catalog-be
+spec:
+  type: NodePort
+  ports:
+    - port: 9001
+      targetPort: 9001
+  selector:
+    component: catalog-be
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jupyterhub
+  name: catalog-be
+  labels:
+    component: catalog-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: catalog-be
+  template:
+    metadata:
+      labels:
+        component: catalog-be
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: catalog-be
+          image: registry.il2.dso.mil/skicamp/project-opal/opal-catalog-be:354ccafb
+          env:
+            - name: PYTHONPATH
+              value: /python-packages/:/catalog-be/:$PYTHONPATH
+            - name: DB_URL
+              value: postgresql://postgres:postgres@database/catalog-db
+          envFrom:
+            - configMapRef:
+                name: opal-env
+            - configMapRef:
+                name: deployment-env
+            - secretRef:
+                name: token-env
+          command: ["bash", "-c",  "export PYTHONPATH=/catalog_be/:$PYTHONPATH; python catalog/app.py"]
+          

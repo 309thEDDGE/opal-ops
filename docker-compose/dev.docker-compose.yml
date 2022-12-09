@@ -1,0 +1,125 @@
+version: "3.9"
+services:
+  postgresql:
+    env_file:
+      - ./.dev.env
+
+  opalcatalog-fe:
+    env_file:
+      - ./.dev.env
+    links:
+      - "traefik:keycloak.127.0.0.1.nip.io"
+
+  opalcatalog-be:
+    env_file:
+      - ./.dev.env
+    links:
+      - "traefik:keycloak.127.0.0.1.nip.io"
+
+  singleuser:
+    build:
+      context: singleuser_dev
+      args:
+        OPAL_BANNER_COLOR: green
+        OPAL_BANNER_TEXT: "Dev Environment"
+
+  jupyterhub:
+    build:
+      args:
+        OPAL_BANNER_COLOR: green
+        OPAL_BANNER_TEXT: "Dev Environment"
+    volumes:
+      - ./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py
+      - ./jupyterhub/certs/selfsigned/:/home/jovyan/work/
+    env_file:
+      - ./.dev.env
+    environment:
+      - OPAL_BANNER_COLOR=green
+      - OPAL_BANNER_TEXT='Dev Environment'
+    links:
+      - "traefik:keycloak.127.0.0.1.nip.io"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    labels:
+      - "traefik.http.routers.jupyterhub.rule=Host(`jupyterhub.127.0.0.1.nip.io`)"
+      - "traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api.127.0.0.1.nip.io`)"
+
+  traefik:
+    volumes:
+      - "./keycloak/certs/selfsigned/:/etc/traefik/certs/"
+    env_file:
+      - ./.dev.env
+
+  minio:
+    image: ${MINIO_IMAGE}
+    command: server --console-address ":9002" --certs-dir /home/minio/certs /home/minio/data{1...4}
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      keycloak_setup:
+        condition: service_started
+    env_file:
+      - ./.env.secrets
+      - ./.dev.env
+      - ./.env
+    volumes:
+      - ./keycloak/certs/selfsigned/miniotls.crt:/home/minio/certs/CAs/tls.crt
+    links:
+      - "traefik:keycloak.127.0.0.1.nip.io"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.minio.rule=Host(`minio.127.0.0.1.nip.io`)"
+      - "traefik.http.routers.minio.entrypoints=websecure"
+      - "traefik.http.services.minio.loadbalancer.server.port=9002"
+      - "traefik.http.routers.minio.service=minio"
+      - "traefik.http.routers.minio_api.rule=Host(`minio_api.127.0.0.1.nip.io`)"
+      - "traefik.http.routers.minio_api.entrypoints=websecure"
+      - "traefik.http.services.minio_api.loadbalancer.server.port=9000"
+      - "traefik.http.routers.minio_api.service=minio"
+    healthcheck:
+      # test: ["CMD-SHELL", "curl --fail -k https://localhost:9000/minio/health/live"]
+      test: ["CMD-SHELL", "true"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  keycloak:
+    image: ${KEYCLOAK_IMAGE}
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    volumes:
+      - ./keycloak/certs/selfsigned/tls.key:/etc/x509/https/tls.key
+      - ./keycloak/certs/selfsigned/tls.crt:/etc/x509/https/tls.crt
+    env_file:
+      - ./.env.secrets
+      - ./.dev.env
+      - ./.env
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:9990/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`keycloak.127.0.0.1.nip.io`)"
+      - "traefik.http.routers.keycloak.entrypoints=websecure"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+      - "traefik.http.routers.keycloak.service=keycloak"
+    restart: always
+
+  keycloak_setup:
+    image: ${KEYCLOAK_IMAGE}
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    env_file:
+      - ./.env.secrets
+      - ./.dev.env
+      - ./.env
+    restart: "no"
+    volumes:
+      - ./keycloak/keycloak_script.sh:/usr/local/bin/keycloak_script.sh
+    entrypoint: ["sh", "/usr/local/bin/keycloak_script.sh"]

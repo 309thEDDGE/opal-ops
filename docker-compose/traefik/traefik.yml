@@ -1,0 +1,28 @@
+# Static config
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    filename: "/etc/traefik/traefik_dynamic.yml"
+
+entrypoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+    http:
+      tls: {}
+      
+api:
+  dashboard: true
+  insecure: true
+
+#Uncomment below for increased logging
+# log:
+#   level: DEBUG
+

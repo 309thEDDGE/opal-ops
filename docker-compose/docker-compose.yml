@@ -1,0 +1,118 @@
+version: "3.9"
+services:
+  singleuser: # This is only needed so that running deploy will check for the singleuser image preventing jhub errors
+    image: deploytime_singleuser
+    build:
+      context: singleuser
+      args:
+        SINGLE_USER_TIP_IMAGE: ${SINGLE_USER_TIP_IMAGE}
+        IB_PYTORCH_IMAGE: ${IB_PYTORCH_IMAGE}
+
+    command: "true"
+    env_file:
+      - ./.env
+
+  postgresql:
+    image: ${POSTGRESQL_IMAGE}
+    volumes:
+      - ./postgresql/postgres-bootstrap.sql:/docker-entrypoint-initdb.d/postgres-bootstrap.sql
+      - postgres_storage:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+      - ./.env.secrets
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  minio:
+    image: ${MINIO_IMAGE}
+    volumes:
+      - minio_storage:/home/minio/
+
+
+
+  opalcatalog-fe:
+    image: ${OPALCATALOG_FE_IMAGE}
+    env_file:
+      - ./.env
+      - ./.env.secrets
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    restart: always
+
+  opalcatalog-be:
+    image: ${OPALCATALOG_BE_IMAGE}
+    env_file:
+      - ./.env
+      - ./.env.secrets
+    # environment:
+    #   - PYTHONPATH=/python-packages/
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      # jupyterhub:
+        # condition: service_healthy
+    restart: always
+
+  jupyterhub:
+    privileged: True
+    userns_mode: "host"
+    image: deploytime_jupyterhub
+    build:
+      context: jupyterhub
+      args:
+        JUPYTERHUB_IMAGE: ${JUPYTERHUB_IMAGE}
+    entrypoint: ["bash", "-c", "source /opt/conda/bin/activate && conda activate jupyterhub && jupyterhub -f /home/jovyan/jupyterhub_config.py"]
+    volumes:
+      - ./jupyterhub/shared_jupyterhub_config.py:/home/jovyan/shared_jupyterhub_config.py
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail -k http://localhost:8000/hub/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - ./.env
+      - ./.env.secrets
+    environment:
+      - HOST_PATH=${PWD}
+      - OPAL_BANNER_COLOR=black
+      - OPAL_BANNER_TEXT='Banner Not Set'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jupyterhub.entrypoints=websecure"
+      - "traefik.http.routers.jupyterhub.service=jupyterhub"
+      - "traefik.http.services.jupyterhub.loadbalancer.server.port=8000"
+      - "traefik.http.routers.jupyterhub_api.entrypoints=websecure"
+      - "traefik.http.routers.jupyterhub_api.service=jupyterhub"
+      - "traefik.http.services.jupyterhub_api.loadbalancer.server.port=8001"
+    restart: always
+
+  traefik:
+    privileged: True
+    userns_mode: "host"
+    build: 
+      context: traefik
+      args:
+        TRAEFIK_IMAGE: ${TRAEFIK_IMAGE}
+    container_name: "traefik"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml"
+      - "./traefik/traefik.yml:/etc/traefik/traefik.yml"
+    env_file:
+      - ./.env
+      - ./.env.secrets
+    restart: always
+
+volumes:
+  postgres_storage:
+  minio_storage:

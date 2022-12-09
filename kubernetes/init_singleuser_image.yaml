@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: jupyterhub
+  name: prepull-singleuser
+spec:
+  selector:
+    matchLabels:
+      name: prepull-singleuser
+  template:
+    metadata:
+      labels:
+        name: prepull-singleuser
+    spec:
+      initContainers:
+      - name: prepull-singleuser
+        image: docker
+        command: ["docker", "pull", "registry.il2.dso.mil/skicamp/project-opal/tip:81c5d75e"]
+        volumeMounts:
+        - name: docker
+          mountPath: /var/run
+        - name: docker-config
+          mountPath: /root/.docker/
+      volumes:
+      - name: docker
+        hostPath:
+          path: /var/run
+      - name: docker-config
+        secret:
+          secretName: regcred
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+      containers:
+      - name: pause
+        image: google/pause

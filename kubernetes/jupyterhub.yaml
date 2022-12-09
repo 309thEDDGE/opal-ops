@@ -1,0 +1,202 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jupyterhub
+  labels:
+    name: jupyterhub
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jupyterhub
+  name: proxy-api
+  labels:
+    component: proxy
+spec:
+  selector:
+    component: proxy
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jupyterhub
+  name: proxy-public
+  labels:
+    component: proxy
+spec:
+  selector:
+    component: proxy
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jupyterhub
+  name: proxy
+  labels:
+    component: proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: proxy
+  template:
+    metadata:
+      labels:
+        component: proxy
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: chp
+          image: registry1.dso.mil/ironbank/opensource/metrostar/jupyterhub:2.1.1_v3
+          command:
+            - configurable-http-proxy
+            - --ip=0.0.0.0
+            - --api-ip=0.0.0.0
+            - --api-port=8001
+            - --default-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT)
+            - --error-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT)/hub/error
+            - --port=8000
+            - --log-level=debug
+          securityContext:
+            allowPrivilegeEscalation: false
+          env:
+            - name: CONFIGPROXY_AUTH_TOKEN
+              value: "f7a5ba56603e8f4e4f1a1eb85b551b9e70ff863f76cb5f56e72aa23f84e31b5c"
+          ports:
+            - containerPort: 8000
+              name: proxy-public
+            - containerPort: 8001
+              name: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jupyterhub
+  name: hub
+  labels:
+    component: jupyter
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  selector:
+    component: jupyter
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: jupyterhub
+  name: hub
+  labels:
+    component: jupyter
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: jupyterhub
+  name: hub
+  labels:
+    component: jupyter
+rules:
+  - apiGroups: [""]       # "" indicates the core API group
+    resources: ["pods", "persistentvolumeclaims"]
+    verbs: ["get", "watch", "list", "create", "delete"]
+  - apiGroups: [""]       # "" indicates the core API group
+    resources: ["events"]
+    verbs: ["get", "watch", "list"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: jupyterhub
+  name: hub
+  labels:
+    component: jupyter
+subjects:
+  - kind: ServiceAccount
+    name: hub
+    namespace:
+roleRef:
+  kind: Role
+  name: hub
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jupyterhub
+  name: hub
+  labels:
+    component: jupyter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: jupyter
+  template:
+    metadata:
+      labels:
+        component: jupyter
+    spec:
+      serviceAccountName: hub
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: jupyter-hub
+          image: registry1.dso.mil/ironbank/opensource/metrostar/jupyterhub:2.1.1_v3
+          command: ["bash"]
+          args: ["-c", "source /opt/conda/bin/activate && conda activate jupyterhub && conda install -c conda-forge jupyterhub-kubespawner -y && jupyterhub -f /home/jovyan/jupyterhub_config.py"]
+          ports:
+            - containerPort: 8081
+          env:
+            - name: OPAL_BANNER_TEXT
+              value: 'Kubernetes AWS Environment'
+            - name: OPAL_BANNER_COLOR
+              value: MediumAquaMarine
+            - name: CONFIGPROXY_AUTH_TOKEN
+              value: "f7a5ba56603e8f4e4f1a1eb85b551b9e70ff863f76cb5f56e72aa23f84e31b5c"
+            - name: SINGLE_USER_IMAGE
+              value: deploytime_singleuser_torch
+          envFrom:
+            - configMapRef:
+                name: opal-env
+            - secretRef:
+                name: token-env
+            - configMapRef:
+                name: deployment-env
+          resources:
+            requests: 
+              cpu: 100m
+          volumeMounts:
+            - name: jupyterhub-config-py-mnt
+              mountPath: /home/jovyan/jupyterhub_config.py
+              subPath: jupyterhub_config.py
+      volumes:
+      - name: jupyterhub-config-py-mnt
+        configMap:
+          name: jupyterhub-config-py
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: metaflow-datastore
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

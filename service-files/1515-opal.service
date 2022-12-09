@@ -1,0 +1,12 @@
+[Unit]
+Description=OPAL Datascience Platform
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "cd /opal/opal-operations/ops/docker-compose && docker-compose -f 1515.docker-compose.yml up --detach --remove-orphans"
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=OPAL
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+{
+    "deployment_name": "test_context",
+    "dns_base": ".companyname.com",
+    "mod_base": ".companyname.com",
+    "banner_color": "orange",
+    "banner_text": "THIS IS A TEST BANNER",
+    "singleuser_type": "singleuser_dev",
+    "deploy_keycloak": true,
+    "deploy_minio": true
+}

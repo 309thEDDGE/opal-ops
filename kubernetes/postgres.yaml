@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jupyterhub
+  name: postgresql
+  labels:
+    component: database
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      component: database
+  template:
+    metadata:
+      labels:
+        component: database
+    spec:
+      # security context gives write permissions to the volumes
+      securityContext:
+        fsGroup: 1000
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: postgresql
+          image: registry1.dso.mil/ironbank/opensource/postgres/postgresql12:12.9
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data-mnt
+              mountPath: /var/lib/postgresql/data
+              readOnly: false
+            - name: bootstrap
+              mountPath: /docker-entrypoint-initdb.d/postgres-bootstrap.sql
+              subPath: file-from-cfgmap
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: trust
+            - name: POSTGRES_DB
+              value: catalog-db
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+      volumes:
+        - name: data-mnt
+          persistentVolumeClaim:
+            claimName: database-volume
+        - name: bootstrap
+          configMap:
+            name: postgres-bootstrap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: jupyterhub
+  name: postgres-bootstrap
+data:
+  file-from-cfgmap: |
+    CREATE DATABASE "keycloak";
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jupyterhub
+  name: database
+  labels:
+    component: database
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+  selector:
+    component: database
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-volume
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

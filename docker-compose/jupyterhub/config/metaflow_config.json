@@ -1,0 +1,6 @@
+{
+    "METAFLOW_DATASTORE_SYSROOT_S3": "s3://metaflow-data",
+    "METAFLOW_DATATOOLS_SYSROOT_S3": "s3://metaflow-data/files",
+    "METAFLOW_DEFAULT_DATASTORE": "s3",
+    "METAFLOW_S3_ENDPOINT_URL": "$S3_ENDPOINT"
+}
