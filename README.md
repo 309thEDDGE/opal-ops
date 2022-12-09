@@ -8,7 +8,9 @@ This repo contains all the deployment code and configuration files necessary for
 
 #### Instructions for deploying platform locally
 
-Clone repo and then run the following:
+1. Clone clone this repo
+2. Clone https://github.com/309thEDDGE/opal into this repository's `docker-compose` directory
+3. Run the following:
 
 ```
 cd docker-compose
