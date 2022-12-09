@@ -78,8 +78,8 @@ def set_shared_traitlets(c):
         "add conda activate to .profile",
         "move opalbanner files to singleuser extension directory",
         "change opalbanner color/text",
-        "link conf directory",  
         "link opal directory",
+        "copy START_HERE.ipynb to user home",
         "make metaflowconfig dir",
         "set metaflow config file",
         "run python setup script"
