@@ -30,7 +30,7 @@ cd "$(dirname $0)/.."
 _green "====================================="
 _green "       OPAL Configuration Tool       "
 _green "====================================="
-# $PYTHON configuration/make_context.py out.json
+$PYTHON configuration/make_context.py out.json
 
 # get the deployment name from out.json
 # jq might not be insalled on the system, so it's sed time
