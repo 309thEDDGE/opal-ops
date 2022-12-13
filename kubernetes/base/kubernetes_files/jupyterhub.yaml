@@ -128,7 +128,6 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: hub
-    namespace:
 roleRef:
   kind: Role
   name: hub

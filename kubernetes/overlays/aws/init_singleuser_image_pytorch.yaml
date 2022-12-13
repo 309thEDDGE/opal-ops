@@ -38,8 +38,8 @@ spec:
         env:
         # - name: SINGLE_USER_TIP_IMAGE
         #   value: registry.il2.dso.mil/skicamp/project-opal/tip:89b97b79
-        # - name: IB_PYTORCH_IMAGE
-        #   value: registry1.dso.mil/ironbank/opensource/metrostar/pytorch:1.13.0
+        - name: IB_PYTORCH_IMAGE
+          value: registry1.dso.mil/ironbank/opensource/metrostar/pytorch:1.13.0
       containers:
       - name: pause
         image: google/pause
