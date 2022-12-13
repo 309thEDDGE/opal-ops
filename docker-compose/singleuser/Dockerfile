@@ -1,7 +1,7 @@
-ARG IB_SINGLEUSER_IMAGE
+ARG SINGLE_USER_TIP_IMAGE
 ARG IB_PYTORCH_IMAGE
 FROM $IB_PYTORCH_IMAGE AS pytorch
-FROM $IB_SINGLEUSER_IMAGE as base_singleuser
+FROM $SINGLE_USER_TIP_IMAGE as base_singleuser
 COPY --chown=jovyan:jovyan --from=pytorch /home/jovyan/local-channel /home/jovyan/pytorch_channel
 COPY --chown=jovyan:jovyan opal /opt/data/opal
 

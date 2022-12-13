@@ -1,5 +1,5 @@
-ARG IB_SINGLEUSER_IMAGE
-FROM $IB_SINGLEUSER_IMAGE as base_singleuser
+ARG SINGLE_USER_TIP_IMAGE
+FROM $SINGLE_USER_TIP_IMAGE as base_singleuser
 
 COPY --chown=jovyan:jovyan opal /opt/data/opal
 

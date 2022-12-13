@@ -11,3 +11,8 @@ opal/
 *_util.sh
 *.docker-compose.json
 out.json
+*.crt
+*.key
+.env.secrets
+kubernetes/jupyterhub-conf-dir.tar
+*.pyc
