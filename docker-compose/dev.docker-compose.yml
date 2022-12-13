@@ -77,12 +77,6 @@ services:
       - "traefik.http.routers.minio_api.entrypoints=websecure"
       - "traefik.http.services.minio_api.loadbalancer.server.port=9000"
       - "traefik.http.routers.minio_api.service=minio"
-    healthcheck:
-      # test: ["CMD-SHELL", "curl --fail -k https://localhost:9000/minio/health/live"]
-      test: ["CMD-SHELL", "true"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     restart: always
 
   keycloak:
@@ -97,11 +91,6 @@ services:
       - ./.env.secrets
       - ./.dev.env
       - ./.env
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:9990/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.rule=Host(`keycloak.127.0.0.1.nip.io`)"
