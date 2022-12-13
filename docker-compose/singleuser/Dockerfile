@@ -15,7 +15,7 @@ COPY --chown=jovyan:jovyan opal /opt/data/opal
 
 
 RUN sed '/local-channel/s/.*/  - .\/pytorch_channel\n/' /home/jovyan/pytorch_channel/local_channel_env.yaml > /home/jovyan/pytorch_env.yaml \
-    && printf "\n  - pip:" >> /home/jovyan/singleuser_env.yaml \
+    && printf "\n  - pip:" >> /home/jovyan/pytorch_env.yaml \
     && printf "\n    - /opt/data/opal/opal-packages" >> /home/jovyan/pytorch_env.yaml \
     && conda env create -f /home/jovyan/pytorch_env.yaml --offline \
     && rm -rf /home/jovyan/pytorch_channel
