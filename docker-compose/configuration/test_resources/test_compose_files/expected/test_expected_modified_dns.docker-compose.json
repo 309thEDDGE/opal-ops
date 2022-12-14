@@ -24,8 +24,7 @@
         },
         "singleuser": {
             "build": {
-                "context": ".",
-                "dockerfile": "./singleuser/Dockerfile",
+                "context": "singleuser",
                 "args": {
                     "OPAL_BANNER_COLOR": "orange",
                     "OPAL_BANNER_TEXT": "THIS IS A TEST BANNER"
@@ -65,7 +64,7 @@
         },
         "traefik": {
             "volumes": [
-                "./keycloak/certs/test_context:/etc/traefik/certs/"
+                "./keycloak/certs/selfsigned:/etc/traefik/certs/"
             ],
             "env_file": [
                 "./.test_context.env"
@@ -87,8 +86,8 @@
                 }
             },
             "volumes": [
-                "./keycloak/certs/test_context/tls.key:/etc/x509/https/tls.key",
-                "./keycloak/certs/test_context/tls.crt:/etc/x509/https/tls.crt"
+                "./keycloak/certs/selfsigned/tls.key:/etc/x509/https/tls.key",
+                "./keycloak/certs/selfsigned/tls.crt:/etc/x509/https/tls.crt"
             ],
             "env_file": [
                 "./.env.secrets",
@@ -134,7 +133,7 @@
                 "./.env"
             ],
             "volumes": [
-                "./keycloak/certs/test_context/tls.crt:/home/minio/certs/CAs/tls.crt"
+                "./keycloak/certs/selfsigned/miniotls.crt:/home/minio/certs/CAs/tls.crt"
             ],
             "links": [
                 "traefik:keycloak.opal.companyname.com"
