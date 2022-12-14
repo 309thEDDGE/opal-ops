@@ -296,7 +296,8 @@ def generate_docker_compose(context: dict) -> dict:
         },
         "singleuser": {
             "build": {
-                "context": context['singleuser_type'],
+                "context": ".",
+                "dockerfile": f"./{context['singleuser_type']}/Dockerfile",
                 "args": {
                     "OPAL_BANNER_COLOR": context['banner_color'],
                     "OPAL_BANNER_TEXT": context['banner_text']

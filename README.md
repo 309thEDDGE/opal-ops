@@ -8,7 +8,9 @@ This repo contains all the deployment code and configuration files necessary for
 
 #### Instructions for deploying platform locally
 
-Clone repo and then run the following:
+1. Clone clone this repo
+2. Clone https://github.com/309thEDDGE/opal into this repository's `docker-compose` directory
+3. Run the following:
 
 ```
 cd docker-compose
@@ -85,27 +87,19 @@ Create the merge request in a new branch, and then message the ops
 team in the `acceptance` channel with a link to the Merge Request.
 
 
-#### Instructions for creating and deploying new releases in the acceptance environment
+#### Release format
 
-Create a new tag in the repo with the following dating scheme: `YYYY.MM.DD`.
+Releases follow the format `YYYY.MM.DD`.
 If a second tag is created in the same day, append with `YYYY.MM.DD_v2`, `YYYY.MM.DD_v3` etc
 
-Do the following to create a tag in the gitlab GUI for opal-ops:
+Do the following to create a tag in the github GUI for opal-ops:
 
-- click `repository` 
-- click `tags`
-- click `new tag` in the upper right
+- click `code` 
+- click `Releases`
+- click `Draft a new release` in the upper right
 - add notes in the "release notes" (not messages)
 
-Add release notes as necessary.
+#### Contributing
 
-SSH into the opal machine and run the following:
+Prior to pushing any commits to this repository, enable the Trufflehog pre-commit hook with `pre-commit install` from the root of this repository. This will require a working install of docker and [pre-commit](https://pre-commit.com/)
 
-```
-sudo su root
-cd /root/opal-ops/docker-compose/
-git fetch --all
-./start_acceptance.sh
-```
-
-After deploying inform the team in the Mattermost Acceptance channel that a change to the updated tag has occured. 

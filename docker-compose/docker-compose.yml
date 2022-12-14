@@ -3,7 +3,8 @@ services:
   singleuser: # This is only needed so that running deploy will check for the singleuser image preventing jhub errors
     image: deploytime_singleuser
     build:
-      context: singleuser
+      context: .
+      dockerfile: ./singleuser
       args:
         SINGLE_USER_TIP_IMAGE: ${SINGLE_USER_TIP_IMAGE}
         IB_PYTORCH_IMAGE: ${IB_PYTORCH_IMAGE}
