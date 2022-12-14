@@ -1,3 +1,5 @@
+Prior to deployment, please also clone https://github.com/309thEDDGE/opal into this repository's `docker-compose` directory. The singleuser image will not build without it.
+
 # local testing
 
 Make sure you log into the appropriate image registeries before running docker-compose so that the images are pulled down successfully. Then start docker-compose by running the start_dev.sh:
