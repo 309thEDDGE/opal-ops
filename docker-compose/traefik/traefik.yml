@@ -17,10 +17,15 @@ entrypoints:
     address: ":443"
     http:
       tls: {}
-      
+  ping:
+    address: ":8080"
+
 api:
   dashboard: true
   insecure: true
+
+pring:
+  entrypoint: "ping"
 
 #Uncomment below for increased logging
 # log:
