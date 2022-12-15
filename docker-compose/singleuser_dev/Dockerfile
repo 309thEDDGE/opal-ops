@@ -1,6 +1,6 @@
 ARG SINGLE_USER_TIP_IMAGE
 FROM $SINGLE_USER_TIP_IMAGE as base_singleuser
-
+RUN rm -rf /opt/data/opal
 COPY --chown=jovyan:jovyan opal /opt/data/opal
 
 #
