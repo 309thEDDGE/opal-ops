@@ -3,6 +3,7 @@ ARG IB_PYTORCH_IMAGE
 FROM $IB_PYTORCH_IMAGE AS pytorch
 FROM $SINGLE_USER_TIP_IMAGE as base_singleuser
 COPY --chown=jovyan:jovyan --from=pytorch /home/jovyan/local-channel /home/jovyan/pytorch_channel
+RUN rm -rf /opt/data/opal
 COPY --chown=jovyan:jovyan opal /opt/data/opal
 
 # Sed replaces the "  - ./local-channel" entry in the conda env file and replaces it with the three local channels: tip_channel, tip_deps_channel, and local-channel
