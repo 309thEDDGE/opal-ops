@@ -114,7 +114,7 @@ services:
       - ./.env
       - ./.env.secrets
     healthcheck:
-      test: ["CMD", "curl -f -k http://localhost:8080/ping"]
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
       interval: 30s
       timeout: 20s
       retries: 3

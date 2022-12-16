@@ -24,8 +24,7 @@ api:
   dashboard: true
   insecure: true
 
-pring:
-  entrypoint: "ping"
+ping: true
 
 #Uncomment below for increased logging
 # log:
