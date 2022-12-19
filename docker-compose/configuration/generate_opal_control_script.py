@@ -27,6 +27,9 @@ _yellow() {{
   echo -e $'\e[1;33m'"$@"$'\e[0m'
 }}
 
+generate_manifest(){{
+    bash ../deployment-verification/generate_manifest.bash {context['deployment_name']}
+}}
 
 start(){{
     FILE=./.env.secrets
