@@ -15,12 +15,14 @@ _yellow() {
 }
 
 # what's the python alias?
-python --version 2&> /dev/null
+PYTHON=python3
 
-if [[ $? -eq 0 ]]; then
-    PYTHON=python
-else
-    PYTHON=python3
+# test the python version to make sure it is a certain version 
+ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+  echo "$ver"
+if [ "$ver" -lt "30" ]; then
+  _red "This script requires python 3.0 or greater"
+  exit 1
 fi
 
 # change working directory to docker-compose
