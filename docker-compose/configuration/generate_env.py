@@ -53,6 +53,9 @@ def minio_env(context):
 
 def generate_env_file(context) -> dict:
     env = {
+        # Other
+        "DEPLOYMENT_NAME":f'{context["deployment_name"]}',
+
         # OpalCatalog fe/be environment variables
         "JUPYTERHUB_PORT":443,
         "KEYCLOAK_AUTH_SERVER_URL":f'{keycloak_endpoint(context)}/auth',
