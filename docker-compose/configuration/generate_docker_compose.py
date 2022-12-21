@@ -58,7 +58,7 @@ def gen_selfsigned_keycloak_certs(context):
     # make new directory for this deployment's certs
     compose_root = Path(".")
     new_path = compose_root/"keycloak"/"certs"/context['deployment_name']
-    new_path.mkdir(exist_ok=True)
+    new_path.mkdir(parents=True, exist_ok=True)
 
     # move generated files to new deployment cert directory
     shutil.move("tls.crt", new_path/"tls.crt")
