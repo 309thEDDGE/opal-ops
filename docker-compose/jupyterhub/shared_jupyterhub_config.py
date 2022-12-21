@@ -72,7 +72,7 @@ def set_shared_traitlets(c):
         "mkdir -p /home/jovyan/.extras",
         "[ -f /home/jovyan/pytorch_env.yaml ] && mv /home/jovyan/pytorch_env.yaml /home/jovyan/.extras",
         "[ -f /home/jovyan/singleuser_env.yaml ] && mv /home/jovyan/singleuser_env.yaml /home/jovyan/.extras",
-        "[ -f /home/jovyan/local_channel.tar ] && mv /home/jovyan/local_channel.tar /home/jovyan/.extras",
+        "[ -f /home/jovyan/local_channel.tar ] && rm -f /home/jovyan/local_channel.tar",
         "[ -f /home/jovyan/startup.log ] && mv /home/jovyan/startup.log /home/jovyan/.extras",
         "mkdir -p /home/jovyan/.metaflowconfig",
         "envsubst < /opt/opal/conf/metaflow_config.json > /home/jovyan/.metaflowconfig/config.json",
@@ -91,6 +91,8 @@ def set_shared_traitlets(c):
         "copy new START_HERE notebook to user home",
         "move pytorch env yaml to .extras, if it exists",
         "move singleuser env yaml to .extras, if it exists",
+        "remove local_channel.tar, if it exists",
+        "move startup.log to .extras, if it exists",
         "make metaflowconfig dir",
         "set metaflow config file",
         "run python setup script"
