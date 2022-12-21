@@ -1,5 +1,10 @@
 #! /bin/bash
 
+if [[ $# -eq 0 || $1 == "-h" ]]; then
+    echo "Usage: generate_manifest.bash [deployment_name]"
+    exit 0
+fi
+
 # use the right python version
 python3 --version 2&> /dev/null
 if [[ $? -eq 0 ]]; then
@@ -26,3 +31,5 @@ $PYTHON deployment-verification/generate_manifest.py \
     docker-compose/opal/.git \
     --extra "$EXTRA_DATA"\
     > docker-compose/$1_deployment_manifest.json
+
+echo "Deployment information available at docker-compose/$1_deployment_manifest.json"

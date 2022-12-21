@@ -61,7 +61,7 @@ def set_shared_traitlets(c):
         'jupyterhub-user-{raw_username}':'/home/jovyan',
         config_path:"/opt/opal/conf",
         metaflow_path:metaflow_mount_path,
-        manifest_path:"/home/jovyan/.info/deployment-manifest.json"
+        manifest_path:"/home/jovyan/.extra/deployment-manifest.json"
     }
 
     # Commands to be executed inside container after container starts. Initiates conda and activates singleuser environment
