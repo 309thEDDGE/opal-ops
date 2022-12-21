@@ -142,7 +142,9 @@ def set_shared_traitlets(c):
                 "Action": "AssumeRoleWithWebIdentity",
                 "WebIdentityToken": keycloak_access_token,
                 "Version": "2011-06-15",
-                # "DurationSeconds": 604800, # This should pick up the value specified by keycloak if left blank
+                # This *should* pick up the value specified by keycloak if left blank
+                # but it doesn't seem to work, so we're setting it manually here
+                "DurationSeconds": 7*24*60*60, # 1 week
                 }
         r = requests.post(s3_endpoint, data=body)
 
