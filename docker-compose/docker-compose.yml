@@ -125,6 +125,11 @@ services:
     env_file:
       - ./.env
       - ./.env.secrets
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
     restart: always
 
 volumes:

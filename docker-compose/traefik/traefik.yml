@@ -17,10 +17,12 @@ entrypoints:
     address: ":443"
     http:
       tls: {}
-      
+
 api:
   dashboard: true
   insecure: true
+
+ping: true
 
 #Uncomment below for increased logging
 # log:
