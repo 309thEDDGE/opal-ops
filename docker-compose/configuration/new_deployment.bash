@@ -15,20 +15,21 @@ _yellow() {
 }
 
 #assign python variables 
-ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+ver=$(python2 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
 ver3=$(python3 -V 3>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
 
 #set the python alias
 PYTHON=python
 
 #check the version of python with "python" alias.  If its less than 3 than check python3 alias and assign.
-if [ "$ver" -lt "30" ]; then
+if [[ "$ver" -lt "30" ]]; then
   _red "This script requires python 3.0 or greater"
   _yellow "checking python3"
-  if [ "$ver3" -ge "30" ]; then
+  if [[ "$ver3" -ge "30" ]]; then
     _green "python 3 found!"
     PYTHON=python3
   else
+    
     exit 1
   fi
 fi

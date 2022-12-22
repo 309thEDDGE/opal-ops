@@ -19,7 +19,7 @@ _yellow() {
 # pip install deepdiff
 
 #assign python variables 
-ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+ver=$(python2 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
 ver3=$(python3 -V 3>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
 
 #set the python alias
