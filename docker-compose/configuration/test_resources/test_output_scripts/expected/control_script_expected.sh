@@ -2,6 +2,17 @@
 
 set -e
 
+if [[ $(docker compose version) == *"version v2."* ]] ; then
+    COMPOSE="docker compose"
+    echo "using $(docker compose version)"
+elif [[ $(docker-compose version) == *"version v2."* ]] ; then
+    COMPOSE="docker-compose"
+    echo "using $(docker-compose version)"
+elif [[ $(docker-compose -v) == *"version 1."* ]] ; then
+    echo "Can't use docker compose version 1 from $(docker-compose -v)"
+    exit 1
+fi
+
 _blue() {
   echo -e $'\e[1;36m'"$@"$'\e[0m'
 }
@@ -15,6 +26,9 @@ _yellow() {
   echo -e $'\e[1;33m'"$@"$'\e[0m'
 }
 
+generate_manifest(){
+    bash ../deployment-verification/generate_manifest.bash test_context
+}
 
 start(){
     FILE=./.env.secrets
@@ -31,21 +45,23 @@ start(){
     mkdir -p ./jupyter_mounts/metaflow_metadata
     chmod 777 -R ./jupyter_mounts
 
-    docker-compose -f docker-compose.yml -f test_context.docker-compose.json build
-    docker-compose -f docker-compose.yml -f test_context.docker-compose.json up -d
+    generate_manifest
+    $COMPOSE -f docker-compose.yml -f test_context.docker-compose.json build
+    $COMPOSE -f docker-compose.yml -f test_context.docker-compose.json up -d
 }
 
-# Full restart of OPAL to avoid any odd quirks that may be caused by docker-compose restart
+# Full restart of OPAL to avoid any odd quirks that may be caused by docker compose restart
 restart(){
     _green Restarting OPAL
-    docker-compose -f docker-compose.yml -f test_context.docker-compose.json down
-    docker-compose -f docker-compose.yml -f test_context.docker-compose.json up -d
+    generate_manifest
+    $COMPOSE -f docker-compose.yml -f test_context.docker-compose.json down
+    $COMPOSE -f docker-compose.yml -f test_context.docker-compose.json up -d
 }
 
 
 stop(){
     _green Shutting down OPAL
-    docker-compose -f docker-compose.yml -f test_context.docker-compose.json down
+    $COMPOSE -f docker-compose.yml -f test_context.docker-compose.json down
 }
 
 # Display usage options
@@ -60,7 +76,7 @@ help(){
     echo "restart        : restart OPAL"
     echo
     exit
-}
+} 
 
 
 if [ $# -gt 0 ]
@@ -87,4 +103,4 @@ then
 else
     help
 fi
-
+    
