@@ -1,5 +1,19 @@
 #!/bin/bash
 
+##### setup #####
+cd $(dirname $0)
+
+DOCKER_LOGINS="$HOME/.docker/config.json"
+
+docker login registry.il2.dso.mil
+docker login registry1.dso.mil
+
+minikube status || minikube start
+# minikube addons enable ingress
+
+kubectl config set-context --current --namespace=jupyterhub
+kubectl create namespace jupyterhub
+
 ##### args #####
 ARGS=$(getopt -o '' -n start_k8 --long soft-reset,reset -- "$@")
 
@@ -24,18 +38,6 @@ while true; do
             ;;
     esac
 done
-
-##### setup #####
-cd $(dirname $0)
-
-DOCKER_LOGINS="$HOME/.docker/config.json"
-
-docker login registry.il2.dso.mil
-docker login registry1.dso.mil
-kubectl config set-context --current --namespace=jupyterhub
-
-minikube status || minikube start
-minikube addons enable ingress
 
 ##### secrets #####
 kubectl delete secret regcred
@@ -95,16 +97,27 @@ kubectl delete job keycloak-setup
 
 # note to self: minio needs to be started *after* keycloak
 kubectl apply \
--f init_singleuser_image_pytorch.yaml \
+-f init_singleuser_image.yaml \
 -f jupyterhub.yaml \
 -f postgres.yaml \
 -f traefik.yaml \
 -f catalog.yaml \
 -f keycloak.yaml \
--f extra_resources/local/ingress.yaml
+-f extra_resources/local/ingress.yaml \
 
 echo "waiting for keycloak to be ready..."
 kubectl wait deployment/keycloak --for condition=available --timeout=300s
 
 kubectl apply \
 -f minio.yaml 
+
+##### other setup for local deployment #####
+
+# wait for traefik to be ready
+echo "waiting for traefik to be ready..."
+kubectl wait deployment/traefik --for condition=available --timeout=300s
+
+echo "-------------------------------------------------------------"
+echo "Run 'minikube tunnel' in a seperate terminal"
+echo "Then opal will be available at opal-k8.10.96.30.9.nip.io"
+echo "-------------------------------------------------------------"

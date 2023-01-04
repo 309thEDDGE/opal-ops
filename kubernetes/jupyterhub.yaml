@@ -168,8 +168,6 @@ spec:
               value: MediumAquaMarine
             - name: CONFIGPROXY_AUTH_TOKEN
               value: "f7a5ba56603e8f4e4f1a1eb85b551b9e70ff863f76cb5f56e72aa23f84e31b5c"
-            - name: SINGLE_USER_IMAGE
-              value: deploytime_singleuser_torch
           envFrom:
             - configMapRef:
                 name: opal-env
