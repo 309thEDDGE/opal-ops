@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: opal
+
+bases:
+  - ../../base
+
+resources:
+  - ingress.yaml
+  - init_singleuser_image.yaml
+
+configMapGenerator:
+  - name: deployment-env
+    envs:
+      - k8.env
+
+secretGenerator:
+  - name: tls-certs
+    files:
+      - tls.crt
+      - tls.key
+    type: "kubernetes.io/tls"
+  - name: minio-certs
+    files:
+      - tls.crt
+    type: Opaque

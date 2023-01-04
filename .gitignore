@@ -15,5 +15,11 @@ out.json
 *.crt
 *.key
 .env.secrets
+<<<<<<< HEAD
 kubernetes/jupyterhub-conf-dir.tar
 *.pyc
+=======
+jupyterhub-conf-dir.tar
+*.pyc
+dockerconfig.json
+>>>>>>> ae747a6 (works in kustomize)
