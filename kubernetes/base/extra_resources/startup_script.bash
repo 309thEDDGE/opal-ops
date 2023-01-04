@@ -38,8 +38,8 @@ envsubst < /opt/config/metaflow_config.json > /home/jovyan/.metaflowconfig/confi
 log_to_file "Fill in metaflow config file"
 
 # 7
-# python /opt/config/python_setup.py
-# log_to_file "Custom python setup"
+python /opt/config/python_setup.py
+log_to_file "Custom python setup"
 
 # Start the singleuser server (has to be last)
 /usr/local/bin/start-singleuser.sh
