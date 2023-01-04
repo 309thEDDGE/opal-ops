@@ -1,7 +1,6 @@
 #! /bin/bash
 
 cd $(dirname $0)
-
 DOCKER_LOGINS="$HOME/.docker/config.json"
 
 # refresh docker login credentials
@@ -12,17 +11,13 @@ docker login registry1.dso.mil
 minikube status || minikube start
 
 # set up a few things
-
-tar -C ../docker-compose/jupyterhub/ -cvf extra_resources/jupyterhub-conf-dir.tar config
-
+tar -C ../docker-compose/jupyterhub/ -cf base/extra_resources/jupyterhub-conf-dir.tar config
 cp $DOCKER_LOGINS base/extra_resources/dockerconfig.json
 
 # make it go
-
 kubectl apply -k overlays/local_dev
 
 # post-startup stuff
-
 kubectl config set-context --current --namespace=opal
 
 echo "Waiting for traefik to be ready..."

@@ -137,7 +137,11 @@ s3_endpoint = os.environ['S3_ENDPOINT']
 
 class CustomAuthenticator(GenericOAuthenticator):
     async def pre_spawn_start(self, user, spawner):
-        auth_state = await user.get_auth_state()
+        try:
+            auth_state = await user.get_auth_state()
+        except:
+            print("Minio STS Failed")
+            auth_state = None
 
         if not auth_state:
             # user has no auth state
