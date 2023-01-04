@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: opal
 
 bases:
-  - ../../base
+  - ../../base/
 
 resources:
   - ingress.yaml

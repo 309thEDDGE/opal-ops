@@ -4,6 +4,7 @@ metadata:
   name: jupyterhub
   labels:
     name: jupyterhub
+    project: opal
 ---
 apiVersion: v1
 kind: Service

@@ -2,7 +2,7 @@
 
 LOG_FILE=/home/jovyan/startup.log
 log_to_file () {
-    echo "$1 (exit value: $?)" >> $LOG_FILE
+    echo "$1 (exit value: $?)" | tee $LOG_FILE
 }
 touch $LOG_FILE
 
@@ -38,8 +38,8 @@ envsubst < /opt/config/metaflow_config.json > /home/jovyan/.metaflowconfig/confi
 log_to_file "Fill in metaflow config file"
 
 # 7
-python /opt/config/python_setup.py
-log_to_file "Custom python setup"
+# python /opt/config/python_setup.py
+# log_to_file "Custom python setup"
 
 # Start the singleuser server (has to be last)
-/usr/local/bin/start-notebook.sh
+/usr/local/bin/start-singleuser.sh

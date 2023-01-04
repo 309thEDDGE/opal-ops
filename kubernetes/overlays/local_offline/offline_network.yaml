@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: singleuser-airgap-policy
+spec:
+  podSelector:
+    matchLabels:
+      component: singleuser-server
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports: 
+      # allow traffic from anywhere on port 8888
+      - port: 8888
+    - from:
+        # allow traffic from pods in opal
+        - namespaceSelector:
+            matchLabels:
+              project: opal
+  egress:
+    - ports:
+      # allow traffic to DNS servers (i.e kubernetes)
+      - port: 53
+        protocol: UDP
+    - to:
+        # allow traffic to pods in opal
+        - namespaceSelector:
+            matchLabels:
+              project: opal
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: enable-hub-internet
+spec:
+  podSelector:
+    matchLabels:
+      component: jupyter
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: 
+    - {}
+  egress: 
+    - {}
