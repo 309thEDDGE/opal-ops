@@ -10,16 +10,15 @@ opal/
 *.service
 *_util.sh
 *.docker-compose.json
-*_deployment_manifest.json
 out.json
 *.crt
 *.key
 .env.secrets
-<<<<<<< HEAD
 kubernetes/jupyterhub-conf-dir.tar
 *.pyc
-=======
 jupyterhub-conf-dir.tar
 *.pyc
 dockerconfig.json
->>>>>>> ae747a6 (works in kustomize)
+jupyterhub-conf-dir.tar
+*.pyc
+dockerconfig.json
