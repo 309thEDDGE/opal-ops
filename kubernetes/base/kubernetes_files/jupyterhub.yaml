@@ -162,10 +162,6 @@ spec:
           ports:
             - containerPort: 8081
           env:
-            - name: OPAL_BANNER_TEXT
-              value: 'Kubernetes AWS Environment'
-            - name: OPAL_BANNER_COLOR
-              value: MediumAquaMarine
             - name: CONFIGPROXY_AUTH_TOKEN
               value: "f7a5ba56603e8f4e4f1a1eb85b551b9e70ff863f76cb5f56e72aa23f84e31b5c"
           envFrom:
