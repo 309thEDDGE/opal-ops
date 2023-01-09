@@ -15,26 +15,27 @@ _yellow() {
   echo -e $'\e[1;33m'"$@"$'\e[0m'
 }
 
-# Note: deepdiff must be installed
-# pip install deepdiff
+#call python cmd
+python --version 2&> /dev/null
 
-#assign python variables 
-ver=$(python2 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
-ver3=$(python3 -V 3>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
-
-#set the python alias
-PYTHON=python
-
-#check the version of python with "python" alias.  If its less than 3 than check python3 alias and assign.
-if [ "$ver" -lt "30" ]; then
-  _red "This script requires python 3.0 or greater"
-  _yellow "checking python3"
-  if [ "$ver3" -ge "30" ]; then
-    _green "python 3 found!"
-    PYTHON=python3
-  else
-    exit 1
+#check python version is 0, if not then script will exit
+if [[ $? -eq 0 ]]; then 
+  ver=$(python2 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+  echo "python version $ver"
+  if [[ "$ver" -lt "30" ]]; then
+    _red "This script requires python 3.0 or greater"
+    _yellow "checking python3"
+    python3 --version 3&> /dev/null
+    if [[ $? -eq 0 ]]; then
+      _green "python 3 found!"
+      PYTHON=python3
+    else
+      echo "Please update your Python to version 3.0 or greater"
+      exit 1
+    fi
   fi
+else
+  exit 1
 fi
 
 # change working directory to docker-compose
