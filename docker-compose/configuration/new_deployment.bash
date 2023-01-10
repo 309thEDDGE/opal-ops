@@ -19,9 +19,8 @@ python --version 2&> /dev/null
 
 #check python version is 0, if not then script will exit
 if [[ $? -eq 0 ]]; then 
-  ver=$(python2 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
-  echo "python version $ver"
-  if [[ "$ver" -lt "30" ]]; then
+  python2 --version 2&> /dev/null
+  if [[ $? -eq 0 ]]; then
     _red "This script requires python 3.0 or greater"
     _yellow "checking python3"
     python3 --version 3&> /dev/null
