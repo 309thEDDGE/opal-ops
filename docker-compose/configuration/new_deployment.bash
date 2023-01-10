@@ -28,11 +28,12 @@ if [[ $? -eq 0 ]]; then
       _green "python 3 found!"
       PYTHON=python3
     else
-      echo "Please update your Python to version 3.0 or greater"
+      _red "Please update your Python to version 3.0 or greater"
       exit 1
     fi
   fi
 else
+  _red "No python detected please install Python"
   exit 1
 fi
 
