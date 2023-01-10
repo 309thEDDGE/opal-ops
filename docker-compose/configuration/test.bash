@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 _blue() {
   echo -e $'\e[1;36m'"$@"$'\e[0m'
 }
@@ -37,6 +35,8 @@ else
   _red "No python detected please install Python"
   exit 1
 fi
+
+set -e
 
 # change working directory to docker-compose
 cd "$(dirname $0)"
