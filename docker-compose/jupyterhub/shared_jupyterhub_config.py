@@ -59,22 +59,70 @@ def set_shared_traitlets(c):
     }
 
     cmds_msgs = [
-        ("mkdir -p /home/jovyan/.extra", "make .extra directory"),
-        ("[ -f /home/jovyan/startup.log ] && mv /home/jovyan/startup.log /home/jovyan/.extra || echo startup.log not in /home/jovyan", "move startup.log to .extra, if it exists"),
-        ("date >> /home/jovyan/.extra/startup.log", "stamp current date"),
-        ("conda init bash", "init conda"),
-        ("echo 'source /home/jovyan/.bashrc && conda activate singleuser' > /home/jovyan/.profile", "add conda activate to .profile"),
-        ("cp -r /opt/opal/conf/opalbanner /opt/conda/envs/singleuser/share/jupyter/labextensions", "move opalbanner files to singleuser extension directory"),
-        ("bash /opt/opal/conf/init_banner.bash {} {}".format(os.environ['OPAL_BANNER_TEXT'], os.environ['OPAL_BANNER_COLOR']), "change opalbanner color/text"),
-        ("rm -rf /home/jovyan/opal", "remove old opal directory from user home"),
-        ("rm -f /home/jovyan/START_HERE.ipynb", "remove old START_HERE notebook"),
-        ("cp -a /opt/data/opal /home/jovyan/opal", "copy new opal directory to user home"),
-        ("mv /home/jovyan/opal/START_HERE.ipynb /home/jovyan/", "copy new START_HERE notebook to user home"),
-        ("[ -f /home/jovyan/pytorch_env.yaml ] && mv /home/jovyan/pytorch_env.yaml /home/jovyan/.extra || echo pytorch_env.yaml not in /home/jovyan", "move pytorch env yaml to .extra, if it exists"),
-        ("[ -f /home/jovyan/singleuser_env.yaml ] && mv /home/jovyan/singleuser_env.yaml /home/jovyan/.extra || echo singleuser_env.yaml not in /home/jovyan", "move singleuser env yaml to .extra, if it exists"),
-        ("[ -f /home/jovyan/local_channel.tar ] && rm -f /home/jovyan/local_channel.tar || echo local_channel.tar not in /home/jovyan", "remove local_channel.tar, if it exists"),
-        ("mkdir -p /home/jovyan/.metaflowconfig", "make metaflowconfig dir"),
-        ("envsubst < /opt/opal/conf/metaflow_config.json > /home/jovyan/.metaflowconfig/config.json", "set metaflow config file"),
+        (
+            "mkdir -p /home/jovyan/.extra",
+            "make .extra directory"
+        ),
+        (
+            "[ -f /home/jovyan/startup.log ] && mv /home/jovyan/startup.log /home/jovyan/.extra || echo startup.log not in /home/jovyan",
+            "move startup.log to .extra, if it exists"
+        ),
+        (
+            "date >> /home/jovyan/.extra/startup.log",
+            "stamp current date"
+        ),
+        (
+            "conda init bash",
+            "init conda"
+        ),
+        (
+            "echo 'source /home/jovyan/.bashrc && conda activate singleuser' > /home/jovyan/.profile",
+            "add conda activate to .profile"
+        ),
+        (
+            "cp -r /opt/opal/conf/opalbanner /opt/conda/envs/singleuser/share/jupyter/labextensions",
+            "move opalbanner files to singleuser extension directory"
+        ),
+        (
+            "bash /opt/opal/conf/init_banner.bash {} {}".format(os.environ['OPAL_BANNER_TEXT'], os.environ['OPAL_BANNER_COLOR']),
+            "change opalbanner color/text"
+        ),
+        (
+            "rm -rf /home/jovyan/opal",
+            "remove old opal directory from user home"
+        ),
+        (
+            "rm -f /home/jovyan/START_HERE.ipynb",
+            "remove old START_HERE notebook"
+        ),
+        (
+            "cp -a /opt/data/opal /home/jovyan/opal",
+            "copy new opal directory to user home"
+        ),
+        (
+            "mv /home/jovyan/opal/START_HERE.ipynb /home/jovyan/",
+            "copy new START_HERE notebook to user home"
+        ),
+        (
+            "[ -f /home/jovyan/pytorch_env.yaml ] && mv /home/jovyan/pytorch_env.yaml /home/jovyan/.extra || echo pytorch_env.yaml not in /home/jovyan",
+            "move pytorch env yaml to .extra, if it exists"
+        ),
+        (
+            "[ -f /home/jovyan/singleuser_env.yaml ] && mv /home/jovyan/singleuser_env.yaml /home/jovyan/.extra || echo singleuser_env.yaml not in /home/jovyan",
+            "move singleuser env yaml to .extra, if it exists"
+        ),
+        (
+            "[ -f /home/jovyan/local_channel.tar ] && rm -f /home/jovyan/local_channel.tar || echo local_channel.tar not in /home/jovyan",
+            "remove local_channel.tar, if it exists"
+        ),
+        (
+            "mkdir -p /home/jovyan/.metaflowconfig",
+            "make metaflowconfig dir"
+        ),
+        (
+            "envsubst < /opt/opal/conf/metaflow_config.json > /home/jovyan/.metaflowconfig/config.json",
+            "set metaflow config file"
+        ),
         ("python /opt/opal/conf/python_setup.py","run python setup script"),
     ]
 
