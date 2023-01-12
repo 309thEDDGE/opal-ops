@@ -1,0 +1,49 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: opal
+
+resources:
+- kubernetes_files/catalog.yaml
+- kubernetes_files/jupyterhub.yaml
+- kubernetes_files/keycloak.yaml
+- kubernetes_files/minio.yaml
+- kubernetes_files/postgres.yaml
+- kubernetes_files/traefik.yaml
+
+# disable suffixes on configmaps and secrets
+# necessary for jupyterhub to find those things
+# when it starts a new user server
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- envs:
+  - extra_resources/.env
+  name: opal-env
+- files:
+  - extra_resources/jupyterhub_config.py
+  name: jupyterhub-config-py
+- files:
+  - extra_resources/startup_script.bash
+  name: jupyterhub-startup-script
+- files:
+  - extra_resources/Dockerfile
+  name: singleuser-torch-dockerfile
+- files:
+  - extra_resources/keycloak_script.sh
+  name: keycloak-setup-script
+- files:
+  - extra_resources/jupyterhub-conf-dir.tar
+  name: jupyterhub-config
+
+secretGenerator:
+- envs:
+  - extra_resources/.env.secrets
+  name: token-env
+  namespace: opal
+- files:
+  - .dockerconfigjson=extra_resources/dockerconfig.json
+  name: regcred
+  namespace: opal
+  type: kubernetes.io/dockerconfigjson

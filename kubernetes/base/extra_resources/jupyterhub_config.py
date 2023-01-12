@@ -34,11 +34,7 @@ c.KubeSpawner.env_keep = [
     "OPAL_BANNER_COLOR",
     "MINIO_IDENTITY_OPENID_CLIENT_ID",
     "KEYCLOAK_MINIO_CLIENT_SECRET",
-    "KEYCLOAK_OPAL_API_URL",
-    # "KEYCLOAK_JUPYTERHUB_CLIENT_ID",
-    # "KEYCLOAK_JUPYTERHUB_OAUTH_URL",
-    # "KEYCLOAK_JUPYTERHUB_USERDATA_URL",
-    # "KEYCLOAK_JUPYTERHUB_USERNAME_KEY"
+    "KEYCLOAK_OPAL_API_URL"
 ]
 
 metaflow_mount_path = "/opt/opal/metaflow-metadata"
@@ -137,7 +133,11 @@ s3_endpoint = os.environ['S3_ENDPOINT']
 
 class CustomAuthenticator(GenericOAuthenticator):
     async def pre_spawn_start(self, user, spawner):
-        auth_state = await user.get_auth_state()
+        try:
+            auth_state = await user.get_auth_state()
+        except:
+            print("Minio STS Failed")
+            auth_state = None
 
         if not auth_state:
             # user has no auth state

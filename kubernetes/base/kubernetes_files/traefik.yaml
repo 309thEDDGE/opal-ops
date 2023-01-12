@@ -177,4 +177,5 @@ spec:
       port: 8080
       name: dashboard
       targetPort: 8080
+  clusterIP: "10.96.30.9"
 ---

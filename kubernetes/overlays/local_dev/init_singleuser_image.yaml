@@ -15,7 +15,7 @@ spec:
       initContainers:
       - name: prepull-singleuser
         image: docker
-        command: ["docker", "pull", "registry.il2.dso.mil/skicamp/project-opal/tip:81c5d75e"]
+        command: ["docker", "pull", "registry.il2.dso.mil/skicamp/project-opal/tip:d3ddd56e"]
         volumeMounts:
         - name: docker
           mountPath: /var/run
