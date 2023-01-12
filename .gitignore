@@ -17,8 +17,4 @@ out.json
 kubernetes/jupyterhub-conf-dir.tar
 *.pyc
 jupyterhub-conf-dir.tar
-*.pyc
-dockerconfig.json
-jupyterhub-conf-dir.tar
-*.pyc
 dockerconfig.json

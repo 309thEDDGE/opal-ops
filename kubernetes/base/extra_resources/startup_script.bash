@@ -2,7 +2,7 @@
 
 LOG_FILE=/home/jovyan/startup.log
 log_to_file () {
-    echo "$1 (exit value: $?)" | tee $LOG_FILE
+    echo "$1 (exit value: $?)" | tee -a $LOG_FILE
 }
 touch $LOG_FILE
 

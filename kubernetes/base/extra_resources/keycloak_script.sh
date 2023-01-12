@@ -6,9 +6,7 @@
 
 cd /opt/jboss/keycloak/bin/
 
-if [[ -z "${EXTERNAL_KEYCLOAK}" ]]; then
-    EXTERNAL_KEYCLOAK=http://keycloak:8080/
-fi
+EXTERNAL_KEYCLOAK=${EXTERNAL_KEYCLOACK:-http://keycloak:8080/}
 
 authenticate_keycloak () {
 ./kcadm.sh config credentials \
@@ -51,7 +49,7 @@ echo "Creating jhub-group-mapper in opal-jupyterhub client with $JUPYTERHUB_CLIE
             -s protocolMapper=oidc-group-membership-mapper \
             -s 'config."full.path"=false' \
             -s 'config."id.token.claim"=true' \
-	        -s 'config."access.token.claim"=true' \
+            -s 'config."access.token.claim"=true' \
             -s 'config."claim.name"=groups' \
             -s 'config."userinfo.token.claim"=true'
 
@@ -71,33 +69,6 @@ echo "Creating miniopolicyclaim mapper for opal-jupyterhub client with $JUPYTERH
             -s 'config."access.token.claim"=true' \
             -s 'config."claim.name"=policy' \
             -s 'config."jsonType.label"=String'
-
-
-# This is for creating a Minio client. Currently minio and jupyterhub share a client
-# MINIO_CLIENT_ID=$(./kcadm.sh create clients \
-#             --server http://keycloak:8080/auth \
-#             -r master \
-#             -s clientId=$MINIO_IDENTITY_OPENID_CLIENT_ID \
-#             -s 'redirectUris=["*"]' \
-#             -s secret=$KEYCLOAK_MINIO_CLIENT_SECRET \
-#             -s directAccessGrantsEnabled=true -i)
-
-
-# -s 'redirectUris=["$MINIO_IDENTITY_OPENID_REDIRECT_URI"]' \
-    # Minio client mapper creation
-# echo $MINIO_IDENTITY_OPENID_CLAIM_NAME
-# ./kcadm.sh create clients/$MINIO_CLIENT_ID/protocol-mappers/models \
-#             -r master \
-#             -s name=$MINIO_CLIENT_ID \
-#             -s protocol=openid-connect \
-#             -s protocolMapper=oidc-usermodel-attribute-mapper \
-#             -s 'config."id.token.claim"=true' \
-#             -s 'config."userinfo.token.claim"=true' \
-#             -s 'config."user.attribute"=policy' \
-#             -s 'config."id.token.claim"=true' \
-#             -s 'config."access.token.claim"=true' \
-#             -s 'config."claim.name"=policy' \
-#             -s 'config."jsonType.label"=String'
 
 # Minio Admin user creation
 echo "creating minio test user"

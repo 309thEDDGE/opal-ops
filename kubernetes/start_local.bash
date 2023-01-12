@@ -21,10 +21,10 @@ kubectl apply -k overlays/local_dev
 kubectl config set-context --current --namespace=opal
 
 echo "Waiting for traefik to be ready..."
-kubectl wait deployment/traefik --for condition=available --timeout=300s
+kubectl wait deployment/traefik --for condition=available --timeout=500s
 
 echo "Waiting for keycloak to be ready..."
-kubectl wait deployment/keycloak --for condition=available --timeout=300s
+kubectl wait deployment/keycloak --for condition=available --timeout=500s
 # restart minio (has to start after keycloak)
 MINIO_POD=$(kubectl get pods -o json | jq -r '.items[] | select(.metadata.name | test("minio-")).metadata.name')
 kubectl delete pod $MINIO_POD
