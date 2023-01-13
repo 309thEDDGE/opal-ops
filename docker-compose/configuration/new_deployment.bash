@@ -13,40 +13,35 @@ _green() {
 _yellow() {
   echo -e $'\e[1;33m'"$@"$'\e[0m'
 }
+#checking python version
 
-#call python cmd
-python --version 2&> /dev/null
+read -r -d '' ISPYTHON3 <<-'EOF'
+	import platform
+	import sys
+	major = platform.python_version_tuple()[0]
+	sys.exit(0 if int(major) >= 3 else 1)
+EOF
 
-#check python version is 0, if not then script will exit
-if [[ $? -eq 0 ]]; then 
-  python2 --version 2&> /dev/null
-  if [[ $? -eq 0 ]]; then
-    _red "This script requires python 3.0 or greater"
-    _yellow "checking python3"
-    python3 --version 3&> /dev/null
-    if [[ $? -eq 0 ]]; then
-      _green "python 3 found!"
-      PYTHON=python3
-    else
-      _red "Please update your Python to version 3.0 or greater"
-      exit 1
-    fi
-  fi
-else
-  _red "No python detected please install Python"
-  exit 1
+get_python_3() {
+	for py in $@ ; do
+		if $py -c "$ISPYTHON3" &>/dev/null ; then
+			echo "$py"
+			return
+		fi
+	done
+}
+
+PYTHON3=$(get_python_3 $PYTHON3 $PYTHON $(which python) $(which python3))
+echo "$PYTHON3"
+if [[ -z "${PYTHON3}" ]] ; then
+	echo "no python3 found"
+	exit 1
+elif ! "${PYTHON3}" --version &>/dev/null ; then
+	echo "bad python3"
+	exit 1
 fi
 
-#assign python variables 
-
-
-echo "$ver3"
-
-#set the python alias
-PYTHON=python
-
-#check the version of python with "python" alias.  If its less than 3 than check python3 alias and assign.
-
+echo "using PYTHON3 ${PYTHON3}"
 
 # change working directory to docker-compose
 cd "$(dirname $0)/.."
