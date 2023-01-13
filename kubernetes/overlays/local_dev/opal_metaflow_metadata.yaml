@@ -1,0 +1,335 @@
+---
+# Source: metaflow/charts/metaflow-service/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opal-metaflow-service
+  labels:
+    helm.sh/chart: metaflow-service-0.2.0
+    app.kubernetes.io/name: metaflow-service
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.2.4"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: metaflow/charts/metaflow-ui/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opal-metaflow-ui
+  labels:
+    helm.sh/chart: metaflow-ui-0.1.0
+    app.kubernetes.io/name: metaflow-ui
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: metaflow/charts/metaflow-service/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opal-metaflow-service
+  labels:
+    helm.sh/chart: metaflow-service-0.2.0
+    app.kubernetes.io/name: metaflow-service
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.2.4"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: metadata
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: upgrades
+      port: 8082
+      protocol: TCP
+      targetPort: 8082
+  selector:
+    app.kubernetes.io/name: metaflow-service
+    app.kubernetes.io/instance: opal
+---
+# Source: metaflow/charts/metaflow-ui/templates/backend_service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opal-metaflow-ui
+  labels:
+    helm.sh/chart: metaflow-ui-0.1.0
+    app.kubernetes.io/name: metaflow-ui
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8083
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: metaflow-ui
+    app.kubernetes.io/instance: opal
+---
+# Source: metaflow/charts/metaflow-ui/templates/static_service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "opal-metaflow-ui-static"
+  labels:
+    helm.sh/chart: metaflow-ui-0.1.0
+    app.kubernetes.io/name: metaflow-ui-static
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: metaflow-ui-static
+    app.kubernetes.io/instance: opal
+---
+# Source: metaflow/charts/metaflow-service/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opal-metaflow-service
+  labels:
+    helm.sh/chart: metaflow-service-0.2.0
+    app.kubernetes.io/name: metaflow-service
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.2.4"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metaflow-service
+      app.kubernetes.io/instance: opal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metaflow-service
+        app.kubernetes.io/instance: opal
+    spec:
+      serviceAccountName: opal-metaflow-service
+      securityContext:
+        {}
+      initContainers:
+        - name: db-migrations
+          image: "public.ecr.aws/outerbounds/metaflow_metadata_service:2.2.4"
+          command:
+          - "/opt/latest/bin/python3"
+          - "/root/run_goose.py"
+          - "--only-if-empty-db"
+          env:
+            - name: MF_METADATA_DB_NAME
+              value: "metaflow_metadata"
+            - name: MF_METADATA_DB_PORT
+              value: "5432"
+            - name: MF_METADATA_DB_PSWD
+              value: "postgres"
+            - name: MF_METADATA_DB_USER
+              value: "postgres"
+            - name: MF_METADATA_DB_HOST
+              value: "database"
+      containers:
+        - name: metaflow-service
+          securityContext:
+            {}
+          image: "public.ecr.aws/outerbounds/metaflow_metadata_service:2.2.4"
+          command: ["/opt/latest/bin/python3", "-m", "services.metadata_service.server" ]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          resources:
+            {}
+          env:
+            - name: MF_METADATA_DB_NAME
+              value: "metaflow_metadata"
+            - name: MF_METADATA_DB_PORT
+              value: "5432"
+            - name: MF_METADATA_DB_PSWD
+              value: "postgres"
+            - name: MF_METADATA_DB_USER
+              value: "postgres"
+            - name: MF_METADATA_DB_HOST
+              value: "database"
+---
+# Source: metaflow/charts/metaflow-ui/templates/backend_deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opal-metaflow-ui
+  labels:
+    helm.sh/chart: metaflow-ui-0.1.0
+    app.kubernetes.io/name: metaflow-ui
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metaflow-ui
+      app.kubernetes.io/instance: opal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metaflow-ui
+        app.kubernetes.io/instance: opal
+    spec:
+      serviceAccountName: opal-metaflow-ui
+      securityContext:
+        {}
+      containers:
+        - name: metaflow-ui
+          securityContext:
+            {}
+          image: "netflixoss/metaflow_metadata_service:2.1.0"
+          command: ["/opt/latest/bin/python3", "-m", "services.ui_backend_service.ui_server" ]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8083
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/ping
+              port: http
+          env:
+            - name: UI_ENABLED
+              value: "1"
+            - name: PATH_PREFIX
+              value: "/api"
+            - name: MF_DATASTORE_ROOT
+              value: ""
+            - name: METAFLOW_DATASTORE_SYSROOT_S3
+              value: ""
+            - name: LOGLEVEL
+              value: "DEBUG"
+            - name: METAFLOW_SERVICE_URL
+              value: "http://localhost:8083/api/metadata"
+            - name: METAFLOW_DEFAULT_DATASTORE
+              value: "s3"
+            - name: METAFLOW_DEFAULT_METADATA
+              value: "service"
+            - name: MF_METADATA_DB_NAME
+              value: "metaflow_metadata"
+            - name: MF_METADATA_DB_PORT
+              value: "5432"
+            - name: MF_METADATA_DB_PSWD
+              value: "postgres"
+            - name: MF_METADATA_DB_USER
+              value: "postgres"
+            - name: MF_METADATA_DB_HOST
+              value: "database"
+          resources:
+            {}
+---
+# Source: metaflow/charts/metaflow-ui/templates/static_deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "opal-metaflow-ui-static"
+  labels:
+    helm.sh/chart: metaflow-ui-0.1.0
+    app.kubernetes.io/name: metaflow-ui-static
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metaflow-ui-static
+      app.kubernetes.io/instance: opal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metaflow-ui-static
+        app.kubernetes.io/instance: opal
+    spec:
+      serviceAccountName: opal-metaflow-ui
+      securityContext:
+        {}
+      containers:
+        - name: "metaflow-ui-static"
+          securityContext:
+            {}
+          image: "public.ecr.aws/outerbounds/metaflow_ui:v1.0.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+---
+# Source: metaflow/charts/metaflow-service/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "opal-metaflow-service-test-connection"
+  labels:
+    helm.sh/chart: metaflow-service-0.2.0
+    app.kubernetes.io/name: metaflow-service
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.2.4"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['opal-metaflow-service:8080']
+  restartPolicy: Never
+---
+# Source: metaflow/charts/metaflow-ui/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "opal-metaflow-ui-test-connection"
+  labels:
+    helm.sh/chart: metaflow-ui-0.1.0
+    app.kubernetes.io/name: metaflow-ui
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['opal-metaflow-ui:8083']
+  restartPolicy: Never

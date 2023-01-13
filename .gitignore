@@ -18,3 +18,4 @@ kubernetes/jupyterhub-conf-dir.tar
 *.pyc
 jupyterhub-conf-dir.tar
 dockerconfig.json
+*_deployment_manifest.json

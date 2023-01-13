@@ -6,7 +6,7 @@
 
 cd /opt/jboss/keycloak/bin/
 
-EXTERNAL_KEYCLOAK=${EXTERNAL_KEYCLOACK:-http://keycloak:8080/}
+EXTERNAL_KEYCLOAK=${EXTERNAL_KEYCLOAK:-http://keycloak:8080/}
 
 authenticate_keycloak () {
 ./kcadm.sh config credentials \

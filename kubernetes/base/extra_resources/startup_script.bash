@@ -41,5 +41,9 @@ log_to_file "Fill in metaflow config file"
 python /opt/config/python_setup.py
 log_to_file "Custom python setup"
 
+# 8 
+pip install kubernetes
+log_to_file "Install stuff not included in image"
+
 # Start the singleuser server (has to be last)
 /usr/local/bin/start-singleuser.sh

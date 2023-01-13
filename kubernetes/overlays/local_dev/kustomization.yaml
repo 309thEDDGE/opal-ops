@@ -6,9 +6,15 @@ namespace: opal
 bases:
   - ../../base/
 
+generatorOptions:
+  disableNameSuffixHash: true
+
 resources:
   - ingress.yaml
   - init_singleuser_image.yaml
+  - opal_argo_workflows.yaml
+  - opal_metaflow_metadata.yaml
+  - singleuser-service-account.yaml
 
 configMapGenerator:
   - name: deployment-env
@@ -25,3 +31,27 @@ secretGenerator:
     files:
       - tls.crt
     type: Opaque
+  - name: argo-env
+    envs:
+      - argo.env
+
+patches:
+- patch: |-
+    - op: add
+      path: "/spec/template/spec/containers/0/env/-"
+      value:
+        name: ARGO_NAMESPACE
+        value: opal
+    - op: add
+      path: "/spec/template/spec/containers/0/env/-"
+      value:
+        name: BASE_HREF
+        value: /argo/
+    - op: add
+      path: "/spec/template/spec/containers/0/args/-"
+      value:
+        --secure=false
+  target:
+    kind: Deployment
+    # namespace: opal
+    name: argo-server

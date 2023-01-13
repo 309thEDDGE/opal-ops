@@ -59,6 +59,7 @@ metadata:
 data:
   file-from-cfgmap: |
     CREATE DATABASE "keycloak";
+    CREATE DATABASE "metaflow_metadata"
 ---
 apiVersion: v1
 kind: Service

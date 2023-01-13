@@ -1,0 +1,33 @@
+singleNamespace: true
+
+server:
+  ingress:
+    enabled: true
+    hosts:
+      - argo-k8.10.96.30.9.nip.io
+  extraArgs:
+    - --auth-mode=sso
+  sso:
+    issuer: https://keycloak-k8.10.96.30.9.nip.io/auth/realms/master
+    clientId:
+      name: argo-env
+      key: ARGO_OPENID_CLIENT_ID
+    clientSecret:
+      name: token-env
+      key: KEYCLOAK_JUPYTERHUB_CLIENT_SECRET
+    redirectUrl: https://argo-k8.10.96.30.9.nip.io/oauth2/callback
+    rbac:
+      enabled: false
+  volumes:
+    - name: crt
+      secret:
+        secretName: minio-certs
+  volumeMounts:
+    - name: crt
+      mountPath: /etc/ssl/certs/ca.crt
+      subPath: tls.crt
+      readOnly: false
+
+workflow:
+  serviceAccount:
+    create: true

@@ -1,0 +1,23 @@
+metaflow-service:
+  metadatadb:
+    password: postgres
+    name: metaflow_metadata
+    user: postgres
+    host: database
+
+  ingress:
+    enabled: false
+
+metaflow-ui:
+  metadatadb:
+    password: postgres
+    name: metaflow_metadata
+    user: postgres
+    host: database
+
+  ingress:
+    enabled: false
+
+postgresql:
+  # postgresql.enabled -- Flag to install Postgresql
+  enabled: false

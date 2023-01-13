@@ -37,13 +37,24 @@ c.KubeSpawner.env_keep = [
     "KEYCLOAK_OPAL_API_URL"
 ]
 
-metaflow_mount_path = "/opt/opal/metaflow-metadata"
+# metaflow_mount_path = "/opt/opal/metaflow-metadata"
 # add some extra environment variables
 c.KubeSpawner.environment = {
-    "S3_ENDPOINT": "http://minio:9000",
-    "USERNAME": "jovyan",
-    "METAFLOW_DATASTORE_SYSROOT_LOCAL":metaflow_mount_path,
+    # minio
+    "S3_ENDPOINT": "http://minio:9000", # legacy
+
+    # catalog
     "CATALOG_BACKEND_URL": "http://opalcatalog-be:9001/services/opal-catalog",
+
+    # metaflow
+    "METAFLOW_S3_ENDPOINT_URL": "http://minio:9000",
+    "METAFLOW_DATASTORE_SYSROOT_LOCAL":"/home/jovyan",
+    "METAFLOW_SERVICE_URL":"http://opal-metaflow-service:8080",
+    "METAFLOW_DEFAULT_METADATA": "service",
+
+    # argo
+    "METAFLOW_KUBERNETES_NAMESPACE": "opal",
+    "METAFLOW_KUBERNETES_CONTAINER_IMAGE": os.environ["SINGLE_USER_IMAGE"],
 }
 
 # assign a security context for write permissions to
@@ -55,10 +66,16 @@ c.KubeSpawner.uid = 1000
 pvc_name_template = 'claim-{username}'
 c.KubeSpawner.pvc_name_template = pvc_name_template
 
+c.KubeSpawner.delete_pvc = False
 c.KubeSpawner.storage_pvc_ensure = True
 c.KubeSpawner.storage_class = 'standard'
 c.KubeSpawner.storage_access_modes = ['ReadWriteOnce']
 c.KubeSpawner.storage_capacity = '1Gi'
+
+# add service tokens for users
+# so they can create pods on the cluster
+# (i.e. for argo)
+c.KubeSpawner.automount_service_account_token = True
 
 # Add volumes to singleuser pods
 c.KubeSpawner.volumes = [
@@ -94,11 +111,11 @@ c.KubeSpawner.volume_mounts = [
         "subPath": "startup_script.bash",
         "name": "startup-script"
     },
-    {
-        'mountPath': metaflow_mount_path,
-        "name": "metaflow-store",
-        "readOnly": False
-    }
+    # {
+    #     'mountPath': metaflow_mount_path,
+    #     "name": "metaflow-store",
+    #     "readOnly": False
+    # }
 ]
 
 # set the startup bash script
@@ -146,11 +163,6 @@ class CustomAuthenticator(GenericOAuthenticator):
         access_token = auth_state['access_token']
 
         access_key_id, secret_access_key, session_token = get_minio_creds(access_token)
-
-        # define environment variables
-        spawner.environment['S3_KEY'] = access_key_id
-        spawner.environment['S3_SECRET'] = secret_access_key
-        spawner.environment['S3_SESSION'] = session_token
 
         # define some more environment variables - these are necessary for metaflow
         spawner.environment['AWS_ACCESS_KEY_ID'] = access_key_id
@@ -205,12 +217,12 @@ c.JupyterHub.services = [
     }
 ]
 
-# Cdsdashboards stuff
-from cdsdashboards.app import CDS_TEMPLATE_PATHS
-from cdsdashboards.hubextension import cds_extra_handlers
+# Cdsdashboards stuff, do later (needs to be converted to kubernetes)
+# from cdsdashboards.app import CDS_TEMPLATE_PATHS
+# from cdsdashboards.hubextension import cds_extra_handlers
 
-c.DockerSpawner.name_template = "{prefix}-{username}-{servername}"
-c.JupyterHub.template_paths = CDS_TEMPLATE_PATHS
-c.JupyterHub.extra_handlers = cds_extra_handlers
+c.KubeSpawner.name_template = "{prefix}-{username}-{servername}"
+# c.JupyterHub.template_paths = CDS_TEMPLATE_PATHS
+# c.JupyterHub.extra_handlers = cds_extra_handlers
 c.JupyterHub.allow_named_servers = True
-c.CDSDashboardsConfig.builder_class = 'cdsdashboards.builder.dockerbuilder.DockerBuilder'
+# c.CDSDashboardsConfig.builder_class = 'cdsdashboards.builder.dockerbuilder.DockerBuilder'
