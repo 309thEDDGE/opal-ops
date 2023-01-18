@@ -66,15 +66,15 @@ def set_shared_traitlets(c):
 
     cmds_msgs = [
         (
-            "mkdir -p /home/jovyan/.extra",
-            "make .extra directory"
+            "mkdir -p /home/jovyan/.hidden",
+            "make .hidden directory"
         ),
         (
-            "[ -f /home/jovyan/startup.log ] && mv /home/jovyan/startup.log /home/jovyan/.extra || echo startup.log not in /home/jovyan",
-            "move startup.log to .extra, if it exists"
+            "[ -f /home/jovyan/startup.log ] && mv /home/jovyan/startup.log /home/jovyan/.hidden || echo startup.log not in /home/jovyan",
+            "move startup.log to .hidden, if it exists"
         ),
         (
-            "date >> /home/jovyan/.extra/startup.log",
+            "date >> /home/jovyan/.hidden/startup.log",
             "stamp current date"
         ),
         (
@@ -110,12 +110,12 @@ def set_shared_traitlets(c):
             "copy new START_HERE notebook to user home"
         ),
         (
-            "[ -f /home/jovyan/pytorch_env.yaml ] && mv /home/jovyan/pytorch_env.yaml /home/jovyan/.extra || echo pytorch_env.yaml not in /home/jovyan",
-            "move pytorch env yaml to .extra, if it exists"
+            "[ -f /home/jovyan/pytorch_env.yaml ] && mv /home/jovyan/pytorch_env.yaml /home/jovyan/.hidden || echo pytorch_env.yaml not in /home/jovyan",
+            "move pytorch env yaml to .hidden, if it exists"
         ),
         (
-            "[ -f /home/jovyan/singleuser_env.yaml ] && mv /home/jovyan/singleuser_env.yaml /home/jovyan/.extra || echo singleuser_env.yaml not in /home/jovyan",
-            "move singleuser env yaml to .extra, if it exists"
+            "[ -f /home/jovyan/singleuser_env.yaml ] && mv /home/jovyan/singleuser_env.yaml /home/jovyan/.hidden || echo singleuser_env.yaml not in /home/jovyan",
+            "move singleuser env yaml to .hidden, if it exists"
         ),
         (
             "[ -f /home/jovyan/local_channel.tar ] && rm -f /home/jovyan/local_channel.tar || echo local_channel.tar not in /home/jovyan",
@@ -132,7 +132,7 @@ def set_shared_traitlets(c):
         ("python /opt/opal/conf/python_setup.py","run python setup script"),
     ]
 
-    with_debug_template = "( ({}) || echo 'Step {} Failed!' >> /home/jovyan/.extra/startup.log )"
+    with_debug_template = "( ({}) || echo 'Step {} Failed!' >> /home/jovyan/.hidden/startup.log )"
     with_debug = [ with_debug_template.format(c, m) for c, m in cmds_msgs ]
 
     cmd = "sh -c \"" + " && ".join(with_debug) + "\""
