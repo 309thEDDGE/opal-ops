@@ -10,11 +10,11 @@ generatorOptions:
   disableNameSuffixHash: true
 
 resources:
-  - ingress.yaml
-  - init_singleuser_image.yaml
-  - opal_argo_workflows.yaml
-  - opal_metaflow_metadata.yaml
-  - singleuser-service-account.yaml
+  - kubernetes_files/ingress.yaml
+  - kubernetes_files/init_singleuser_image.yaml
+  - kubernetes_files/opal_argo_workflows.yaml
+  - kubernetes_files/opal_metaflow_metadata.yaml
+  - kubernetes_files/singleuser-service-account.yaml
 
 configMapGenerator:
   - name: deployment-env
