@@ -33,9 +33,9 @@ configMapGenerator:
 - files:
   - extra_resources/keycloak_script.sh
   name: keycloak-setup-script
-- files:
-  - extra_resources/jupyterhub-conf-dir.tar
-  name: jupyterhub-config
+# - files:
+#   - extra_resources/jupyterhub-conf-dir.tar
+#   name: jupyterhub-config
 
 secretGenerator:
 - envs:
