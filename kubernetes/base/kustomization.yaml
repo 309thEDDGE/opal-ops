@@ -3,6 +3,9 @@ kind: Kustomization
 
 namespace: opal
 
+bases:
+  - ../secrets
+
 resources:
 - kubernetes_files/catalog.yaml
 - kubernetes_files/jupyterhub.yaml
@@ -36,14 +39,3 @@ configMapGenerator:
 # - files:
 #   - extra_resources/jupyterhub-conf-dir.tar
 #   name: jupyterhub-config
-
-# secretGenerator:
-# - envs:
-#   - extra_resources/.env.secrets
-#   name: token-env
-#   namespace: opal
-# - files:
-#   - .dockerconfigjson=extra_resources/dockerconfig.json
-#   name: regcred
-#   namespace: opal
-#   type: kubernetes.io/dockerconfigjson

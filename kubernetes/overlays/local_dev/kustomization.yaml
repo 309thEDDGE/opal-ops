@@ -21,20 +21,6 @@ configMapGenerator:
     envs:
       - k8.env
 
-# secretGenerator:
-  # - name: tls-certs
-  #   files:
-  #     - tls.crt
-  #     - tls.key
-  #   type: "kubernetes.io/tls"
-  # - name: minio-certs
-  #   files:
-  #     - tls.crt
-  #   type: Opaque
-  # - name: argo-env
-  #   envs:
-  #     - argo.env
-
 patches:
 - patch: |-
     - op: add
@@ -53,5 +39,4 @@ patches:
         --secure=false
   target:
     kind: Deployment
-    # namespace: opal
     name: argo-server
