@@ -1,9 +1,0 @@
-project: default
-source:
-  repoURL: 'https://github.com/309thEDDGE/opal-ops.git'
-  path: kubernetes/overlays/local_dev
-  targetRevision: OPAL-argocd
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: opal
-syncPolicy: {}

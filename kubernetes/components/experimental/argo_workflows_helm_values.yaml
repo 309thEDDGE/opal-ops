@@ -10,7 +10,7 @@ server:
   sso:
     issuer: https://keycloak-k8.10.96.30.9.nip.io/auth/realms/master
     clientId:
-      name: argo-env
+      name: argo-ws-env
       key: ARGO_OPENID_CLIENT_ID
     clientSecret:
       name: token-env

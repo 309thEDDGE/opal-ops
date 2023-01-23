@@ -80,9 +80,9 @@ c.KubeSpawner.automount_service_account_token = True
 # Add volumes to singleuser pods
 c.KubeSpawner.volumes = [
     {
-        'name': "config-tar",
+        'name': "config-dir",
         "configMap":{
-            "name": "jupyterhub-config"
+            "name": "jupyterhub-config-dir"
         }
     },
     {
@@ -102,9 +102,9 @@ c.KubeSpawner.volumes = [
 
 c.KubeSpawner.volume_mounts = [
     {
-        'mountPath': '/tmp/tars/jhub-conf.tar',
-        'subPath': "jupyterhub-conf-dir.tar",
-        'name': "config-tar"
+        'mountPath': '/opt/config',
+        # 'subPath': "config",
+        'name': "config-dir"
     },
     {
         'mountPath': '/tmp/startup_script.bash',

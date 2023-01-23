@@ -3,16 +3,12 @@ kind: Kustomization
 
 namespace: opal
 
-# bases:
-#   - ../secrets
-
 resources:
 - kubernetes_files/catalog.yaml
 - kubernetes_files/jupyterhub.yaml
 - kubernetes_files/keycloak.yaml
 - kubernetes_files/minio.yaml
 - kubernetes_files/postgres.yaml
-- kubernetes_files/traefik.yaml
 
 # disable suffixes on configmaps and secrets
 # necessary for jupyterhub to find those things
@@ -36,6 +32,21 @@ configMapGenerator:
 - files:
   - extra_resources/keycloak_script.sh
   name: keycloak-setup-script
-# - files:
-#   - extra_resources/jupyterhub-conf-dir.tar
-#   name: jupyterhub-config
+- files:
+  - extra_resources/config/init_banner.bash
+  - extra_resources/config/metaflow_config.json
+  - extra_resources/config/python_setup.py
+  - extra_resources/config/opalbanner/build_log.json
+  - extra_resources/config/opalbanner/package.json
+  - extra_resources/config/opalbanner/static/lib_index_js.c5bdfaa1aff4b7b02e37.js
+  - extra_resources/config/opalbanner/static/lib_index_js.c5bdfaa1aff4b7b02e37.js.map
+  - extra_resources/config/opalbanner/static/remoteEntry.6dc8af8c155fe1a6f950.js
+  - extra_resources/config/opalbanner/static/remoteEntry.6dc8af8c155fe1a6f950.js.map
+  - extra_resources/config/opalbanner/static/style.js
+  - extra_resources/config/opalbanner/static/style_index_js.57d21bebc1950465c344.js
+  - extra_resources/config/opalbanner/static/style_index_js.57d21bebc1950465c344.js.map
+  - extra_resources/config/opalbanner/static/vendors-node_modules_css-loader_dist_runtime_api_js-node_modules_css-loader_dist_runtime_cssW-72eba1.adce3ce405139d293875.js
+  - extra_resources/config/opalbanner/static/vendors-node_modules_css-loader_dist_runtime_api_js-node_modules_css-loader_dist_runtime_cssW-72eba1.adce3ce405139d293875.js.map
+  name: jupyterhub-config-dir
+  options:
+    disableNameSuffixHash: true

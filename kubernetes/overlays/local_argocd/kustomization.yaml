@@ -5,14 +5,7 @@ namespace: opal
 
 bases:
   - ../../base/
-  - ../../components/traefik/
-  - ../../components/secrets/
 
 resources:
   - ingress.yaml
   - init_singleuser_image.yaml
-
-configMapGenerator:
-  - name: deployment-env
-    envs:
-      - k8.env

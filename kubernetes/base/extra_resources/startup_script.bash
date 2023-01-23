@@ -12,8 +12,8 @@ date >> $LOG_FILE
 log_to_file "Start setup"
 
 # 1
-tar -xf /tmp/tars/jhub-conf.tar -C /opt
-log_to_file "Copy jupyterhub config directory"
+# tar -xf /tmp/tars/jhub-conf.tar -C /opt
+# log_to_file "Copy jupyterhub config directory"
 
 # 2
 conda init bash
@@ -24,7 +24,10 @@ echo 'source /home/jovyan/.bashrc && conda activate singleuser' > /home/jovyan/.
 log_to_file "Add conda activate to .profile"
 
 # 4
-cp -r /opt/config/opalbanner /opt/conda/envs/singleuser/share/jupyter/labextensions
+# make destination directory
+mkdir -p /opt/conda/envs/singleuser/share/jupyter/labextensions/opalbanner/static
+cp /opt/config/package.json /opt/conda/envs/singleuser/share/jupyter/labextensions/opalbanner/
+cp /opt/config/*.js* /opt/conda/envs/singleuser/share/jupyter/labextensions/opalbanner/static
 bash /opt/config/init_banner.bash "$OPAL_BANNER_TEXT" "$OPAL_BANNER_COLOR"
 log_to_file "Initialize banner extension"
 

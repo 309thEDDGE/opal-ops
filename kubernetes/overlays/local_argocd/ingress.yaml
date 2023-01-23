@@ -39,27 +39,3 @@ spec:
                 name: proxy-public
                 port:
                   number: 80
-    - host: metaflow-k8.10.96.30.9.nip.io
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: opal-metaflow-ui-static
-                port:
-                  number: 3000
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: opal-metaflow-ui
-                port:
-                  number: 8083
-          - path: /static
-            pathType: Prefix
-            backend:
-              service:
-                name: opal-metaflow-ui-static
-                port:
-                  number: 3000

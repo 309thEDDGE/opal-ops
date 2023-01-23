@@ -1,0 +1,27 @@
+global:
+  image:
+    repository: registry1.dso.mil/ironbank/opensource/argoproj/argocd
+    tag: v2.5.7
+
+  imagePullSecrets:
+    - name: regcred
+
+server:
+  ingress:
+    enabled: true
+    hosts:
+      - argo-cd.10.96.30.9.nip.io
+
+configs:
+  cm:
+    url: https://argo-cd.10.96.30.9.nip.io
+  params:
+    server.insecure: true
+  credentialTemplates:
+    https-creds:
+      url: https://github.com/309thEDDGE/opal-ops.git
+      username: FILL_IN
+      password: FILL_IN
+  repositories:
+    private-repo:
+      url: https://github.com/309thEDDGE/opal-ops.git

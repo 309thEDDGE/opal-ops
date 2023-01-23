@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opal
+spec:
+  destination:
+    name: ''
+    namespace: opal
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: kubernetes/overlays/local_argocd
+    repoURL: 'https://github.com/309thEDDGE/opal-ops.git'
+    targetRevision: OPAL-argocd
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

@@ -55,7 +55,7 @@ data:
     sso:
       issuer: https://keycloak-k8.10.96.30.9.nip.io/auth/realms/master
       clientId:
-        name: argo-env
+        name: argo-ws-env
         key: ARGO_OPENID_CLIENT_ID
       clientSecret:
         name: token-env
@@ -1141,7 +1141,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: opal-argo-workflows-workflow-controller
-    namespace: opal
+    namespace: default
 ---
 # Source: argo-workflows/templates/server/server-crb.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -1162,7 +1162,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: opal-argo-workflows-server
-  namespace: opal
+  namespace: default
 ---
 # Source: argo-workflows/templates/controller/workflow-controller-cluster-roles.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -1472,7 +1472,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: opal-argo-workflows-workflow-controller
-    namespace: opal
+    namespace: default
 ---
 # Source: argo-workflows/templates/controller/workflow-rb.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -1515,7 +1515,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: opal-argo-workflows-server
-  namespace: opal
+  namespace: default
 ---
 # Source: argo-workflows/templates/server/server-service.yaml
 apiVersion: v1
