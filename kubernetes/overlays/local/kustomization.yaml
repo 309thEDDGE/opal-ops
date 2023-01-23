@@ -9,3 +9,8 @@ bases:
 resources:
   - ingress.yaml
   - init_singleuser_image.yaml
+
+configMapGenerator:
+  - name: deployment-env
+    envs:
+      - k8.env

@@ -3,16 +3,8 @@ kind: Kustomization
 
 namespace: opal
 
+# local + traefik + secrets
 bases:
-  - ../../base/
+  - ../local
   - ../../components/traefik/
   - ../../components/secrets/
-
-resources:
-  - ingress.yaml
-  - init_singleuser_image.yaml
-
-configMapGenerator:
-  - name: deployment-env
-    envs:
-      - k8.env

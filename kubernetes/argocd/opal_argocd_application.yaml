@@ -8,7 +8,7 @@ spec:
     namespace: opal
     server: 'https://kubernetes.default.svc'
   source:
-    path: kubernetes/overlays/local_argocd
+    path: kubernetes/overlays/local
     repoURL: 'https://github.com/309thEDDGE/opal-ops.git'
     targetRevision: OPAL-argocd
   project: default
