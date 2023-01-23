@@ -37,20 +37,21 @@ c.KubeSpawner.env_keep = [
     "KEYCLOAK_OPAL_API_URL"
 ]
 
-# metaflow_mount_path = "/opt/opal/metaflow-metadata"
+metaflow_mount_path = "/opt/opal/metaflow-metadata"
 # add some extra environment variables
 c.KubeSpawner.environment = {
     # minio
-    "S3_ENDPOINT": "http://minio:9000", # legacy
+    "S3_ENDPOINT": "http://minio:9000", # legacy env var
 
     # catalog
     "CATALOG_BACKEND_URL": "http://opalcatalog-be:9001/services/opal-catalog",
 
     # metaflow
     "METAFLOW_S3_ENDPOINT_URL": "http://minio:9000",
-    "METAFLOW_DATASTORE_SYSROOT_LOCAL":"/home/jovyan",
+    # "METAFLOW_DATASTORE_SYSROOT_LOCAL":"/home/jovyan",
+    "METAFLOW_DATASTORE_SYSROOT_LOCAL":metaflow_mount_path,
     "METAFLOW_SERVICE_URL":"http://opal-metaflow-service:8080",
-    "METAFLOW_DEFAULT_METADATA": "service",
+    # "METAFLOW_DEFAULT_METADATA": "service",
 
     # argo
     "METAFLOW_KUBERNETES_NAMESPACE": "opal",
@@ -103,7 +104,6 @@ c.KubeSpawner.volumes = [
 c.KubeSpawner.volume_mounts = [
     {
         'mountPath': '/opt/config',
-        # 'subPath': "config",
         'name': "config-dir"
     },
     {
@@ -111,11 +111,11 @@ c.KubeSpawner.volume_mounts = [
         "subPath": "startup_script.bash",
         "name": "startup-script"
     },
-    # {
-    #     'mountPath': metaflow_mount_path,
-    #     "name": "metaflow-store",
-    #     "readOnly": False
-    # }
+    {
+        'mountPath': metaflow_mount_path,
+        "name": "metaflow-store",
+        "readOnly": False
+    }
 ]
 
 # set the startup bash script
