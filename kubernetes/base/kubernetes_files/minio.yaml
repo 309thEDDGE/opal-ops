@@ -39,7 +39,7 @@ spec:
         - name: regcred
       containers:
         - name: minio
-          image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2023-01-20T02-05-44Zdocker pull registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2023-01-20T02-05-44Z
+          image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2023-01-20T02-05-44Z
           command: 
             - minio
             - server
