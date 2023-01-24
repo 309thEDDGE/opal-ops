@@ -13,9 +13,9 @@ helm template opal $ARGO_HOME/argo-cd \
 > argocd/opal_argo_cd.yaml
 
 helm template opal $ARGO_HOME/argo-workflows \
--f overlays/local_dev/argo_workflows_helm_values.yaml \
-> overlays/local_dev/kubernetes_files/opal_argo_workflows.yaml
+-f components/experimental/argo_workflows_helm_values.yaml \
+> components/experimental/opal_argo_workflows.yaml
 
 helm template opal $METAFLOW_HOME \
--f overlays/local_dev/metaflow_metadata_helm_values.yaml \
-> overlays/local_dev/kubernetes_files/opal_metaflow_metadata.yaml
+-f components/experimental/metaflow_metadata_helm_values.yaml \
+> components/experimental/opal_metaflow_metadata.yaml

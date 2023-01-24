@@ -124,9 +124,9 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: argocd
 data:
-  password: Z2hwXzVNSUFDTHVnSFZwNGdya2J1QXhkY01CdnpPbnc0cDFFcFBNag==
+  password: RklMTF9JTg==
   url: aHR0cHM6Ly9naXRodWIuY29tLzMwOXRoRURER0Uvb3BhbC1vcHMuZ2l0
-  username: bmljaG9sYXMubWlsZm9yZEB1cy5hZi5taWw=
+  username: RklMTF9JTg==
 ---
 # Source: argo-cd/templates/argocd-configs/repository-secret.yaml
 apiVersion: v1
@@ -11395,28 +11395,3 @@ spec:
             path: tls.key
           - key: ca.crt
             path: ca.crt
----
-# Source: argo-cd/templates/argocd-server/ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: opal-argocd-server
-  labels:
-    helm.sh/chart: argo-cd-5.17.1
-    app.kubernetes.io/name: argocd-server
-    app.kubernetes.io/instance: opal
-    app.kubernetes.io/component: server
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/part-of: argocd
-spec:
-  rules:
-    - host: argo-cd.10.96.30.9.nip.io
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: opal-argocd-server
-                port:
-                  number: 80

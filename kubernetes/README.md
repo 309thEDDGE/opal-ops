@@ -73,3 +73,5 @@ Aside from being acronym soup, this cluster driver needs to be running for the E
 ### Jupyterhub Public Proxy Service HTTPS Disabled
 
 The service to the proxy won't work if you enable the HTTPS port. This is OK because Traefik handles TLS certificates and HTTPS routing.
+
+kubectl -n opal-cicd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
