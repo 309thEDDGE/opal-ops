@@ -2,13 +2,15 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: opal
+  namespace: opal-cicd
+  labels:
+    app: opal
 spec:
   destination:
     name: ''
     namespace: opal
     server: 'https://kubernetes.default.svc'
   source:
-    path: kubernetes/overlays/local
     repoURL: 'https://github.com/309thEDDGE/opal-ops.git'
     targetRevision: OPAL-argocd
   project: default

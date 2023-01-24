@@ -11,3 +11,4 @@ resources:
   - opal_argo_cd.yaml
   - opal_argocd_application.yaml
   - namespace.yaml
+  
