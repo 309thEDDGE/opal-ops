@@ -5,7 +5,6 @@ namespace: opal-cicd
 
 bases:
   - ../components/secrets/
-  - ../components/traefik/
 
 resources:
   - opal_argo_cd.yaml

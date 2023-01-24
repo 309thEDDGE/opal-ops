@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  namespace: jupyterhub
   name: prepull-singleuser-torch
 spec:
   selector:
