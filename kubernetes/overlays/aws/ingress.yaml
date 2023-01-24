@@ -28,16 +28,6 @@ spec:
                 name: keycloak
                 port:
                   number: 8080
-    - host: traefik-k8.opalacceptance.dso.mil
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: traefik
-                port:
-                  name: dashboard
     - host: opal-k8.opalacceptance.dso.mil
       http:
         paths:

@@ -70,7 +70,7 @@ c.KubeSpawner.pvc_name_template = pvc_name_template
 c.KubeSpawner.delete_pvc = False
 c.KubeSpawner.storage_pvc_ensure = True
 c.KubeSpawner.storage_class = 'standard'
-c.KubeSpawner.storage_access_modes = ['ReadWriteOnce']
+c.KubeSpawner.storage_access_modes = ['ReadWriteMany']
 c.KubeSpawner.storage_capacity = '1Gi'
 
 # add service tokens for users

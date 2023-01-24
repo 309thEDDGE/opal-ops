@@ -5,6 +5,7 @@ resources:
   - ingress.yaml
   - opal_metaflow_metadata.yaml
   - opal_argo_workflows.yaml
+  - workflows_account.yaml
   
 patches:
 - patch: |-
