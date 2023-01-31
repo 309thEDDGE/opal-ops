@@ -40,8 +40,6 @@ fi
 
 echo "using PYTHON3 ${PYTHON3}"
 
-set -e
-
 # change working directory to docker-compose
 cd "$(dirname $0)"
 

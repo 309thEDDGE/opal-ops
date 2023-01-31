@@ -32,7 +32,6 @@ get_python_3() {
 }
 
 PYTHON3=$(get_python_3 $PYTHON3 $PYTHON $(which python) $(which python3))
-echo "$PYTHON3"
 if [[ -z "${PYTHON3}" ]] ; then
 	echo "no python3 found"
 	exit 1
