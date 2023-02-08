@@ -9,7 +9,7 @@ metadata:
     ingress.kubernetes.io/protocol: https
 spec:
   rules:
-    - host: metaflow-k8.10.96.30.9.nip.io
+    - host: metaflow-k8-experimental.opalacceptance.dso.mil
       http:
         paths:
           - path: /
