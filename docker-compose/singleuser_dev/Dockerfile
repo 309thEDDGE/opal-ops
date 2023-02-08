@@ -9,3 +9,11 @@ RUN sed '/local-channel/s/.*/ - .\/local-channel/' /home/jovyan/local-channel/lo
     && printf "\n    - /opt/data/opal/opal-packages" >> /home/jovyan/singleuser_env.yaml \
     && conda env create -f /home/jovyan/singleuser_env.yaml --offline \
     && rm -rf /home/jovyan/tip_deps_channel /home/jovyan/local-channel /home/jovyan/conf /home/jovyan/tip_channel /home/jovyan/tip_scripts
+
+ENV PATH="/opt/conda/envs/singleuser/bin:$PATH"
+
+RUN source /opt/conda/bin/activate \
+    && conda activate singleuser
+
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["/usr/local/bin/start-notebook.sh"]

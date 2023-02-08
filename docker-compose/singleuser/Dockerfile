@@ -20,3 +20,11 @@ RUN sed '/local-channel/s/.*/  - .\/pytorch_channel\n/' /home/jovyan/pytorch_cha
     && printf "\n    - /opt/data/opal/opal-packages" >> /home/jovyan/pytorch_env.yaml \
     && conda env create -f /home/jovyan/pytorch_env.yaml --offline \
     && rm -rf /home/jovyan/pytorch_channel
+
+ENV PATH="/opt/conda/envs/singleuser/bin:$PATH"
+
+RUN source /opt/conda/bin/activate \
+    && conda activate singleuser
+
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["/usr/local/bin/start-notebook.sh"]
