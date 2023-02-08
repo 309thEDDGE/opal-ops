@@ -48,10 +48,9 @@ c.KubeSpawner.environment = {
 
     # metaflow
     "METAFLOW_S3_ENDPOINT_URL": "http://minio:9000",
-    # "METAFLOW_DATASTORE_SYSROOT_LOCAL":"/home/jovyan",
-    "METAFLOW_DATASTORE_SYSROOT_LOCAL":metaflow_mount_path,
+    # "METAFLOW_DATASTORE_SYSROOT_LOCAL":metaflow_mount_path,
     "METAFLOW_SERVICE_URL":"http://opal-metaflow-service:8080",
-    # "METAFLOW_DEFAULT_METADATA": "service",
+    "METAFLOW_DEFAULT_METADATA": "service",
 
     # argo
     "METAFLOW_KUBERNETES_NAMESPACE": "opal",
