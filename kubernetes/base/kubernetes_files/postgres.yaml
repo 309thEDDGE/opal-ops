@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: jupyterhub
+  
   name: postgresql
   labels:
     component: database
@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: jupyterhub
+  
   name: postgres-bootstrap
 data:
   file-from-cfgmap: |
@@ -64,7 +64,7 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: jupyterhub
+  
   name: database
   labels:
     component: database
@@ -79,7 +79,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: database-volume
-  namespace: jupyterhub
+  
 spec:
   accessModes:
     - ReadWriteOnce

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: jupyterhub
+  
   name: opalcatalog-fe
   labels:
     component: catalog-fe
@@ -16,7 +16,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: jupyterhub
+  
   name: catalog-fe
   labels:
     component: catalog-fe
@@ -46,7 +46,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: jupyterhub
+  
   name: opalcatalog-be
   labels:
     component: catalog-be
@@ -61,7 +61,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: jupyterhub
+  
   name: catalog-be
   labels:
     component: catalog-be

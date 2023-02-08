@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: jupyterhub
+  
   name: keycloak
   labels:
     component: keycloak
@@ -21,7 +21,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: jupyterhub
+  
   name: keycloak
   labels:
     component: keycloak
@@ -76,7 +76,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: keycloak-setup
-  namespace: jupyterhub
+  
   labels:
     component: keycloak
 spec:

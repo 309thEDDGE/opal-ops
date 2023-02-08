@@ -9,7 +9,7 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: jupyterhub
+  
   name: proxy-api
   labels:
     component: proxy
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: jupyterhub
+  
   name: proxy-public
   labels:
     component: proxy
@@ -41,7 +41,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: jupyterhub
+  
   name: proxy
   labels:
     component: proxy
@@ -83,7 +83,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: jupyterhub
+  
   name: hub
   labels:
     component: jupyter
@@ -99,7 +99,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: jupyterhub
+  
   name: hub
   labels:
     component: jupyter
@@ -107,7 +107,7 @@ metadata:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: jupyterhub
+  
   name: hub
   labels:
     component: jupyter
@@ -122,7 +122,7 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: jupyterhub
+  
   name: hub
   labels:
     component: jupyter
@@ -137,7 +137,7 @@ roleRef:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: jupyterhub
+  
   name: hub
   labels:
     component: jupyter
@@ -187,7 +187,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: metaflow-datastore
-  namespace: jupyterhub
+  
 spec:
   accessModes:
     - ReadWriteOnce
