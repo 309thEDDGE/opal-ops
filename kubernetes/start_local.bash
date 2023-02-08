@@ -54,4 +54,6 @@ echo "-------------------------------------------------------------"
 # but postgres often takes some time to start up. So when opal-catalog-be
 # (for example) starts and postgres isn't ready, it crashes with an error.
 # Fortunately this doesn't really matter, as part of what Kubernetes does is 
-# restart pods that have crashed.
+# restart pods that have crashed. Eventually postgres will be up, and 
+# the Kubernetes cluster will restart the crashed opal-catalog-be pod, which
+# will then start working.
