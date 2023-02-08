@@ -1,10 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: opal
+  name: opal-experimental
   namespace: opal-cicd
   labels:
     app: opal
 spec:
   source:
-    path: kubernetes/overlays/aws 
+    path: kubernetes/overlays/aws
+    

@@ -53,14 +53,14 @@ metadata:
 data:
   config: |
     sso:
-      issuer: https://keycloak-k8.10.96.30.9.nip.io/auth/realms/master
+      issuer: https://keycloak-k8-experimental.opalacceptance.dso.mil/auth/realms/master
       clientId:
         name: argo-ws-env
         key: ARGO_OPENID_CLIENT_ID
       clientSecret:
         name: token-env
         key: KEYCLOAK_JUPYTERHUB_CLIENT_SECRET
-      redirectUrl: https://argo-k8.10.96.30.9.nip.io/oauth2/callback
+      redirectUrl: https://argo-k8-experimental.opalacceptance.dso.mil/oauth2/callback
       rbac:
         enabled: false
     nodeEvents:
@@ -1721,7 +1721,7 @@ metadata:
     app.kubernetes.io/part-of: argo-workflows
 spec:
   rules:
-    - host: argo-k8.10.96.30.9.nip.io
+    - host: argo-k8-experimental.opalacceptance.dso.mil
       http:
         paths:
           - path: /
