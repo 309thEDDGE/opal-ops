@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./singleuser
       args:
-        SINGLE_USER_TIP_IMAGE: ${SINGLE_USER_TIP_IMAGE}
+        IB_SINGLEUSER_IMAGE: ${IB_SINGLEUSER_IMAGE}
         IB_PYTORCH_IMAGE: ${IB_PYTORCH_IMAGE}
 
     command: "true"
