@@ -16,7 +16,9 @@ metaflow-ui:
     host: database
 
   ingress:
-    enabled: false
+    enabled: true
+    hosts:
+      - host: metaflow-k8-experimental.opalacceptance.dso.mil
 
 postgresql:
   # postgresql.enabled -- Flag to install Postgresql

@@ -292,6 +292,44 @@ spec:
           resources:
             {}
 ---
+# Source: metaflow/charts/metaflow-ui/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: opal-metaflow-ui
+  labels:
+    helm.sh/chart: metaflow-ui-0.1.0
+    app.kubernetes.io/name: metaflow-ui
+    app.kubernetes.io/instance: opal
+    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  rules:
+    - host: "metaflow-k8-experimental.opalacceptance.dso.mil"
+      http:
+        paths:
+          - path: "/api"
+            pathType: Prefix
+            backend:
+              service:
+                name: opal-metaflow-ui
+                port:
+                  number: 8083
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: opal-metaflow-ui-static
+                port:
+                  number: 3000
+          - path: "/static"
+            pathType: Prefix
+            backend:
+              service:
+                name: opal-metaflow-ui-static
+                port:
+                  number: 3000
+---
 # Source: metaflow/charts/metaflow-service/templates/tests/test-connection.yaml
 apiVersion: v1
 kind: Pod
