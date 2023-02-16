@@ -23,6 +23,21 @@ else
     PYTHON=python3
 fi
 
+# Test if read bit is set for other users
+_is_readable() {
+  if [[ ! -f "$1" ]]; then
+      _red "Testing if $1 has read bit but it doesn't exist!"
+      exit 1
+  fi
+  permissions=$(stat -c "%a" "$1")
+  permissions=${permissions: -1: 1}
+  if [[ $(( $permissions & 100)) -eq 0 ]]; then
+      _red "Read bit not set for other users: $1"
+      exit 1
+  fi
+}
+_is_readable "../postgresql/postgres-bootstrap.sql"
+
 # change working directory to docker-compose
 cd "$(dirname $0)/.."
 
