@@ -30,7 +30,8 @@ spec:
         - name: docker
           mountPath: /var/run
         - name: docker-config
-          mountPath: /root/.docker/
+          mountPath: /root/.docker/config.json
+          subPath: config.json
         - name: dockerfile
           mountPath: /to_build/Dockerfile
           subPath: Dockerfile
