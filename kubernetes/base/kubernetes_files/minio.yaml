@@ -73,7 +73,7 @@ spec:
             claimName: minio-data-volume
         - name: crt
           secret:
-            secretName: minio-certs
+            secretName: tls-certs
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

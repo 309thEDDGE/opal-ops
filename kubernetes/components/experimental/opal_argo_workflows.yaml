@@ -1703,7 +1703,7 @@ spec:
         emptyDir: {}
       - name: crt
         secret:
-          secretName: minio-certs
+          secretName: tls-certs
       nodeSelector:
         kubernetes.io/os: linux
 ---

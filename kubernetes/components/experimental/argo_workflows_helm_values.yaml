@@ -21,7 +21,7 @@ server:
   volumes:
     - name: crt
       secret:
-        secretName: minio-certs
+        secretName: tls-certs
   volumeMounts:
     - name: crt
       mountPath: /etc/ssl/certs/ca.crt
