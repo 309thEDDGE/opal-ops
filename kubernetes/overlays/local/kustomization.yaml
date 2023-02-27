@@ -15,13 +15,3 @@ configMapGenerator:
   - name: deployment-env
     envs:
       - k8.env
-
-# TODO: patch traefik cluster ip to clusterIP: "10.96.30.9"
-patches:
-  - patch: |-
-      - op: add
-        path: "/spec/clusterIP"
-        value: "10.96.30.9"
-    target:
-      kind: Service
-      name: traefik

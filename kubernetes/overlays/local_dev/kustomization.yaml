@@ -8,3 +8,7 @@ bases:
   - ../local
   - ../../components/traefik/
   - ../../components/secrets/
+
+# TODO: patch traefik cluster ip to clusterIP: "10.96.30.9"
+patches:
+- traefik_patch.yaml
