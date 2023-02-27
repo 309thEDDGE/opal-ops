@@ -48,7 +48,7 @@ RET=0
 ##### ORIGINAL TESTS #####
 
 # make the context 
-cat test_resources/test_answers/test_answers.txt | $PYTHON make_context.py test_resources/test_context_files/actual/test_context_actual.json > /dev/null
+cat test_resources/test_answers/test_answers.txt | $PYTHON3 make_context.py test_resources/test_context_files/actual/test_context_actual.json > /dev/null
 
 PYRET=$?
 
@@ -66,7 +66,7 @@ else
 fi
 
 # make the docker-compose
-$PYTHON generate_docker_compose.py test_resources/test_context_files/expected/test_context_expected.json > test_resources/test_compose_files/actual/test_actual.docker-compose.json
+$PYTHON3 generate_docker_compose.py test_resources/test_context_files/expected/test_context_expected.json > test_resources/test_compose_files/actual/test_actual.docker-compose.json
 
 PYRET=$?
 
@@ -84,12 +84,12 @@ else
 fi
 
 # make the environment
-$PYTHON generate_env.py test_resources/test_context_files/expected/test_context_expected.json > test_resources/test_environment_files/actual/test_actual.env
+$PYTHON3 generate_env.py test_resources/test_context_files/expected/test_context_expected.json > test_resources/test_environment_files/actual/test_actual.env
 
 PYRET=$?
 
 # custom diff test in compare_env.py
-DIFFS=$($PYTHON test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected.env test_resources/test_environment_files/actual/test_actual.env)
+DIFFS=$($PYTHON3 test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected.env test_resources/test_environment_files/actual/test_actual.env)
 
 if [[ $PYRET -ne 0 ]]; then
     _red "ERROR generate_env.py"
@@ -107,7 +107,7 @@ fi
 echo '##### TEST WITH LIGHTWEIGHT SINGLEUSER #####'
 
 # make the context 
-cat test_resources/test_answers/test_answers_lightweight.txt | $PYTHON make_context.py test_resources/test_context_files/actual/test_context_lightweight_actual.json > /dev/null
+cat test_resources/test_answers/test_answers_lightweight.txt | $PYTHON3 make_context.py test_resources/test_context_files/actual/test_context_lightweight_actual.json > /dev/null
 
 PYRET=$?
 
@@ -125,7 +125,7 @@ else
 fi
 
 # make the docker-compose
-$PYTHON generate_docker_compose.py test_resources/test_context_files/expected/test_context_lightweight_expected.json > test_resources/test_compose_files/actual/test_actual_lightweight.docker-compose.json
+$PYTHON3 generate_docker_compose.py test_resources/test_context_files/expected/test_context_lightweight_expected.json > test_resources/test_compose_files/actual/test_actual_lightweight.docker-compose.json
 
 PYRET=$?
 
@@ -143,12 +143,12 @@ else
 fi
 
 # make the environment
-$PYTHON generate_env.py test_resources/test_context_files/expected/test_context_lightweight_expected.json > test_resources/test_environment_files/actual/test_actual_lightweight.env
+$PYTHON3 generate_env.py test_resources/test_context_files/expected/test_context_lightweight_expected.json > test_resources/test_environment_files/actual/test_actual_lightweight.env
 
 PYRET=$?
 
 # custom diff test in compare_env.py
-DIFFS=$($PYTHON test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected_lightweight.env test_resources/test_environment_files/actual/test_actual_lightweight.env)
+DIFFS=$($PYTHON3 test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected_lightweight.env test_resources/test_environment_files/actual/test_actual_lightweight.env)
 
 if [[ $PYRET -ne 0 ]]; then
     _red "ERROR generate_env.py"
@@ -166,7 +166,7 @@ fi
 echo '##### TEST WITH LOCALHOST #####'
 
 # make the context 
-cat test_resources/test_answers/test_answers_localhost.txt | $PYTHON make_context.py test_resources/test_context_files/actual/test_context_localhost_actual.json > /dev/null
+cat test_resources/test_answers/test_answers_localhost.txt | $PYTHON3 make_context.py test_resources/test_context_files/actual/test_context_localhost_actual.json > /dev/null
 
 PYRET=$?
 
@@ -184,7 +184,7 @@ else
 fi
 
 # make the docker-compose
-$PYTHON generate_docker_compose.py test_resources/test_context_files/expected/test_context_localhost_expected.json > test_resources/test_compose_files/actual/test_actual_localhost.docker-compose.json
+$PYTHON3 generate_docker_compose.py test_resources/test_context_files/expected/test_context_localhost_expected.json > test_resources/test_compose_files/actual/test_actual_localhost.docker-compose.json
 
 PYRET=$?
 
@@ -202,12 +202,12 @@ else
 fi
 
 # make the environment
-$PYTHON generate_env.py test_resources/test_context_files/expected/test_context_localhost_expected.json > test_resources/test_environment_files/actual/test_actual_localhost.env
+$PYTHON3 generate_env.py test_resources/test_context_files/expected/test_context_localhost_expected.json > test_resources/test_environment_files/actual/test_actual_localhost.env
 
 PYRET=$?
 
 # custom diff test in compare_env.py
-DIFFS=$($PYTHON test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected_localhost.env test_resources/test_environment_files/actual/test_actual_localhost.env)
+DIFFS=$($PYTHON3 test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected_localhost.env test_resources/test_environment_files/actual/test_actual_localhost.env)
 
 if [[ $PYRET -ne 0 ]]; then
     _red "ERROR generate_env.py"
@@ -225,7 +225,7 @@ fi
 echo '##### TEST WITH MODIFIED DNS #####'
 
 # make the context 
-cat test_resources/test_answers/test_answers_modified_dns.txt | $PYTHON make_context.py test_resources/test_context_files/actual/test_context_modified_dns_actual.json > /dev/null
+cat test_resources/test_answers/test_answers_modified_dns.txt | $PYTHON3 make_context.py test_resources/test_context_files/actual/test_context_modified_dns_actual.json > /dev/null
 
 PYRET=$?
 
@@ -243,7 +243,7 @@ else
 fi
 
 # make the docker-compose
-$PYTHON generate_docker_compose.py test_resources/test_context_files/expected/test_context_modified_dns_expected.json > test_resources/test_compose_files/actual/test_actual_modified_dns.docker-compose.json
+$PYTHON3 generate_docker_compose.py test_resources/test_context_files/expected/test_context_modified_dns_expected.json > test_resources/test_compose_files/actual/test_actual_modified_dns.docker-compose.json
 
 PYRET=$?
 
@@ -261,12 +261,12 @@ else
 fi
 
 # make the environment
-$PYTHON generate_env.py test_resources/test_context_files/expected/test_context_modified_dns_expected.json > test_resources/test_environment_files/actual/test_actual_modified_dns.env
+$PYTHON3 generate_env.py test_resources/test_context_files/expected/test_context_modified_dns_expected.json > test_resources/test_environment_files/actual/test_actual_modified_dns.env
 
 PYRET=$?
 
 # custom diff test in compare_env.py
-DIFFS=$($PYTHON test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected_modified_dns.env test_resources/test_environment_files/actual/test_actual_modified_dns.env)
+DIFFS=$($PYTHON3 test_resources/compare_env.py test_resources/test_environment_files/expected/test_expected_modified_dns.env test_resources/test_environment_files/actual/test_actual_modified_dns.env)
 
 if [[ $PYRET -ne 0 ]]; then
     _red "ERROR generate_env.py"
@@ -287,7 +287,7 @@ echo '##### TESTING OUTPUT SCRIPTS #####'
 
 # utility script
 
-$PYTHON generate_opal_control_script.py test_resources/test_context_files/expected/test_context_expected.json > test_resources/test_output_scripts/actual/control_script_actual.sh
+$PYTHON3 generate_opal_control_script.py test_resources/test_context_files/expected/test_context_expected.json > test_resources/test_output_scripts/actual/control_script_actual.sh
 
 PYRET=$?
 
