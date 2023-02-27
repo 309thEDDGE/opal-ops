@@ -8,3 +8,6 @@ bases:
 
 patchesStrategicMerge:
   - argocd_select_path.yaml
+
+patches:
+  - traefik_patch.yaml
