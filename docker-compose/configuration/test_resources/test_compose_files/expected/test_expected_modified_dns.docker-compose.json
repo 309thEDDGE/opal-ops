@@ -24,7 +24,8 @@
         },
         "singleuser": {
             "build": {
-                "context": "singleuser",
+                "context": ".",
+                "dockerfile": "./singleuser/Dockerfile",
                 "args": {
                     "OPAL_BANNER_COLOR": "orange",
                     "OPAL_BANNER_TEXT": "THIS IS A TEST BANNER"
@@ -64,7 +65,7 @@
         },
         "traefik": {
             "volumes": [
-                "./keycloak/certs/selfsigned:/etc/traefik/certs/"
+                "./keycloak/certs/test_context:/etc/traefik/certs/"
             ],
             "env_file": [
                 "./.test_context.env"
@@ -86,23 +87,14 @@
                 }
             },
             "volumes": [
-                "./keycloak/certs/selfsigned/tls.key:/etc/x509/https/tls.key",
-                "./keycloak/certs/selfsigned/tls.crt:/etc/x509/https/tls.crt"
+                "./keycloak/certs/test_context/tls.key:/etc/x509/https/tls.key",
+                "./keycloak/certs/test_context/tls.crt:/etc/x509/https/tls.crt"
             ],
             "env_file": [
                 "./.env.secrets",
                 "./.test_context.env",
                 "./.env"
             ],
-            "healthcheck": {
-                "test": [
-                    "CMD-SHELL",
-                    "curl --fail http://localhost:9990/health"
-                ],
-                "interval": "10s",
-                "timeout": "5s",
-                "retries": 5
-            },
             "labels": [
                 "traefik.enable=true",
                 "traefik.http.routers.keycloak.rule=Host(`keycloak.opal.companyname.com`)",
@@ -142,7 +134,7 @@
                 "./.env"
             ],
             "volumes": [
-                "./keycloak/certs/selfsigned/miniotls.crt:/home/minio/certs/CAs/tls.crt"
+                "./keycloak/certs/test_context/tls.crt:/home/minio/certs/CAs/tls.crt"
             ],
             "links": [
                 "traefik:keycloak.opal.companyname.com"
@@ -158,15 +150,6 @@
                 "traefik.http.services.minio_api.loadbalancer.server.port=9000",
                 "traefik.http.routers.minio_api.service=minio"
             ],
-            "healthcheck": {
-                "test": [
-                    "CMD-SHELL",
-                    "true"
-                ],
-                "interval": "10s",
-                "timeout": "5s",
-                "retries": 5
-            },
             "restart": "always"
         }
     }

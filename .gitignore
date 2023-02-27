@@ -16,3 +16,5 @@ out.json
 .env.secrets
 kubernetes/jupyterhub-conf-dir.tar
 *.pyc
+jupyterhub-conf-dir.tar
+dockerconfig.json

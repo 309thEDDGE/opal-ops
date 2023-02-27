@@ -50,47 +50,90 @@ def set_shared_traitlets(c):
         "metaflow_metadata"
     )
 
+    manifest_path = os.path.join(
+        os.environ["HOST_PATH"],
+        f"{os.environ['DEPLOYMENT_NAME']}_deployment_manifest.json"
+    )
+
     # Persist Volumes
     metaflow_mount_path = "/opt/opal/metaflow-metadata"
     c.DockerSpawner.volumes = {
         'jupyterhub-user-{raw_username}':'/home/jovyan',
         config_path:"/opt/opal/conf",
-        metaflow_path:metaflow_mount_path
+        metaflow_path:metaflow_mount_path,
+        manifest_path:"/home/jovyan/.extra/deployment-manifest.json"
     }
 
-    # Commands to be executed inside container after container starts. Initiates conda and activates singleuser environment
-    cmds = [
-        "date >> /home/jovyan/startup.log",
-        "conda init bash",
-        "echo 'source /home/jovyan/.bashrc && conda activate singleuser' > /home/jovyan/.profile",
-        "cp -r /opt/opal/conf/opalbanner /opt/conda/envs/singleuser/share/jupyter/labextensions",
-        "bash /opt/opal/conf/init_banner.bash {} {}".format(os.environ['OPAL_BANNER_TEXT'], os.environ['OPAL_BANNER_COLOR']),
-        "rm -rf /home/jovyan/opal",
-        "rm -f /home/jovyan/START_HERE.ipynb",
-        "cp -a /opt/data/opal /home/jovyan/opal",
-        "mv /home/jovyan/opal/START_HERE.ipynb /home/jovyan/",
-        "mkdir -p /home/jovyan/.metaflowconfig",
-        "envsubst < /opt/opal/conf/metaflow_config.json > /home/jovyan/.metaflowconfig/config.json",
-        "python /opt/opal/conf/python_setup.py",
+    cmds_msgs = [
+        (
+            "mkdir -p /home/jovyan/.hidden",
+            "make .hidden directory"
+        ),
+        (
+            "[ -f /home/jovyan/startup.log ] && mv /home/jovyan/startup.log /home/jovyan/.hidden || echo startup.log not in /home/jovyan",
+            "move startup.log to .hidden, if it exists"
+        ),
+        (
+            "date >> /home/jovyan/.hidden/startup.log",
+            "stamp current date"
+        ),
+        (
+            "conda init bash",
+            "init conda"
+        ),
+        (
+            "echo 'source /home/jovyan/.bashrc && conda activate singleuser' > /home/jovyan/.profile",
+            "add conda activate to .profile"
+        ),
+        (
+            "cp -r /opt/opal/conf/opalbanner /opt/conda/envs/singleuser/share/jupyter/labextensions",
+            "move opalbanner files to singleuser extension directory"
+        ),
+        (
+            "bash /opt/opal/conf/init_banner.bash {} {}".format(os.environ['OPAL_BANNER_TEXT'], os.environ['OPAL_BANNER_COLOR']),
+            "change opalbanner color/text"
+        ),
+        (
+            "rm -rf /home/jovyan/opal",
+            "remove old opal directory from user home"
+        ),
+        (
+            "rm -f /home/jovyan/START_HERE.ipynb",
+            "remove old START_HERE notebook"
+        ),
+        (
+            "cp -a /opt/data/opal /home/jovyan/opal",
+            "copy new opal directory to user home"
+        ),
+        (
+            "mv /home/jovyan/opal/START_HERE.ipynb /home/jovyan/",
+            "copy new START_HERE notebook to user home"
+        ),
+        (
+            "[ -f /home/jovyan/pytorch_env.yaml ] && mv /home/jovyan/pytorch_env.yaml /home/jovyan/.hidden || echo pytorch_env.yaml not in /home/jovyan",
+            "move pytorch env yaml to .hidden, if it exists"
+        ),
+        (
+            "[ -f /home/jovyan/singleuser_env.yaml ] && mv /home/jovyan/singleuser_env.yaml /home/jovyan/.hidden || echo singleuser_env.yaml not in /home/jovyan",
+            "move singleuser env yaml to .hidden, if it exists"
+        ),
+        (
+            "[ -f /home/jovyan/local_channel.tar ] && rm -f /home/jovyan/local_channel.tar || echo local_channel.tar not in /home/jovyan",
+            "remove local_channel.tar, if it exists"
+        ),
+        (
+            "mkdir -p /home/jovyan/.metaflowconfig",
+            "make metaflowconfig dir"
+        ),
+        (
+            "envsubst < /opt/opal/conf/metaflow_config.json > /home/jovyan/.metaflowconfig/config.json",
+            "set metaflow config file"
+        ),
+        ("python /opt/opal/conf/python_setup.py","run python setup script"),
     ]
 
-    messages = [
-        "stamp current date",
-        "init conda",
-        "add conda activate to .profile",
-        "move opalbanner files to singleuser extension directory",
-        "change opalbanner color/text",
-        "remove old opal directory from user home",
-        "remove old START_HERE notebook",
-        "copy new opal directory to user home",
-        "copy new START_HERE notebook to user home",
-        "make metaflowconfig dir",
-        "set metaflow config file",
-        "run python setup script"
-    ]
-
-    with_debug_template = "( ({}) || echo 'Step {} Failed!' >> /home/jovyan/startup.log )"
-    with_debug = [ with_debug_template.format(c, m) for c, m in zip(cmds, messages) ]
+    with_debug_template = "( ({}) || echo 'Step {} Failed!' >> /home/jovyan/.hidden/startup.log )"
+    with_debug = [ with_debug_template.format(c, m) for c, m in cmds_msgs ]
 
     cmd = "sh -c \"" + " && ".join(with_debug) + "\""
     c.DockerSpawner.post_start_cmd = cmd
@@ -142,7 +185,9 @@ def set_shared_traitlets(c):
                 "Action": "AssumeRoleWithWebIdentity",
                 "WebIdentityToken": keycloak_access_token,
                 "Version": "2011-06-15",
-                # "DurationSeconds": 604800, # This should pick up the value specified by keycloak if left blank
+                # This *should* pick up the value specified by keycloak if left blank
+                # but it doesn't seem to work, so we're setting it manually here
+                "DurationSeconds": 7*24*60*60, # 1 week
                 }
         r = requests.post(s3_endpoint, data=body)
 

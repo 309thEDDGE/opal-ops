@@ -58,7 +58,7 @@ def gen_selfsigned_keycloak_certs(context):
     # make new directory for this deployment's certs
     compose_root = Path(".")
     new_path = compose_root/"keycloak"/"certs"/context['deployment_name']
-    new_path.mkdir(exist_ok=True)
+    new_path.mkdir(parents=True, exist_ok=True)
 
     # move generated files to new deployment cert directory
     shutil.move("tls.crt", new_path/"tls.crt")
@@ -136,16 +136,6 @@ def keycloak_service(context: dict) -> dict:
                 deployment_env,
                 "./.env"
             ],
-            "healthcheck": {
-                "test": [
-                    "CMD-SHELL",
-                    "curl --fail http://localhost:9990/health"
-                ],
-                "interval": "60s",
-                "timeout": "5s",
-                "start_period": "60s",
-                "retries": 10
-            },
             "labels": [
                 "traefik.enable=true",
                 f"traefik.http.routers.keycloak.rule=Host(`keycloak{context['mod_base']}`)",
@@ -208,15 +198,6 @@ def minio_service(context:dict) -> dict:
                 "traefik.http.services.minio_api.loadbalancer.server.port=9000",
                 "traefik.http.routers.minio_api.service=minio"
             ],
-            "healthcheck": {
-                "test": [
-                    "CMD-SHELL",
-                    "true"
-                ],
-                "interval": "10s",
-                "timeout": "5s",
-                "retries": 5
-            },
             "restart": "always"
         } 
     } if context['deploy_minio'] else {}

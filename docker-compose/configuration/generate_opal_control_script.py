@@ -27,6 +27,9 @@ _yellow() {{
   echo -e $'\e[1;33m'"$@"$'\e[0m'
 }}
 
+generate_manifest(){{
+    bash ../deployment-verification/generate_manifest.bash {context['deployment_name']}
+}}
 
 start(){{
     FILE=./.env.secrets
@@ -43,6 +46,7 @@ start(){{
     mkdir -p ./jupyter_mounts/metaflow_metadata
     chmod 777 -R ./jupyter_mounts
 
+    generate_manifest
     $COMPOSE -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json build
     $COMPOSE -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up -d
 }}
@@ -50,6 +54,7 @@ start(){{
 # Full restart of OPAL to avoid any odd quirks that may be caused by docker compose restart
 restart(){{
     _green Restarting OPAL
+    generate_manifest
     $COMPOSE -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json down
     $COMPOSE -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up -d
 }}

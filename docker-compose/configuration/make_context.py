@@ -68,7 +68,7 @@ if __name__ == "__main__":
         # add 'opal' to the base url 
         # (this allows for us to have a distinct keycloak/minio in case another exists on the network)
         if yes_no("Add opal to base url? [Y/n]\n(Use if you already have keycloak or minio deployed elsewhere on the network)"):
-            print(f"You can reach additional services at [service].opal.{context['dns_base']}")
+            print(f"You can reach additional services at [service].opal{context['dns_base']}")
             context["mod_base"] = ".opal" + context["dns_base"]
 
 

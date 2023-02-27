@@ -1,0 +1,11 @@
+arpiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: opal
+
+bases:
+  - ../local_dev
+
+resources:
+  - networkpolicy.yaml
+  
