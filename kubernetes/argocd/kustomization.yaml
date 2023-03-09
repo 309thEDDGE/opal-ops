@@ -3,9 +3,6 @@ kind: Kustomization
 
 namespace: opal-cicd
 
-bases:
-  - ../components/secrets/
-
 resources:
   - opal_argo_cd.yaml
   - opal_argocd_application.yaml

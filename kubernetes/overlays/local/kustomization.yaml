@@ -6,6 +6,7 @@ namespace: opal
 bases:
   - ../../base/
   - ../../components/experimental
+  - ../../components/secrets
 
 resources:
   - ingress.yaml

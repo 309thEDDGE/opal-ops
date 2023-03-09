@@ -5,9 +5,9 @@ namespace: opal-cicd
 
 bases:
   - ../../argocd
-
-patchesStrategicMerge:
-  - argocd_select_path.yaml
+  - ../../components/traefik
+  - ../../components/secrets
 
 patches:
+  - argocd_select_path.yaml
   - traefik_patch.yaml

@@ -8,7 +8,7 @@ global:
 
 server:
   ingress:
-    enabled: false
+    enabled: true
     hosts:
       - argo-cd.10.96.30.9.nip.io
 
@@ -20,8 +20,8 @@ configs:
   credentialTemplates:
     https-creds:
       url: https://github.com/309thEDDGE/opal-ops.git
-      username: FILL_IN
-      password: FILL_IN
+      username: nicholas.milford@us.af.mil
+      password: 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
   repositories:
     private-repo:
       url: https://github.com/309thEDDGE/opal-ops.git

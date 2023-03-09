@@ -6,9 +6,9 @@ Requirements:
 
 To start: `bash start_local.bash`
 
-## Description
+## OPAL Core (base)
 
-### Components
+### Services
 
 Each file contains its Service and Deployment definitions along with any other configurations/volumes needed to run it.
 
@@ -19,14 +19,14 @@ Each file contains its Service and Deployment definitions along with any other c
 - traefik.yaml
 - catalog.yaml
 
-### Overlays
+## Overlays
 
 Kustomize overlays must define the following to work:
 - k8.env (deployment-specific environment variables)
 - ingress.yaml (DNS endpoints, used by traefik)
 - A daemonset that pulls the singleuser image (see below)
 
-### Other stuff
+### Singleuser Image Daemonsets
 
 - init_singleuser_image.yaml (local)
     - A DaemonSet that pulls the tip singleuser image to all nodes so that a jupyterhub server can always be quickly created on any node
@@ -74,4 +74,19 @@ Aside from being acronym soup, this cluster driver needs to be running for the E
 
 The service to the proxy won't work if you enable the HTTPS port. This is OK because Traefik handles TLS certificates and HTTPS routing.
 
-kubectl -n opal-cicd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+# Argo CD
+
+An argoCD deployment is defined in the argocd folder. It uses the Ironbank argocd image, but not the ironbank redis/dex images yet. It also contains an argocd repo template for the opal-ops repository.
+
+## Deploying OPAL with Argo CD Locally
+
+0. Update your github username/password in `argocd/argocd_helm_values.yaml` at `configs.credentialTemplates.https-creds.username` and `configs.credentialTemplates.https-creds.password` and run `bash kubernetes/helm_template.bash`
+1. Start Minikube `minikube start`
+2. Apply the local_argo overlay `bash components/secrets/refresh_docker_login.bash && kubectl apply -k overlays/local_argo`
+    * If you encounter `error: resource mapping not found for name: "opal" namespace: "opal-cicd" from "overlays/local_argo"`, apply the local_argo overlay again
+3. Apply the local secrets to the namespace that argo created `kubectl apply -k components/secrets`
+4. `minikube tunnel`
+5. Get the argocd login secret with `kubectl -n opal-cicd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo`
+6. Log in at `argo-cd.10.96.30.9.nip.io` with `admin` and the password from step 5
+    * Some services might need to be restarted if they end up in the `ImagePullBackOff` state.
+    * You may have to restart minio (if keycloak is started after minio, jupyterhub can't get minio credentials on server start)
