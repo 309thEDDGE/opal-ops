@@ -124,9 +124,9 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: argocd
 data:
-  password: Z2hwX1NaNTh3TG9IQkYwa0FIVHBQa2xvYzREVVRxdEwxNTBROEw1Mg==
+  password: RklMTF9JTg==
   url: aHR0cHM6Ly9naXRodWIuY29tLzMwOXRoRURER0Uvb3BhbC1vcHMuZ2l0
-  username: bmljaG9sYXMubWlsZm9yZEB1cy5hZi5taWw=
+  username: RklMTF9JTg==
 ---
 # Source: argo-cd/templates/argocd-configs/repository-secret.yaml
 apiVersion: v1
