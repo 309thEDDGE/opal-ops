@@ -120,7 +120,8 @@ overwrite_files(){
     cp -af $source/.git $destination
 }
 
-#Test the overwrite_files function to ensure everything copied and overwrote correctly
+#Test the overwrite_files function to ensure everything copied and overwrote correctly.
+#IMPORTANT: Be sure to have deepdiff installed locally to run this. Use "pip install deepdiff"
 test_overwrite_files(){
     _green "====================================="
     _green "       Testing Overwrite Files       "
