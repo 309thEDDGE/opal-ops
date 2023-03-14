@@ -100,7 +100,6 @@ overwrite_files(){
     cp -af $source/deployment-verification $destination
 
     #Copy docker-compose directories/files
-    #blindly copying all files risks overwriting of local customizations
     echo "Copying Docker-Compose to $destination"
     cp -af $source/docker-compose/.env $destination/docker-compose
     cp -af $source/docker-compose/configuration $destination/docker-compose
@@ -127,34 +126,62 @@ test_overwrite_files(){
     _green "       Testing Overwrite Files       "
     _green "====================================="
 
-    #Create differing test files to test diff
-    echo "Source Test File" > $source/test-file-SHOULD-FAIL.txt
-    echo "Destination Test File" > $destination/test-file-SHOULD-FAIL.txt
+    #Make a temporary directory to test the copy
+    temp_dir=temp-copy-directory
+    mkdir $destination/$temp_dir
 
     #Array of static files that were overwritten
     files_to_test=(
-        test-file-SHOULD-FAIL.txt
         README.md 
-        deployment-verification
+        deployment-verification/
         docker-compose/.env
-        docker-compose/configuration
+        docker-compose/configuration/
         docker-compose/docker-compose.yml
         docker-compose/jupyterhub/shared_jupyterhub_config.py
         docker-compose/jupyterhub/Dockerfile
         docker-compose/keycloak/keycloak_script.sh
+        docker-compose/minio/
+        docker-compose/opal/
+        docker-compose/postgresql/
+        docker-compose/singleuser/
+        docker-compose/singleuser_dev/
+        docker-compose/traefik/
+        .git/)
+
+    #Array of directories where the above files live
+    copied_directories=(
+        deployment-verification
+        docker-compose
+        docker-compose/configuration
+        docker-compose/jupyterhub
+        docker-compose/keycloak
         docker-compose/minio
         docker-compose/opal
         docker-compose/postgresql
         docker-compose/singleuser
         docker-compose/singleuser_dev
         docker-compose/traefik
-        .git)
+        .git
+    )
 
-    #Check for any differences between the source and location files.
+    #Create the directories and structure for files to be copied.
+    for dir in ${copied_directories[@]}
+    do
+        mkdir -p $destination/$temp_dir/$dir
+    done
+
+    #Copy files to the temporary directory to confirm functionality
+    for file in ${files_to_test[@]}
+    do
+        cp -af $source/$file $destination/$temp_dir/$file
+    done
+
+    #Check for any differences between the source and temporary directory.
     #Report a pass or fail and the differences when applicable.
     for file in ${files_to_test[@]}
     do
-        DIFF=$(diff -r $source/$file $destination/$file)
+        # cp -af $source/$file $destination/temp-copy-directory/$file
+        DIFF=$(diff -r $source/$file $destination/$temp_dir/$file)
         if [ "$DIFF" != "" ]
         then
             _red "$file: FAIL"
@@ -164,9 +191,9 @@ test_overwrite_files(){
         fi
     done
 
-    #Remove the test files from both locations
-    rm $source/test-file-SHOULD-FAIL.txt
-    rm $destination/test-file-SHOULD-FAIL.txt
+    #Remove the temporary directory
+    rm -rf $destination/$temp_dir
+
 }
 
 
