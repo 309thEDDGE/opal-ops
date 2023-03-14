@@ -14,37 +14,33 @@ _yellow() {
   echo -e $'\e[1;33m'"$@"$'\e[0m'
 }
 
-#Variable instantiation
-CWD=$PWD
+# #Variable instantiation
+# 1=$PWD
 
 #Check for an existing and valid path provided by the user
 check_input_is_path(){
-    _green "====================================="
-    _green "          OPAL Update Tool       "
-    _green "====================================="
-
     #Check that the user-provided directory exists
     if [ ! -d $1 ]
     then
         _red "Input path is not a directory"
-        exit 1
+        return 1
     #Check if the user path contains an out.json file
     elif [ ! -f "$1/docker-compose/out.json" ]
     then
         _red "This directory does not appear to have an out.json file from a complete OPAL installation"
-        exit 1
+        return 1
     fi
     echo
     _green "Destination directory contains a valid opal-ops"
-    CWD=$1
+    return 0
 }
 
 #Check if a backup directory exists and if not, create one
 make_backups_if_not_exists(){
-    if [ ! -d "$CWD/backups" ]
+    if [ ! -d "$1/backups" ]
     then
-        _blue "A backups directory was not found, creating directory: $CWD/backups"
-        mkdir $CWD/backups
+        _blue "A backups directory was not found, creating directory: $1/backups"
+        mkdir $1/backups
     fi
 }
 
@@ -57,11 +53,11 @@ make_date_backup_dir(){
     while [ $looping -eq 0 ]
     do
         #Search for the highest (double digit) version already created and increment once
-        if [ -f "$CWD/backups/${todays_date}_v${version}.tar.gz" ]
+        if [ -f "$1/backups/${todays_date}_v${version}.tar.gz" ]
         then
             ((version++))
         #Search for the highest (single digit) version and increment once
-        elif [ -f "$CWD/backups/${todays_date}_v0${version}.tar.gz" ]
+        elif [ -f "$1/backups/${todays_date}_v0${version}.tar.gz" ]
         then
             ((version++))
         else
@@ -73,18 +69,18 @@ make_date_backup_dir(){
     #create the directory with correct version, and compress the copied backups
     if [[ $version -lt 10 ]]
     then
-            _blue "Creating backup: $CWD/backups/${todays_date}_v0${version}.tar.gz"
-            tar -czf "$CWD/backups/${todays_date}_v0${version}.tar.gz" "$CWD/docker-compose" "$CWD/deployment-verification" >/dev/null 2>&1
+            _blue "Creating backup: $1/backups/${todays_date}_v0${version}.tar.gz"
+            tar -czf "$1/backups/${todays_date}_v0${version}.tar.gz" "$1/docker-compose" "$1/deployment-verification" >/dev/null 2>&1
     else
-            _blue "Creating backup: $CWD/backups/${todays_date}_v${version}.tar.gz"
-            tar -czf "$CWD/backups/${todays_date}_v${version}.tar.gz" "$CWD/docker-compose" "$CWD/deployment-verification" >/dev/null 2>&1
+            _blue "Creating backup: $1/backups/${todays_date}_v${version}.tar.gz"
+            tar -czf "$1/backups/${todays_date}_v${version}.tar.gz" "$1/docker-compose" "$1/deployment-verification" >/dev/null 2>&1
     fi
 }
 
 #Overwrite/copy new files to current deployment
 overwrite_files(){
     #Identify source and destination locations
-    destination=$CWD
+    destination=$1
     echo
     echo "Destination   : " $destination
     source=$PWD
@@ -119,35 +115,15 @@ overwrite_files(){
     cp -af $source/.git $destination
 }
 
-#Test the overwrite_files function to ensure everything copied and overwrote correctly.
-#IMPORTANT: Be sure to have deepdiff installed locally to run this. Use "pip install deepdiff"
-test_overwrite_files(){
-    _green "====================================="
-    _green "       Testing Overwrite Files       "
-    _green "====================================="
+init_test_dir(){
+    temp_dir=$1
 
-    #Make a temporary directory to test the copy
-    temp_dir=temp-copy-directory
-    mkdir $destination/$temp_dir
+    if [ -d $temp_dir ]
+    then
+        rm -rf $temp_dir
+    fi
 
-    #Array of static files that were overwritten
-    files_to_test=(
-        README.md 
-        deployment-verification/
-        docker-compose/.env
-        docker-compose/configuration/
-        docker-compose/docker-compose.yml
-        docker-compose/jupyterhub/shared_jupyterhub_config.py
-        docker-compose/jupyterhub/Dockerfile
-        docker-compose/keycloak/keycloak_script.sh
-        docker-compose/minio/
-        docker-compose/opal/
-        docker-compose/postgresql/
-        docker-compose/singleuser/
-        docker-compose/singleuser_dev/
-        docker-compose/traefik/
-        .git/)
-
+    mkdir $temp_dir
     #Array of directories where the above files live
     copied_directories=(
         deployment-verification
@@ -167,33 +143,152 @@ test_overwrite_files(){
     #Create the directories and structure for files to be copied.
     for dir in ${copied_directories[@]}
     do
-        mkdir -p $destination/$temp_dir/$dir
+        mkdir -p $temp_dir/$dir
     done
 
-    #Copy files to the temporary directory to confirm functionality
-    for file in ${files_to_test[@]}
-    do
-        cp -af $source/$file $destination/$temp_dir/$file
-    done
+    
+
+
+    cat <<< "{
+        "deployment_name": "testOpal",
+        "dns_base": ".127.0.0.1.nip.io",
+        "mod_base": ".127.0.0.1.nip.io",
+        "banner_color": "blue",
+        "banner_text": "testing",
+        "singleuser_type": "singleuser",
+        "deploy_keycloak": true,
+        "deploy_minio": true
+    }" > $temp_dir/docker-compose/out.json
+}
+
+run_diffs(){
+    temp_dir=$1
+    source=$2
+    #Array of static files that were overwritten
+    files_to_test=(
+        README.md 
+        deployment-verification/
+        docker-compose/.env
+        docker-compose/configuration/
+        docker-compose/docker-compose.yml
+        docker-compose/jupyterhub/shared_jupyterhub_config.py
+        docker-compose/jupyterhub/Dockerfile
+        docker-compose/keycloak/keycloak_script.sh
+        docker-compose/minio/
+        docker-compose/opal/
+        docker-compose/postgresql/
+        docker-compose/singleuser/
+        docker-compose/singleuser_dev/
+        docker-compose/traefik/
+        .git/)
+
+    diff_failed=0
 
     #Check for any differences between the source and temporary directory.
     #Report a pass or fail and the differences when applicable.
     for file in ${files_to_test[@]}
     do
         # cp -af $source/$file $destination/temp-copy-directory/$file
-        DIFF=$(diff -r $source/$file $destination/$temp_dir/$file)
+        DIFF=$(diff -r $source/$file $temp_dir/$file)
         if [ "$DIFF" != "" ]
         then
-            _red "$file: FAIL"
-            echo $DIFF
+            echo "$file: FAIL"
+            #echo $DIFF
+            diff_failed=1
         else
-            _green "$file: PASS"
+            echo "$file: PASS"
         fi
     done
 
-    #Remove the temporary directory
-    rm -rf $destination/$temp_dir
+    return $diff_failed
+}
 
+print_expected_pass(){
+    status=$1
+
+    if [ $status -eq 1 ]
+    then
+        _red "Test: FAIL"
+    else
+        _green "Test: PASS"
+    fi
+}
+
+print_expected_fail(){
+    status=$1
+
+    if [ $status -eq 0 ]
+    then
+        _red "Test: FAIL"
+    else
+        _green "Test: PASS"
+    fi
+}
+
+cleanup_dir(){
+    if [ -d $1 ]
+    then
+        rm -rf $1
+    fi
+}
+
+#Test the overwrite_files function to ensure everything copied and overwrote correctly.
+#IMPORTANT: Be sure to have deepdiff installed locally to run this. Use "pip install deepdiff"
+run_tests(){
+    #Make a temporary directory to test the copy
+    temp_dir=$PWD/temp-copy-directory
+
+    source=$PWD
+    
+    #echo $temp_dir
+    #echo $PWD
+    init_test_dir $temp_dir
+
+    #Copy files to the temporary directory to confirm functionality
+    # for file in ${files_to_test[@]}
+    # do
+    #     #cp -af $source/$file $destination/$temp_dir/$file
+    echo ==================================================================================
+    _blue "                               Testing copy"
+    echo ==================================================================================
+    overwrite_files $temp_dir 
+    run_diffs $temp_dir $source
+    print_expected_pass $?
+
+    echo ==================================================================================
+    _blue "                    Testing changes to intentionally fail"
+    echo ==================================================================================
+    init_test_dir $temp_dir
+    overwrite_files $temp_dir 
+    echo "Changed the README" > $temp_dir/README.md
+    run_diffs $temp_dir $source
+    print_expected_fail $?
+
+
+    echo ==================================================================================
+    _blue "          Testing check_input_is_path fails on missing out.json"
+    echo ==================================================================================
+    init_test_dir $temp_dir
+    rm $temp_dir/docker-compose/out.json
+    check_input_is_path $temp_dir
+    print_expected_fail $?
+
+
+    echo ==================================================================================
+    _blue "          Testing check_input_is_path fails on missing directory"
+    echo ==================================================================================
+    init_test_dir $temp_dir
+    rm -rf $temp_dir
+    check_input_is_path $temp_dir
+    print_expected_fail $?
+
+
+    echo ==================================================================================
+    _blue "          Testing check_input_is_path passes with correct filestructure"
+    echo ==================================================================================
+    init_test_dir $temp_dir
+    check_input_is_path $temp_dir
+    print_expected_pass $?
 }
 
 
@@ -211,11 +306,17 @@ help(){
 
 #Driver for all functions
 main(){
+    _green "====================================="
+    _green "          OPAL Update Tool       "
+    _green "====================================="
     check_input_is_path "$1"
-    make_backups_if_not_exists
-    make_date_backup_dir
-    overwrite_files
-    test_overwrite_files #Comment out when not needing built-in-test
+    if [ $? -eq 1 ]
+    then
+        exit 1
+    fi
+    make_backups_if_not_exists "$1"
+    make_date_backup_dir "$1"
+    overwrite_files "$1"
 }
 
 #Check for proper usage from user
@@ -224,6 +325,9 @@ then
     case $1 in
         -h | --help)
             help
+            ;;
+        -t | --test)
+            run_tests
             ;;
         *)
             main "$1"
