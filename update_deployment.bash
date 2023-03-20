@@ -359,6 +359,9 @@ run_tests(){
     test_backup $temp_dir
     print_expected_pass $?
     echo
+
+    #Remove the temp_directory
+    rm -rf $temp_dir
 }
 
 
