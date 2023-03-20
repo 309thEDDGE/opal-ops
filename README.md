@@ -103,3 +103,7 @@ Do the following to create a tag in the github GUI for opal-ops:
 
 Prior to pushing any commits to this repository, enable the Trufflehog pre-commit hook with `pre-commit install` from the root of this repository. This will require a working install of docker and [pre-commit](https://pre-commit.com/)
 
+#### Testing the update_deployment.bash
+
+In order to use the test_overwrite_files() located within the update_deployment.bash, you need to ensure the function is uncommented in the main()
+and have deepDiff installed locally (use "pip install deepdiff")
