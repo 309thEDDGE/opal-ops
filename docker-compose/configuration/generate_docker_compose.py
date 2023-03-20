@@ -4,8 +4,7 @@ import tempfile
 import shutil
 
 cert_files = {
-    "keycloak":["miniotls.crt", "tls.crt", "tls.key"],
-    "jupyterhub":["jhubssl.crt", "jhubssl.key"]
+    "keycloak":["tls.crt", "tls.key"]
 }
 def get_certs_path(service, context, expected_files=[]):
     if not expected_files:
@@ -24,7 +23,6 @@ def get_certs_path(service, context, expected_files=[]):
     elif service == "keycloak":
         return gen_selfsigned_keycloak_certs(context)
     else:
-        # return self-signed certs
         return compose_root/service/"certs"/"selfsigned"
 
 def gen_selfsigned_keycloak_certs(context):
@@ -213,7 +211,6 @@ def add_depends_to_service(service_dict, arg):
 
 def generate_docker_compose(context: dict) -> dict:
     deployment_env = f"./.{context['deployment_name']}.env"
-    jupyterhub_certs = get_certs_path("jupyterhub", context)
     keycloak_certs = get_certs_path("keycloak", context)
 
     jupyter_service = {
@@ -224,8 +221,7 @@ def generate_docker_compose(context: dict) -> dict:
             }
         },
         "volumes": [
-            "./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py",
-            f"./{jupyterhub_certs}:/home/jovyan/work/"
+            "./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py"
         ],
         "env_file": [
             deployment_env
