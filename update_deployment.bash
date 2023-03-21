@@ -383,6 +383,7 @@ run_tests(){
     print_expected_pass $?
     echo
 
+
     #test that certs are maintained
     echo ==================================================================================
     _blue "      Testing new_deployment script does not overwrite certs"
@@ -392,6 +393,9 @@ run_tests(){
     test_certs $temp_dir
     print_expected_pass $?
     echo
+    
+    #Remove the temp_directory
+    rm -rf $temp_dir
 }
 
 
