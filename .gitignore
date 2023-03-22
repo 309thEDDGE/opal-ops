@@ -10,6 +10,7 @@ opal/
 *.service
 *_util.sh
 *.docker-compose.json
+*_deployment_manifest.json
 out.json
 *.crt
 *.key
