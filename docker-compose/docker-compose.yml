@@ -7,8 +7,6 @@ services:
       dockerfile: ./singleuser
       args:
         IB_SINGLEUSER_IMAGE: ${IB_SINGLEUSER_IMAGE}
-        IB_PYTORCH_IMAGE: ${IB_PYTORCH_IMAGE}
-
     command: "true"
     env_file:
       - ./.env
