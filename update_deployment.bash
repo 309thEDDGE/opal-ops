@@ -122,6 +122,13 @@ overwrite_files(){
     cp -af $source/.git $destination
 }
 
+#run the new_deployment script
+run_new_deployment(){
+    pushd $1/docker-compose/configuration >/dev/null 2>&1
+    bash new_deployment.bash out.json
+    popd >/dev/null 2>&1
+}
+
 
 ############################################################
 #                     Testing Functions                    #
@@ -146,6 +153,22 @@ test_backup(){
     popd >/dev/null 2>&1
     diff -r docker-compose backups/docker-compose
     diff -r deployment-verification backups/deployment-verification
+    popd >/dev/null 2>&1
+    return $?
+}
+#Test to make sure certs are the same
+test_certs(){
+    overwrite_files "$1"
+    run_new_deployment "$1" >/dev/null 2>&1
+    make_backups_if_not_exists $1
+    make_date_backup_dir $1
+    pushd $1 >/dev/null 2>&1
+    pushd backups >/dev/null 2>&1
+    todays_date="$(date +"%Y.%m.%d")"
+    tar -xzf "${todays_date}_v01.tar.gz"
+    popd >/dev/null 2>&1
+    run_new_deployment "$1" >/dev/null 2>&1
+    diff -r $1/docker-compose/keycloak/certs $1/backups/docker-compose/keycloak/certs
     popd >/dev/null 2>&1
     return $?
 }
@@ -186,14 +209,14 @@ init_test_dir(){
 
     #Create a sample out.json file
     cat <<< "{
-        "deployment_name": "testOpal",
-        "dns_base": ".127.0.0.1.nip.io",
-        "mod_base": ".127.0.0.1.nip.io",
-        "banner_color": "blue",
-        "banner_text": "testing",
-        "singleuser_type": "singleuser",
-        "deploy_keycloak": true,
-        "deploy_minio": true
+        \"deployment_name\": \"testOpal\",
+        \"dns_base\": \".127.0.0.1.nip.io\",
+        \"mod_base\": \".127.0.0.1.nip.io\",
+        \"banner_color\": \"blue\",
+        \"banner_text\": \"testing\",
+        \"singleuser_type\": \"singleuser\",
+        \"deploy_keycloak\": true,
+        \"deploy_minio\": true
     }" > $temp_dir/docker-compose/out.json
 }
 
@@ -360,6 +383,17 @@ run_tests(){
     print_expected_pass $?
     echo
 
+
+    #test that certs are maintained
+    echo ==================================================================================
+    _blue "      Testing new_deployment script does not overwrite certs"
+    echo ==================================================================================
+    echo
+    init_test_dir $temp_dir
+    test_certs $temp_dir
+    print_expected_pass $?
+    echo
+    
     #Remove the temp_directory
     rm -rf $temp_dir
 }
@@ -380,6 +414,8 @@ help(){
     exit
 }
 
+
+
 #Driver for all functions
 main(){
     _green "====================================="
@@ -392,6 +428,7 @@ main(){
     fi
     make_date_backup_dir "$1"
     overwrite_files "$1"
+    run_new_deployment "$1"
 }
 
 #Check for proper usage from user

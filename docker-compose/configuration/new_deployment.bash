@@ -40,7 +40,7 @@ elif ! "${PYTHON3}" --version &>/dev/null ; then
 	exit 1
 fi
 
-echo "using PYTHON3 ${PYTHON3}"
+#echo "using PYTHON3 ${PYTHON3}"
 
 # Test if read bit is set for other users
 _is_readable() {
@@ -66,6 +66,8 @@ _green "====================================="
 _green "       OPAL Configuration Tool       "
 _green "====================================="
 
+
+
 if [[ $# -eq 0 ]]; then
   $PYTHON3 configuration/make_context.py out.json
   CONTEXT_FILE=out.json
@@ -84,7 +86,6 @@ _green "-------------------------------------"
 
 # generate files
 _blue " - Generating $DEPLOYMENT_NAME.docker-compose.json"
-
 $PYTHON3 configuration/generate_docker_compose.py $CONTEXT_FILE > $DEPLOYMENT_NAME.docker-compose.json
 _blue " - Generating .$DEPLOYMENT_NAME.env"
 $PYTHON3 configuration/generate_env.py $CONTEXT_FILE > .$DEPLOYMENT_NAME.env
