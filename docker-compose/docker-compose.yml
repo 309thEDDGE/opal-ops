@@ -130,6 +130,12 @@ services:
       retries: 3
     restart: always
 
+  mongodb:
+    image: ${MONGODB_IMAGE}
+    env_file:
+      - ./.env
+      - ./.env.secrets
+
 volumes:
   postgres_storage:
   minio_storage:
