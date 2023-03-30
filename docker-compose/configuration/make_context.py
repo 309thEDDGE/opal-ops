@@ -81,11 +81,6 @@ if __name__ == "__main__":
         "Banner text (Can be used for network name or classification markings)"
     )
 
-    # ask if the user wants to use the dev singleuser build
-    context["singleuser_type"] = "singleuser_dev"
-    if not yes_no("Use lightweight singleuser image? [Y/n]\n(This is primarily for local dev setups)"):
-        context["singleuser_type"] = "singleuser"
-
     # not concerned with external LDAP right now
     context["deploy_keycloak"] = True
     context["deploy_minio"] = True
