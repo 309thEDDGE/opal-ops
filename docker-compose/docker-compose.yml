@@ -36,7 +36,7 @@ services:
   minio:
     image: ${MINIO_IMAGE}
     volumes:
-      - minio_storage:/home/minio/
+      - minio_storage_2:/home/minio/
     healthcheck:
       test: ["CMD", "curl", "-f", "-k", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -132,4 +132,4 @@ services:
 
 volumes:
   postgres_storage:
-  minio_storage:
+  minio_storage_2:
