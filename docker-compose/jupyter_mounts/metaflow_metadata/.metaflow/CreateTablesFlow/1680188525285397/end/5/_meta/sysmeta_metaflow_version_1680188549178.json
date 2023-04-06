@@ -1,0 +1,1 @@
+{"flow_id": "CreateTablesFlow", "run_number": "1680188525285397", "step_name": "end", "task_id": "5", "field_name": "metaflow_version", "type": "metaflow_version", "value": "2.7.23", "tags": ["attempt_id:0"], "user_name": "jovyan", "ts_epoch": 1680188549178}
