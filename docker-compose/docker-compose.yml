@@ -132,6 +132,8 @@ services:
 
   mongodb:
     image: ${MONGODB_IMAGE}
+    volumes: 
+      - mongo_storage:/data/db:rw
     env_file:
       - ./.env
       - ./.env.secrets
@@ -139,3 +141,4 @@ services:
 volumes:
   postgres_storage:
   minio_storage:
+  mongo_storage:
