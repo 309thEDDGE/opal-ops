@@ -43,32 +43,6 @@ services:
       timeout: 20s
       retries: 3
 
-
-
-  opalcatalog-fe:
-    image: ${OPALCATALOG_FE_IMAGE}
-    env_file:
-      - ./.env
-      - ./.env.secrets
-    depends_on:
-      postgresql:
-        condition: service_healthy
-    restart: always
-
-  opalcatalog-be:
-    image: ${OPALCATALOG_BE_IMAGE}
-    env_file:
-      - ./.env
-      - ./.env.secrets
-    environment:
-      - PYTHONPATH=/python-packages/:$PYTHONPATH
-    depends_on:
-      postgresql:
-        condition: service_healthy
-      # jupyterhub:
-        # condition: service_healthy
-    restart: always
-
   jupyterhub:
     privileged: True
     userns_mode: "host"

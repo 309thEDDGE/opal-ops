@@ -7,7 +7,6 @@ from oauthenticator.generic import GenericOAuthenticator
 # ENVIRONMENT VARIABLES FOR JUPYTERHUB, DOCKERSPAWNER AND OPAL-CATALOG EXTERNAL SERVICE
 single_user_tip_image = "deploytime_singleuser"
 jupyterhub_api_token = os.environ['JUPYTERHUB_API_TOKEN']
-opal_catalog_callback = os.environ["OPAL_CATALOG_CALLBACK"]
 
 # ENVIRONMENT VARIABLES FOR OPAL-SECRET-MANGER
 minio_identity_openid_client_id=os.environ['MINIO_IDENTITY_OPENID_CLIENT_ID']
@@ -145,24 +144,11 @@ def set_shared_traitlets(c):
         "KEYCLOAK_OPAL_API_URL": keycloak_opal_api_url,
         "S3_ENDPOINT": s3_endpoint,
         "MINIO_IDENTITY_OPENID_CLIENT_ID": minio_identity_openid_client_id,
-        "CATALOG_BACKEND_URL": "http://opalcatalog-be:9001/services/opal-catalog",
         "METAFLOW_DATASTORE_SYSROOT_LOCAL":metaflow_mount_path,
         "CHOWN_HOME":"yes",
         "CHOWN_HOME_OPTS":"-R",
         "CHOWN_EXTRA":"/home/jovyan",
     }
-
-    c.JupyterHub.services = [
-       {
-           'name': 'opal-catalog',
-           'api_token': jupyterhub_api_token,
-	       'url': 'http://opalcatalog-fe:9003/services/opal-catalog',
-           'oauth_client_id': "service-opal-catalog-be",
-           'oauth_redirect_uri': opal_catalog_callback,
-           'admin': True,
-           'oauth_no_confirm': True
-       }
-    ]
 
     # Keycloak GenericOauth
     c.GenericOAuthenticator.login_service = 'keycloak'

@@ -259,22 +259,10 @@ def generate_docker_compose(context: dict) -> dict:
                 deployment_env
             ]
         },
-        "opalcatalog-fe": {
-            "env_file": [
-                deployment_env
-            ],
-            "links": keycloak_link(context)
-        },
-        "opalcatalog-be": {
-            "env_file": [
-                deployment_env
-            ],
-            "links": keycloak_link(context)
-        },
         "singleuser": {
             "build": {
                 "context": ".",
-                "dockerfile": f"./{context['singleuser_type']}/Dockerfile",
+                "dockerfile": f"./singleuser/Dockerfile",
                 "args": {
                     "OPAL_BANNER_COLOR": context['banner_color'],
                     "OPAL_BANNER_TEXT": context['banner_text']
