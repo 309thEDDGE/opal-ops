@@ -104,6 +104,15 @@ services:
       retries: 3
     restart: always
 
+  mongodb:
+    image: ${MONGODB_IMAGE}
+    volumes: 
+      - mongo_storage:/data/db:rw
+    env_file:
+      - ./.env
+      - ./.env.secrets
+
 volumes:
   postgres_storage:
   minio_storage:
+  mongo_storage:
