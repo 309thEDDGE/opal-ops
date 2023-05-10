@@ -164,6 +164,13 @@ def keycloak_service(context: dict) -> dict:
                 deployment_env,
                 "./.env"
             ],
+            "healthcheck": {
+                "test": ["CMD-SHELL", "curl --fail http://localhost:9990/health"],
+                "interval": "60s",
+                "timeout": "5s",
+                "start_period": "60s",
+                "retries": 10,
+            },
             "restart": "no",
             "volumes": [
                 "./keycloak/keycloak_script.sh:/usr/local/bin/keycloak_script.sh"
