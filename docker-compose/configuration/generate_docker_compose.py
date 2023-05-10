@@ -2,6 +2,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import shutil
+import ssl
 
 cert_files = {
     "keycloak":["tls.crt", "tls.key"]
@@ -64,6 +65,14 @@ def gen_selfsigned_keycloak_certs(context):
 
     # calling function needs the folder directory
     return new_path
+
+
+def get_external_keycloak_cert(context: dict, write_path):
+    keycloak_public_cert = ssl.get_server_certificate((context['external_keycloak_url'],443))
+    cert_path = write_path/"kc.crt"
+    with open(cert_path, "w") as f:
+        f.write(keycloak_public_cert)
+
 
 def keycloak_link(context: dict) -> list:
     return (
@@ -171,7 +180,11 @@ def keycloak_service(context: dict) -> dict:
 def minio_service(context:dict) -> dict:
     deployment_env = f"./.{context['deployment_name']}.env"
     keycloak_certs = get_certs_path("keycloak", context)
-    
+    if context["deploy_keycloak"]:
+        volume_string = f"./{keycloak_certs / 'tls.crt'}:/home/minio/certs/CAs/tls.crt"
+    else:
+        volume_string = f"./{keycloak_certs / 'kc.crt'}:/home/minio/certs/CAs/tls.crt"
+
     return {
         "minio": {
             "image": "${MINIO_IMAGE}",
@@ -182,7 +195,7 @@ def minio_service(context:dict) -> dict:
                 "./.env"
             ],
             "volumes": [
-                f"./{keycloak_certs / 'tls.crt'}:/home/minio/certs/CAs/tls.crt"
+                volume_string
             ],
             "links": keycloak_link(context),
             "labels": [
@@ -212,6 +225,7 @@ def add_depends_to_service(service_dict, arg):
 def generate_docker_compose(context: dict) -> dict:
     deployment_env = f"./.{context['deployment_name']}.env"
     keycloak_certs = get_certs_path("keycloak", context)
+    if not context["deploy_keycloak"]: get_external_keycloak_cert(context, keycloak_certs)
 
     jupyter_service = {
         "build": {

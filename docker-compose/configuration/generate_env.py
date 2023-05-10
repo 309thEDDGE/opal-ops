@@ -38,7 +38,7 @@ def minio_env(context):
         {
             "MINIO_ROOT_USER":"opal-administrator",
             "MINIO_ROOT_PASSWORD":"opal_minio_password",
-            "MINIO_IDENTITY_OPENID_CONFIG_URL":f"{keycloak_endpoint(context)}/auth/realms/master/.well-known/openid-configuration",
+            "MINIO_IDENTITY_OPENID_CONFIG_URL":f"{keycloak_endpoint(context)}/auth/realms/{context['keycloak_realm']}/.well-known/openid-configuration",
             "MINIO_IDENTITY_OPENID_CLIENT_ID":"opal-jupyterhub",
             "MINIO_IDENTITY_OPENID_CLAIM_NAME":"policy",
             "MINIO_IDENTITY_OPENID_REDIRECT_URI":f"https://minio{context['mod_base']}/oauth_callback",
@@ -65,9 +65,9 @@ def generate_env_file(context) -> dict:
         # Jupyterhub environment variables
         "OPAL_CATALOG_CALLBACK":f"https://opal{context['dns_base']}/services/opal-catalog/oauth_callback",
         "KEYCLOAK_JUPYTERHUB_OAUTH_CALLBACK_URL":f"https://opal{context['dns_base']}/hub/oauth_callback",
-        "KEYCLOAK_JUPYTERHUB_AUTHORIZE_URL":f"{keycloak_endpoint(context)}/auth/realms/master/protocol/openid-connect/auth",
-        "KEYCLOAK_JUPYTERHUB_USERDATA_URL":f"{keycloak_endpoint(context)}/auth/realms/master/protocol/openid-connect/userinfo",
-        "KEYCLOAK_OPAL_API_URL":f"{keycloak_endpoint(context)}/auth/realms/master/protocol/openid-connect/token",
+        "KEYCLOAK_JUPYTERHUB_AUTHORIZE_URL":f"{keycloak_endpoint(context)}/auth/realms/{context['keycloak_realm']}/protocol/openid-connect/auth",
+        "KEYCLOAK_JUPYTERHUB_USERDATA_URL":f"{keycloak_endpoint(context)}/auth/realms/{context['keycloak_realm']}/protocol/openid-connect/userinfo",
+        "KEYCLOAK_OPAL_API_URL":f"{keycloak_endpoint(context)}/auth/realms/{context['keycloak_realm']}/protocol/openid-connect/token",
     } 
     env.update(keycloak_env(context))
     env.update(minio_env(context))

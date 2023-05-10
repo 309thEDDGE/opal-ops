@@ -44,7 +44,7 @@ start(){{
     fi
 
     mkdir -p ./jupyter_mounts/metaflow_metadata
-    chmod 777 -R ./jupyter_mounts
+    chmod -R 777 ./jupyter_mounts
 
     generate_manifest
     $COMPOSE -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json build
