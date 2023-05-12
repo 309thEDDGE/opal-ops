@@ -68,6 +68,8 @@ def gen_selfsigned_keycloak_certs(context):
 
 
 def get_external_keycloak_cert(context: dict, write_path):
+    # seems ssl in some python versions (maybe OS-dependent?) don't work if the protocol is in the URL
+    no_protocol = context['external_keycloak_url'].replace('https://','')
     keycloak_public_cert = ssl.get_server_certificate((context['external_keycloak_url'],443))
     cert_path = write_path/"kc.crt"
     with open(cert_path, "w") as f:
