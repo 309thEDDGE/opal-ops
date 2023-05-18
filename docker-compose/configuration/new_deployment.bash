@@ -106,7 +106,7 @@ if test -f .env.secrets; then
     _yellow "\t- No secrets file will be generated"
 else
     _blue " - No secrets file found - generating .env.secrets"
-    $PYTHON3 configuration/generate_secrets.py > ./.env.secrets
+    $PYTHON3 configuration/generate_secrets.py $CONTEXT_FILE > ./.env.secrets
 fi
 
 _green "-------------------------------------"

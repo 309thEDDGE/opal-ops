@@ -81,19 +81,26 @@ if __name__ == "__main__":
         "Banner text (Can be used for network name or classification markings)"
     )
 
-    # not concerned with external LDAP right now
+    # What... is the airspeed velocity of an unladed swallow?
     context["deploy_keycloak"] = True
     context["deploy_minio"] = True
-    # context["deploy_keycloak"] = "yes" == ask(
-    #     "Deploy keycloak with OPAL? (yes/no) ",
-    #     "(yes|no)",
-    #     "yes or no"
-    # )
+    context["deploy_keycloak"] = yes_no(
+        "Deploy keycloak with OPAL? [Y/n] \
+            \n(Use this option if you do not have another keycloak instance to connect to)"
+    )
 
-    # if not context["deploy_keycloak"]:
-    #     context["external_keycloak_url"] = ask(
-    #         "External keycloak API (i.e keycloak.companyname.com:1234): "
-    #     )
+    if not context["deploy_keycloak"]:
+        context["external_keycloak_url"] = ask(
+            "External keycloak API (i.e keycloak.companyname.com:1234):"
+        )
+        if "http" not in context["external_keycloak_url"]:
+            context["external_keycloak_url"] = "https://" + context["external_keycloak_url"]
+        temp_realm = ask("Keycloak realm: (Leave empty for master)")
+        context["keycloak_realm"] = "master" if temp_realm == '' else temp_realm
+        context["keycloak_secret"] = ask(
+            "Keycloak client secret:"
+        )
+    else: context["keycloak_realm"] = "master"
 
     # context["deploy_minio"] = "yes" == ask(
     #     "Deploy minio with OPAL? (yes/no) ",
