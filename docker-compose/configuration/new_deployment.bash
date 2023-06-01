@@ -99,6 +99,7 @@ _yellow "\t- 'systemctl daemon-reload && systemctl enable OPAL_$DEPLOYMENT_NAME.
 _yellow "\t- to automatically start OPAL on system reboot"
 
 $PYTHON3 configuration/generate_service_file.py $CONTEXT_FILE > OPAL_$DEPLOYMENT_NAME.service
+$PYTHON3 configuration/generate_service_stop_file.py $CONTEXT_FILE > OPAL_${DEPLOYMENT_NAME}_stop.service
 
 # generate secrets if necessary
 if test -f .env.secrets; then

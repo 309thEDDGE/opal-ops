@@ -1,17 +1,16 @@
-def format_service_file(context, full_cwd):
+def format_service_stop_file(context, full_cwd):
     file = f"""[Unit]
-Description=OPAL Datascience Platform
-After=docker.service
+Description=OPAL Datascience Platform Stop Service
+Before=docker.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 TimeoutStopSec=120
-ExecStart=/bin/bash -c "cd {full_cwd} && docker-compose -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up --detach --remove-orphans"
 ExecStop=/bin/bash -c "cd {full_cwd} && docker-compose -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json down --remove-orphans"
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=OPAL
+SyslogIdentifier=OPAL_Stop
 
 [Install]
 WantedBy=multi-user.target
@@ -40,4 +39,4 @@ if __name__ == "__main__":
         context_data = json.load(f)
 
 
-    print(format_service_file(context_data, full_cwd))
+    print(format_service_stop_file(context_data, full_cwd))
