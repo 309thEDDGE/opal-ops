@@ -38,6 +38,10 @@ def minio_env(context):
         {
             "MINIO_ROOT_USER":"opal-administrator",
             "MINIO_ROOT_PASSWORD":"opal_minio_password",
+            "MINIO_IDENTITY_OPENID_CONFIG_URL":f"{keycloak_endpoint(context)}/auth/realms/{context['keycloak_realm']}/.well-known/openid-configuration",
+            "MINIO_IDENTITY_OPENID_CLIENT_ID":"opal-jupyterhub",
+            "MINIO_IDENTITY_OPENID_CLAIM_NAME":"policy",
+            "MINIO_IDENTITY_OPENID_REDIRECT_URI":f"https://minio{context['mod_base']}/oauth_callback",
             "S3_ENDPOINT":"http://minio:9000",
             "MINIO_BROWSER_REDIRECT_URL":f"https://minio{context['mod_base']}"
         }

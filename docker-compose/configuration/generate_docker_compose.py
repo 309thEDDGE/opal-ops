@@ -145,6 +145,13 @@ def keycloak_service(context: dict) -> dict:
                 deployment_env,
                 "./.env"
             ],
+            "healthcheck": {
+                "test": ["CMD-SHELL", "curl --fail http://localhost:9990/health"],
+                "interval": "60s",
+                "timeout": "5s",
+                "start_period": "60s",
+                "retries": 10,
+            },
             "labels": [
                 "traefik.enable=true",
                 f"traefik.http.routers.keycloak.rule=Host(`keycloak{context['mod_base']}`)",

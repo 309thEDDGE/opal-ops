@@ -93,6 +93,13 @@ services:
     env_file:
       - ./.env
       - ./.env.secrets
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test 
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: always 
 
 volumes:
   postgres_storage:
