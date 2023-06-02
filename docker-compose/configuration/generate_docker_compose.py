@@ -214,9 +214,9 @@ def minio_service(context:dict) -> dict:
                 "minio_storage:/home/minio/",
                 volume_string
             ],
-            "ports": {
-                "9000":"9000"
-            },
+            "ports": [
+                "9000:9000"
+            ],
             "healthcheck":{
                 "test": [
                     "CMD",
