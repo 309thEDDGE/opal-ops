@@ -242,8 +242,7 @@ def minio_service(context:dict) -> dict:
                 "traefik.http.routers.minio_api.service=minio"
             ],
             "restart": "always"
-        },
-        "volumes": "minio_storage"
+        }
     } if context['deploy_minio'] else {}
 
 def add_depends_to_service(service_dict, arg):
@@ -323,11 +322,15 @@ def generate_docker_compose(context: dict) -> dict:
     services.update(keycloak_service(context))
     services.update(minio_service(context))
 
-    return {
-        "version": "3.9",
-        "services": services
-    }
+    compose = {"version": "3.9",
+           "services": services
+           }
 
+    if context["deploy_minio"]:
+        vols = {"volumes": {"minio_storage": None}}
+        compose.update(vols)
+
+    return compose
 
 if __name__ == "__main__":
     import sys
