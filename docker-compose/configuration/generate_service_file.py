@@ -1,4 +1,12 @@
+import subprocess
+
 def format_service_file(context, full_cwd):
+
+    COMPOSE = "docker-compose"
+    output = subprocess.check_output(["docker compose", "--version"]).decode("utf-8")
+    if output == "version v2.":
+        COMPOSE = "docker compose"
+    
     file = f"""[Unit]
 Description=OPAL Datascience Platform
 After=docker.service
@@ -7,8 +15,8 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 TimeoutStopSec=120
-ExecStart=/bin/bash -c "cd {full_cwd} && docker-compose -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up --detach --remove-orphans"
-ExecStop=/bin/bash -c "cd {full_cwd} && docker-compose -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json down --remove-orphans"
+ExecStart=/bin/bash -c "cd {full_cwd} && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up --detach --remove-orphans"
+ExecStop=/bin/bash -c "cd {full_cwd} && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json down --remove-orphans"
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=OPAL
