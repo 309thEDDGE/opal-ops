@@ -3,10 +3,14 @@ import subprocess
 def format_service_file(context, full_cwd):
 
     COMPOSE = "docker-compose"
-    output = subprocess.check_output(["docker compose", "--version"]).decode("utf-8")
-    if output == "version v2.":
-        COMPOSE = "docker compose"
-    
+    try:
+        output = subprocess.check_output(["docker compose version"], stderr=subprocess.STDOUT, shell=True).decode("utf-8")
+        if "version v2." in output:
+            COMPOSE = "docker compose"
+    except subprocess.CalledProcessError:
+        COMPOSE = "no docker version"
+        print("docker compose is not installed using docker-compose")
+
     file = f"""[Unit]
 Description=OPAL Datascience Platform
 After=docker.service
