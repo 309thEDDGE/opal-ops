@@ -2,15 +2,6 @@ import subprocess
 
 def format_service_file(context, full_cwd):
 
-    COMPOSE = "docker-compose"
-    try:
-        output = subprocess.check_output(["docker compose version"], stderr=subprocess.STDOUT, shell=True).decode("utf-8")
-        if "version v2." in output:
-            COMPOSE = "docker compose"
-    except subprocess.CalledProcessError:
-        COMPOSE = "no docker version"
-        print("docker compose is not installed using docker-compose")
-
     file = f"""[Unit]
 Description=OPAL Datascience Platform
 After=docker.service
@@ -46,7 +37,7 @@ if __name__ == "__main__":
         print(f"usage: python {this_fname} [context_file.json]")
         exit(1)
 
-    
+    COMPOSE = sys.argv[2]
 
     with open(sys.argv[1]) as f:
         context_data = json.load(f)
