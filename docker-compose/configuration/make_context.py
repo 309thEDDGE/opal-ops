@@ -103,7 +103,7 @@ if __name__ == "__main__":
         # Minio connection
         # Intended use for this is in tandem with an external keycloak. Probably won't work if connecting to a minio we don't control in some way
 
-        context["deploy_minio"] == yes_no(
+        context["deploy_minio"] = yes_no(
             "Deploy minio with OPAL? [Y/n] "
         )
 
