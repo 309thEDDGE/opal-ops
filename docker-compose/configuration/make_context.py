@@ -100,19 +100,25 @@ if __name__ == "__main__":
         context["keycloak_secret"] = ask(
             "Keycloak client secret:"
         )
-    else: context["keycloak_realm"] = "master"
+        # Minio connection
+        # Intended use for this is in tandem with an external keycloak. Probably won't work if connecting to a minio we don't control in some way
 
-    # context["deploy_minio"] = "yes" == ask(
-    #     "Deploy minio with OPAL? (yes/no) ",
-    #     "(yes|no)",
-    #     "yes or no"
-    # )
+        context["deploy_minio"] = yes_no(
+            "Deploy minio with OPAL? [Y/n] "
+        )
 
-    # if not context["deploy_minio"]:
-    #     context["external_minio_url"] = ask(
-    #         "External minio url (i.e minio.companyname.com:9000): "
-    #     )
-    
+        if not context["deploy_minio"]:
+            context["external_minio_url"] = ask(
+                "External minio url (i.e minio.companyname.com:9000): "
+            )
+            if "http" not in context["external_minio_url"]:
+                context["external_minio_url"] = "http://" + context["external_minio_url"]
+
+    else:
+        context["keycloak_realm"] = "master"
+        context["deploy_minio"] = True
+
+
     # save as json file somewhere
     with open(sys.argv[1], "w") as f:
         json.dump(context, f, indent=4)
