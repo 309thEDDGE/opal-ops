@@ -1,10 +1,17 @@
+import subprocess
+
 def format_service_file(context, full_cwd):
+
     file = f"""[Unit]
 Description=OPAL Datascience Platform
+After=docker.service
 
 [Service]
-Type=simple
-ExecStart=/bin/bash -c "cd {full_cwd} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up --detach --remove-orphans"
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStopSec=120
+ExecStart=/bin/bash -c "cd {full_cwd} && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up --detach --remove-orphans"
+ExecStop=/bin/bash -c "cd {full_cwd} && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json down --remove-orphans"
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=OPAL
@@ -13,6 +20,8 @@ SyslogIdentifier=OPAL
 WantedBy=multi-user.target
     """
     return file
+
+
 
 
 if __name__ == "__main__":
@@ -28,7 +37,7 @@ if __name__ == "__main__":
         print(f"usage: python {this_fname} [context_file.json]")
         exit(1)
 
-    
+    COMPOSE = sys.argv[2]
 
     with open(sys.argv[1]) as f:
         context_data = json.load(f)

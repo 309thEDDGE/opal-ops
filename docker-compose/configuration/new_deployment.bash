@@ -66,7 +66,22 @@ _green "====================================="
 _green "       OPAL Configuration Tool       "
 _green "====================================="
 
-
+_green "-------------------------------------"
+_green "  Validating Docker Compose Version  "
+_green "-------------------------------------"
+if [[ $(docker compose version) == *"version v2."* ]] ; then
+    COMPOSE="docker compose"
+    _green "using $(docker compose version)"
+elif [[ $(docker-compose version) == *"version v2."* ]] ; then
+    COMPOSE="docker-compose"
+    _green "using $(docker-compose version)"
+elif [[ $(docker-compose -v) == *"version 1."* ]] ; then
+    _red "Can't use docker compose version 1 from $(docker-compose -v). Please update compose and run again."
+    exit 1
+else
+  _red "Unable to verify Docker Compose Version check to see if it is running."
+  exit 1
+fi
 
 if [[ $# -eq 0 ]]; then
   $PYTHON3 configuration/make_context.py out.json
@@ -98,7 +113,7 @@ _yellow "\t- Copy OPAL_$DEPLOYMENT_NAME.service to /etc/systemd/system/ and run:
 _yellow "\t- 'systemctl daemon-reload && systemctl enable OPAL_$DEPLOYMENT_NAME.service'"
 _yellow "\t- to automatically start OPAL on system reboot"
 
-$PYTHON3 configuration/generate_service_file.py $CONTEXT_FILE > OPAL_$DEPLOYMENT_NAME.service
+$PYTHON3 configuration/generate_service_file.py $CONTEXT_FILE $COMPOSE > OPAL_$DEPLOYMENT_NAME.service
 
 # generate secrets if necessary
 if test -f .env.secrets; then
