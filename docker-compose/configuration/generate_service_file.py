@@ -4,7 +4,7 @@ def format_service_file(context, full_cwd):
 
     file = f"""[Unit]
 Description=OPAL Datascience Platform
-After=docker.service
+Requires=docker.service
 
 [Service]
 Type=oneshot
