@@ -188,6 +188,7 @@ class TestDeployment():
         assert actual == expected
 
     def test_add_depends_to_service(self, contextData):
+        deployment_env = f"./.{contextData['deployment_name']}.env"
         jupyter_service = {
         "build": {
             "args": {
@@ -205,12 +206,54 @@ class TestDeployment():
             f"OPAL_BANNER_COLOR={contextData['banner_color']}",
             f"OPAL_BANNER_TEXT='{contextData['banner_text']}'"
         ],
-        "links": keycloak_link(contextData),
+        "links": generate_docker_compose.keycloak_link(contextData),
         "labels": [
             f"traefik.http.routers.jupyterhub.rule=Host(`opal{contextData['dns_base']}`)",
             f"traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api{contextData['mod_base']}`)"
         ]
     }
-        expected = ""
-        actual = generate_docker_compose.add_depends_to_service(jupyter_service,generate_docker_compose.depends_on("keycloak", "service_healthy")))
+        expected = {'keycloak': {'condition': 'service_healthy'}}
+        actual = generate_docker_compose.add_depends_to_service(jupyter_service,generate_docker_compose.depends_on("keycloak", "service_healthy"))
+        assert jupyter_service["depends_on"] == expected
+
+    def test_add_depends_to_service_noargs_returns_none(self, contextData):
+        deployment_env = f"./.{contextData['deployment_name']}.env"
+        jupyter_service = {
+        "build": {
+            "args": {
+                "OPAL_BANNER_COLOR": contextData['banner_color'],
+                "OPAL_BANNER_TEXT": contextData['banner_text']
+            }
+        },
+        "volumes": [
+            "./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py"
+        ],
+        "env_file": [
+            deployment_env
+        ],
+        "environment": [
+            f"OPAL_BANNER_COLOR={contextData['banner_color']}",
+            f"OPAL_BANNER_TEXT='{contextData['banner_text']}'"
+        ],
+        "links": generate_docker_compose.keycloak_link(contextData),
+        "labels": [
+            f"traefik.http.routers.jupyterhub.rule=Host(`opal{contextData['dns_base']}`)",
+            f"traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api{contextData['mod_base']}`)"
+        ]
+    }
+        arg = []
+        actual = generate_docker_compose.add_depends_to_service(jupyter_service, arg)
+        assert actual == None
+
+    def test_generate_docker_compose(self,contextData):
+        expected = {'version': '3.9', 
+                    'services': {
+                        'postgresql': {'env_file': ['./.test_context.env']}, 
+                        'singleuser': {'build': {'context': '.', 'dockerfile': './singleuser/Dockerfile', 'args': {'OPAL_BANNER_COLOR': 'Y', 'OPAL_BANNER_TEXT': 'orange'}}}, 
+                        'jupyterhub': {'build': {'args': {'OPAL_BANNER_COLOR': 'Y', 'OPAL_BANNER_TEXT': 'orange'}}, 'volumes': ['./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py'], 'env_file': ['./.test_context.env'], 'environment': ['OPAL_BANNER_COLOR=Y', "OPAL_BANNER_TEXT='orange'"], 'links': ['traefik:keycloak'], 'labels': ['traefik.http.routers.jupyterhub.rule=Host(`opal`)', 'traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api`)'], 'depends_on': {'keycloak': {'condition': 'service_healthy'}}}, 
+                        'traefik': {'volumes': ['./keycloak/certs/test_context:/etc/traefik/certs/'], 'env_file': ['./.test_context.env'], 'depends_on': {'keycloak': {'condition': 'service_healthy'}, 'keycloak_setup': {'condition': 'service_started'}}}, 
+                        'keycloak': {'image': '${KEYCLOAK_IMAGE}', 'depends_on': {'postgresql': {'condition': 'service_healthy'}}, 'volumes': ['./keycloak/certs/test_context/tls.key:/etc/x509/https/tls.key', './keycloak/certs/test_context/tls.crt:/etc/x509/https/tls.crt'], 'env_file': ['./.env.secrets', './.test_context.env', './.env'], 'healthcheck': {'test': ['CMD-SHELL', 'curl --fail http://localhost:9990/health'], 'interval': '60s', 'timeout': '5s', 'start_period': '60s', 'retries': 10}, 'labels': ['traefik.enable=true', 'traefik.http.routers.keycloak.rule=Host(`keycloak`)', 'traefik.http.routers.keycloak.entrypoints=websecure', 'traefik.http.services.keycloak.loadbalancer.server.port=8080', 'traefik.http.routers.keycloak.service=keycloak'], 'restart': 'always'}, 
+                        'keycloak_setup': {'image': '${KEYCLOAK_IMAGE}', 'depends_on': {'keycloak': {'condition': 'service_healthy'}}, 'env_file': ['./.env.secrets', './.test_context.env', './.env'], 'healthcheck': {'test': ['CMD-SHELL', 'curl --fail http://localhost:9990/health'], 'interval': '60s', 'timeout': '5s', 'start_period': '60s', 'retries': 10}, 'restart': 'no', 'volumes': ['./keycloak/keycloak_script.sh:/usr/local/bin/keycloak_script.sh'], 'entrypoint': ['sh', '/usr/local/bin/keycloak_script.sh']}, 
+                        'minio': {'image': '${MINIO_IMAGE}', 'command': 'server --console-address ":9002" --certs-dir /home/minio/certs /home/minio/data{1...4}', 'env_file': ['./.env.secrets', './.test_context.env', './.env'], 'volumes': ['./keycloak/certs/test_context/tls.crt:/home/minio/certs/CAs/tls.crt'], 'links': ['traefik:keycloak'], 'labels': ['traefik.enable=true', 'traefik.http.routers.minio.rule=Host(`minio`)', 'traefik.http.routers.minio.entrypoints=websecure', 'traefik.http.services.minio.loadbalancer.server.port=9002', 'traefik.http.routers.minio.service=minio', 'traefik.http.routers.minio_api.rule=Host(`minio_api`)', 'traefik.http.routers.minio_api.entrypoints=websecure', 'traefik.http.services.minio_api.loadbalancer.server.port=9000', 'traefik.http.routers.minio_api.service=minio'], 'restart': 'always'}}}
+        actual = generate_docker_compose.generate_docker_compose(contextData)
         assert actual == expected
