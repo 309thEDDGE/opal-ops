@@ -17,7 +17,7 @@ def generate_secrets(context):
         "MINIO_IDENTITY_OPENID_CLIENT_SECRET":keycloak_secret,
     }
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     import sys
     import json
     import os

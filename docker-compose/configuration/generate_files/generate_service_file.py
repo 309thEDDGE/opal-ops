@@ -15,7 +15,7 @@ WantedBy=multi-user.target
     return file
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     import sys
     import json
     import os

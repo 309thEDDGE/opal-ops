@@ -1,8 +1,10 @@
 import json
 import sys
+import os
 import generate_docker_compose
 from pathlib import Path
 from datetime import datetime, timedelta
+import responses
 
 import pytest
 
@@ -20,7 +22,8 @@ class TestDeployment():
             "singleuser_type": "singleuser",
             "deploy_keycloak": true,
             "deploy_minio": true,
-            "external_minio_url": "external/minio_url"
+            "external_minio_url": "external/minio_url",
+            "external_keycloak_url": "https://keycloak.opalacceptance.dso.mil"
         }"""
         context_json = json.loads(context)
         return context_json
@@ -52,6 +55,29 @@ class TestDeployment():
         actual = generate_docker_compose.gen_selfsigned_keycloak_certs(contextData)
         assert actual == expected
 
+    @responses.activate
+    def test_get_external_keycloak_cert(self,contextData):
+        response = responses.Response(
+            method=responses.GET,
+            url=contextData["external_keycloak_url"],
+            body="-----BEGIN CERTIFICATE-----\naskjdajsdkjaksljdlkajslkdjaljsdjkdhkjhajkfhd\n-----END CERTIFICATE-----"
+        )
+        responses.add(response)
+        compose_root = Path(".")
+        expectedPath = compose_root / "./keycloak/certs/test_context"
+        expected_begin = '-----BEGIN CERTIFICATE-----\n'
+        expected_end = '-----END CERTIFICATE-----\n'
+        generate_docker_compose.get_external_keycloak_cert(contextData, expectedPath)
+        actual_begin = None
+        actual_end = None
+        with open(f"{expectedPath}/kc.crt", 'r') as f:
+            lines = f.readlines()
+            if len(lines) > 0:
+                actual_begin = lines[0]
+                actual_end = lines[-1]
+        assert actual_begin == expected_begin
+        assert actual_end == expected_end
+
     def test_keycloak_link(self, contextData):
         expected = ['traefik:keycloak']
         actual = generate_docker_compose.keycloak_link(contextData)
@@ -74,7 +100,7 @@ class TestDeployment():
         actual = generate_docker_compose.minio_endpoint(contextData)
         assert actual == expected
 
-    def test_recursive_union(self,contextData):
+    def test_recursive_union_no_common_key(self,contextData):
         union_a = {"traefik":"keycloak"}
         union_b = {"deployment_name": "test_context",}
         expected = {
@@ -84,6 +110,47 @@ class TestDeployment():
         actual = generate_docker_compose.recursive_union(union_a,union_b)
         assert actual == expected
 
+    def test_recursive_union_duplicate_keys(self):
+        union_a = {"traefik":["keycloak", "test_context"]}
+        union_b = {"traefik": ["keycloak1", "test_context1"],}
+        expected = {
+            "traefik":["keycloak", "test_context", "keycloak1", "test_context1"]
+        }
+        actual = generate_docker_compose.recursive_union(union_a,union_b)
+        assert actual == expected
+
+    def test_recursive_union_duplicate_keys_different_types(self):
+        union_a = {"traefik": False}
+        union_b = {"traefik": "False"}
+
+        with pytest.raises(TypeError) as _:
+            generate_docker_compose.recursive_union(union_a,union_b)
+
+    def test_recursive_union_duplicate_keys_same_types_no_list_or_dict(self):
+        union_a = {"traefik": "False"}
+        union_b = {"traefik": "False"}
+
+        with pytest.raises(TypeError) as _:
+            generate_docker_compose.recursive_union(union_a,union_b)
+
+    list_data = [
+        ({"traefik": ["a", "a1"]}, {"traefik": ["b", "b1"]},{"traefik": ["a", "a1", "b", "b1"]}),
+        ({"traefik": ["a", "a1"]}, {"traefik": [True, False]},{"traefik": ["a", "a1", True, False]}),
+        ({"traefik": {"a": "a1"}}, {"traefik": [True, False]}, "RAISE ERROR"),
+        ({"traefik": {"a": [True, False]}}, {"traefik": {"a": [False]}}, {"traefik": {"a": [True, False, False]}})
+    ]
+
+    @pytest.mark.parametrize("union_a, union_b, expected", list_data)
+    def test_recursive_union_duplicate_keys_list_dict(self, union_a, union_b, expected):
+        
+        if expected == "RAISE ERROR":
+            with pytest.raises(TypeError) as _:
+                generate_docker_compose.recursive_union(union_a, union_b)
+            return
+
+        actual = generate_docker_compose.recursive_union(union_a,union_b)
+        assert actual == expected
+    
     def test_keycloak_service(self, contextData):
         expected = { "keycloak": {
             "image": "${KEYCLOAK_IMAGE}",

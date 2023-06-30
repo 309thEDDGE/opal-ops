@@ -40,7 +40,7 @@ def yes_no(
     return in_bool
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     if len(sys.argv) <= 1:
         print("usage: python make_context.py [output_file.json]")
         exit(1)
