@@ -1,5 +1,6 @@
+from importer import dynamic_module_import
+module = dynamic_module_import('generate_restart_script')
 import json
-import generate_restart_script
 import pytest
 
 class TestGenerateRestart():
@@ -25,5 +26,5 @@ class TestGenerateRestart():
 
     def test_format_restart_script(self,contextData):
         expected = """#!/bin/bash\n\n# this does a full restart of opal to avoid any odd quirks that may be caused by docker-compose restart\n\ndocker-compose -f docker-compose.yml -f test_context.docker-compose.json down\ndocker-compose -f docker-compose.yml -f test_context.docker-compose.json up -d\n    """
-        actual = generate_restart_script.format_restart_script(contextData)
+        actual = module.format_restart_script(contextData)
         assert actual == expected

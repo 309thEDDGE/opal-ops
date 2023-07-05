@@ -1,7 +1,9 @@
+from importer import dynamic_module_import
+module = dynamic_module_import('generate_service_file')
 import json
-import generate_start_script
 import pytest
-class TestGenerateStart():
+
+class TestGenerateService():
 
     @pytest.fixture
     def contextData(self):
@@ -23,25 +25,20 @@ class TestGenerateStart():
         context_json = json.loads(context)
         return context_json
 
-    def test_format_start_script(self,contextData):
-        expected = """#!/bin/bash
+    def test_format_service_file(self,contextData):
+        expected = """[Unit]
+Description=OPAL Datascience Platform
 
-FILE=./.env.secrets
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "cd \testDir -f docker-compose.yml -f test_context.docker-compose.json up --detach --remove-orphans"
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=OPAL
 
-if test -f "$FILE"; then
-    echo "Found secret file. Deploying"
-else
-    echo "Secrets missing. Please copy the secrets template file and fill out the values"
-    echo "The template can be copied like so:"
-    echo "cp .env.secrets_template .env.secrets"
-    exit 1
-fi
-
-mkdir -p ./jupyter_mounts/metaflow_metadata
-chmod 777 -R ./jupyter_mounts
-
-docker-compose -f docker-compose.yml -f test_context.docker-compose.json build
-docker-compose -f docker-compose.yml -f test_context.docker-compose.json up -d
+[Install]
+WantedBy=multi-user.target
     """
-        actual = generate_start_script.format_start_script(contextData)
+        cwd = '\testDir'
+        actual = module.format_service_file(contextData,cwd)
         assert actual == expected

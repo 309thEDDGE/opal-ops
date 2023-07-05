@@ -1,5 +1,6 @@
+from importer import dynamic_module_import
+module = dynamic_module_import('generate_env')
 import json
-import generate_env
 import pytest
 
 class TestGenerateEnv():
@@ -56,28 +57,28 @@ class TestGenerateEnv():
             'MINIO_BROWSER_REDIRECT_URL' : 'https://minio',
             }
         expected = 'DEPLOYMENT_NAME=test_context\nJUPYTERHUB_PORT=443\nKEYCLOAK_AUTH_SERVER_URL=https://keycloak/auth\nKEYCLOAK_CALLBACK_URL=https://opal/services/opal-catalog/oauth_callback\nJUPYTERHUB_API_URL=http://jupyterhub:8081/hub/api\nOPAL_CATALOG_CALLBACK=https://opal/services/opal-catalog/oauth_callback\nKEYCLOAK_JUPYTERHUB_OAUTH_CALLBACK_URL=https://opal/hub/oauth_callback\nKEYCLOAK_JUPYTERHUB_AUTHORIZE_URL=https://keycloak/auth/realms/master/protocol/openid-connect/auth\nKEYCLOAK_JUPYTERHUB_USERDATA_URL=https://keycloak/auth/realms/master/protocol/openid-connect/userinfo\nKEYCLOAK_OPAL_API_URL=https://keycloak/auth/realms/master/protocol/openid-connect/token\nDB_VENDOR=postgres\nDB_ADDR=postgresql\nDB_PORT=5432\nDB_DATABASE=keycloak-db\nDB_USER=postgres\nDB_PASSWORD=postgres\nKEYCLOAK_USER=admin\nKEYCLOAK_PASSWORD=opal\nMINIO_TEST_USER=opaluser\nMINIO_TEST_USER_PASSWORD=opalpassword\nMINIO_ROOT_USER=opal-administrator\nMINIO_ROOT_PASSWORD=opal_minio_password\nMINIO_IDENTITY_OPENID_CONFIG_URL=https://keycloak/auth/realms/master/.well-known/openid-configuration\nMINIO_IDENTITY_OPENID_CLIENT_ID=opal-jupyterhub\nMINIO_IDENTITY_OPENID_CLAIM_NAME=policy\nMINIO_IDENTITY_OPENID_REDIRECT_URI=https://minio/oauth_callback\nS3_ENDPOINT=http://minio:9000\nMINIO_BROWSER_REDIRECT_URL=https://minio'
-        actual = generate_env.format_env_file(data)
+        actual = module.format_env_file(data)
         assert actual == expected
     
     def test_gen_secret(self):
         expected = 64
-        actual = generate_env.gen_secret()
+        actual = module.gen_secret()
         assert len(actual) == expected
 
     def test_keycloak_endpoint_deploykeycloak_false(self, contextData):
         contextData['deploy_keycloak'] = False
         expected = 'https://externalURL'
-        actual = generate_env.keycloak_endpoint(contextData)
+        actual = module.keycloak_endpoint(contextData)
         assert actual == expected
 
     def test_keycloak_endpoint(self, contextData):
         expected = 'https://keycloak'
-        actual = generate_env.keycloak_endpoint(contextData)
+        actual = module.keycloak_endpoint(contextData)
         assert actual == expected
 
     def test_minio_endpoint(self, contextData):
         expected = ""
-        actual = generate_env.minio_endpoint(contextData)
+        actual = module.minio_endpoint(contextData)
         assert actual == expected
 
     def test_keycloak_env(self,contextData):
@@ -93,13 +94,13 @@ class TestGenerateEnv():
             "MINIO_TEST_USER": "opaluser",
             "MINIO_TEST_USER_PASSWORD": "opalpassword"
         }
-        actual = generate_env.keycloak_env(contextData)
+        actual = module.keycloak_env(contextData)
         assert actual == expected
 
     def test_keycloak_env_deployKeycloack_false(self,contextData):
         contextData['deploy_keycloak'] = False
         expected = {}
-        actual = generate_env.keycloak_env(contextData)
+        actual = module.keycloak_env(contextData)
         assert actual == expected
 
     def test_minio_env(self, contextData):
@@ -112,13 +113,13 @@ class TestGenerateEnv():
             "MINIO_IDENTITY_OPENID_REDIRECT_URI":"https://minio/oauth_callback",
             "S3_ENDPOINT":"http://minio:9000",
             "MINIO_BROWSER_REDIRECT_URL":"https://minio",}
-        actual = generate_env.minio_env(contextData)
+        actual = module.minio_env(contextData)
         assert actual == expected
 
     def test_minio_env_deployMinio_false(self, contextData):
         contextData['deploy_minio'] = False
         expected = {"S3_ENDPOINT": "http://external/minio_url"}
-        actual = generate_env.minio_env(contextData)
+        actual = module.minio_env(contextData)
         assert actual == expected
 
     def test_generate_env_file(self,contextData):
@@ -152,5 +153,5 @@ class TestGenerateEnv():
             'S3_ENDPOINT' : 'http://minio:9000',
             'MINIO_BROWSER_REDIRECT_URL' : 'https://minio',
             }
-        actual = generate_env.generate_env_file(contextData)
+        actual = module.generate_env_file(contextData)
         assert actual == expected

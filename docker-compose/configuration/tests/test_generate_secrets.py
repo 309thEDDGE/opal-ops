@@ -1,6 +1,8 @@
+from importer import dynamic_module_import
+module = dynamic_module_import('generate_secrets')
 import json
-import generate_secrets
 import pytest
+
 class TestGenerateSecrets():
 
     @pytest.fixture
@@ -33,7 +35,7 @@ class TestGenerateSecrets():
                 "KEYCLOAK_SECRET":64,
                 "MINIO_IDENTITY_OPENID_CLIENT_SECRET":64,
                 }
-        actual = generate_secrets.generate_secrets(contextData)
+        actual = module.generate_secrets(contextData)
         for key, value in expected.items():
             assert len(actual[key]) == value
 
@@ -48,6 +50,6 @@ class TestGenerateSecrets():
                 "KEYCLOAK_SECRET":64,
                 "MINIO_IDENTITY_OPENID_CLIENT_SECRET":64,
                 }
-        actual = generate_secrets.generate_secrets(contextData)
+        actual = module.generate_secrets(contextData)
         for key, value in expected.items():
             assert len(actual[key]) == value
