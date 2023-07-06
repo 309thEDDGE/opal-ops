@@ -221,12 +221,12 @@ class TestDeployment():
         assert actual == expected
 
     minioData = [
-        (True, 'tls.crt'),
-        (False, 'kc.crt')
+        (True, ['traefik:keycloak'], 'tls.crt'),
+        (False, [],'kc.crt')
     ]
 
-    @pytest.mark.parametrize("deployKeycloakVal, certValue", minioData)
-    def test_minio_service(self, contextData, deployKeycloakVal, certValue):
+    @pytest.mark.parametrize("deployKeycloakVal, linkValue, certValue", minioData)
+    def test_minio_service(self, contextData, deployKeycloakVal, linkValue, certValue):
 
         contextData['deploy_keycloak'] = deployKeycloakVal
         
@@ -241,9 +241,7 @@ class TestDeployment():
             "volumes": [
                 f"./keycloak/certs/test_context/{certValue}:/home/minio/certs/CAs/tls.crt"
             ],
-            "links": [
-                "traefik:keycloak"
-            ],
+            "links": linkValue,
             "labels": [
                 "traefik.enable=true",
                 "traefik.http.routers.minio.rule=Host(`minio`)",

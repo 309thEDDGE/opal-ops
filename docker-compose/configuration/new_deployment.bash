@@ -69,7 +69,7 @@ _green "====================================="
 
 
 if [[ $# -eq 0 ]]; then
-  $PYTHON3 configuration/make_context.py out.json
+  $PYTHON3 configuration/generate_files/make_context.py out.json
   CONTEXT_FILE=out.json
 else
   CONTEXT_FILE=$1
@@ -86,11 +86,11 @@ _green "-------------------------------------"
 
 # generate files
 _blue " - Generating $DEPLOYMENT_NAME.docker-compose.json"
-$PYTHON3 configuration/generate_docker_compose.py $CONTEXT_FILE > $DEPLOYMENT_NAME.docker-compose.json
+$PYTHON3 configuration/generate_files/generate_docker_compose.py $CONTEXT_FILE > $DEPLOYMENT_NAME.docker-compose.json
 _blue " - Generating .$DEPLOYMENT_NAME.env"
-$PYTHON3 configuration/generate_env.py $CONTEXT_FILE > .$DEPLOYMENT_NAME.env
+$PYTHON3 configuration/generate_files/generate_env.py $CONTEXT_FILE > .$DEPLOYMENT_NAME.env
 _blue " - Generating $DEPLOYMENT_NAME""_util.sh"
-$PYTHON3 configuration/generate_opal_control_script.py $CONTEXT_FILE > $DEPLOYMENT_NAME\_util.sh
+$PYTHON3 configuration/generate_files/generate_opal_control_script.py $CONTEXT_FILE > $DEPLOYMENT_NAME\_util.sh
 
 chmod +x $DEPLOYMENT_NAME\_util.sh
 _blue " - Generating OPAL_$DEPLOYMENT_NAME.service"
@@ -98,7 +98,7 @@ _yellow "\t- Copy OPAL_$DEPLOYMENT_NAME.service to /etc/systemd/system/ and run:
 _yellow "\t- 'systemctl daemon-reload && systemctl enable OPAL_$DEPLOYMENT_NAME.service'"
 _yellow "\t- to automatically start OPAL on system reboot"
 
-$PYTHON3 configuration/generate_service_file.py $CONTEXT_FILE > OPAL_$DEPLOYMENT_NAME.service
+$PYTHON3 configuration/generate_files/generate_service_file.py $CONTEXT_FILE > OPAL_$DEPLOYMENT_NAME.service
 
 # generate secrets if necessary
 if test -f .env.secrets; then
@@ -106,7 +106,7 @@ if test -f .env.secrets; then
     _yellow "\t- No secrets file will be generated"
 else
     _blue " - No secrets file found - generating .env.secrets"
-    $PYTHON3 configuration/generate_secrets.py $CONTEXT_FILE > ./.env.secrets
+    $PYTHON3 configuration/generate_files/generate_secrets.py $CONTEXT_FILE > ./.env.secrets
 fi
 
 _green "-------------------------------------"
