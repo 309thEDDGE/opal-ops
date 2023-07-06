@@ -41,6 +41,5 @@ jobs:
           pip install pytest pytest-cov
       - name: Run tests
         run: |
-          echo $pwd
-          cd /docker-compose/configuration/tests/
+          cd ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/
           pytest --cov-report term-missing --cov=../generate_files
