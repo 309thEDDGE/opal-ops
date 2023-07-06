@@ -6,7 +6,8 @@ import sys
 # function to dynamically load module
 def dynamic_module_import(module_name):
    
-    fp = os.getcwd()
+    fp = os.path.dirname(os.path.realpath(__file__))
+
     fp = fp.replace('tests', 'generate_files')
     sys.path.append( fp)
 
