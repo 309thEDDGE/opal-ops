@@ -1,19 +1,5 @@
 def format_control_script(context):
     file = f"""#!/bin/bash
-
-set -e
-
-if [[ $(docker compose version) == *"version v2."* ]] ; then
-    COMPOSE="docker compose"
-    echo "using $(docker compose version)"
-elif [[ $(docker-compose version) == *"version v2."* ]] ; then
-    COMPOSE="docker-compose"
-    echo "using $(docker-compose version)"
-elif [[ $(docker-compose -v) == *"version 1."* ]] ; then
-    echo "Can't use docker compose version 1 from $(docker-compose -v)"
-    exit 1
-fi
-
 _blue() {{
   echo -e $'\e[1;36m'"$@"$'\e[0m'
 }}
@@ -26,6 +12,25 @@ _green() {{
 _yellow() {{
   echo -e $'\e[1;33m'"$@"$'\e[0m'
 }}
+
+set -e
+_green "Checking Docker Compose Version"
+
+if [[ $(docker compose version) == *"version v2."* ]] ; then
+    COMPOSE="docker compose"
+    _green "using $(docker compose version)"
+elif [[ $(docker-compose version) == *"version v2."* ]] ; then
+    COMPOSE="docker-compose"
+    _green "using $(docker-compose version)"
+elif [[ $(docker-compose -v) == *"version 1."* ]] ; then
+    _red "Can't use docker compose version 1 from $(docker-compose -v)"
+    exit 1
+else
+  _red "Unable to verify Docker Compose Version check to see if it is running."
+  exit 1
+fi
+
+
 
 generate_manifest(){{
     bash ../deployment-verification/generate_manifest.bash {context['deployment_name']}
