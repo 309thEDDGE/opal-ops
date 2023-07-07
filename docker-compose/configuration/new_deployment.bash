@@ -73,6 +73,7 @@ if [[ $# -eq 0 ]]; then
   CONTEXT_FILE=out.json
 else
   CONTEXT_FILE=$1
+  $PYTHON3 configuration/generate_files/validate_out_json.py $CONTEXT_FILE
 fi
 
 
