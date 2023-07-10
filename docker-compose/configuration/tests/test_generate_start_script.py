@@ -7,22 +7,21 @@ class TestGenerateStart():
     @pytest.fixture
     def contextData(self):
        
-        context = """{
+        context = {
             "deployment_name": "test_context",
             "dns_base": "",
             "mod_base": "",
-            "banner_color": "Y",
-            "banner_text": "orange",
+            "banner_color": "GREEN",
+            "banner_text": "UNCLASSIFIED",
             "singleuser_type": "singleuser",
-            "deploy_keycloak": true,
-            "deploy_minio": true,
-            "keycloak_realm": "master",
-            "keycloak_secret":"0000000000000000000000000000000000000000000000000000000000000000",    
+            "deploy_keycloak": True,
+            "deploy_minio": True,
             "external_minio_url": "external/minio_url",
-            "external_keycloak_url": "https://externalURL"
-        }"""
-        context_json = json.loads(context)
-        return context_json
+            "external_keycloak_url": "https://keycloak.opalacceptance.dso.mil",
+            "keycloak_realm": "master"
+        }
+
+        return context
 
     def test_format_start_script(self,contextData):
         expected = """#!/bin/bash

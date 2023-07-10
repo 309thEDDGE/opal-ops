@@ -12,20 +12,21 @@ class TestDeployment():
     @pytest.fixture
     def contextData(self):
        
-        context = """{
+        context = {
             "deployment_name": "test_context",
             "dns_base": "",
             "mod_base": "",
             "banner_color": "GREEN",
             "banner_text": "UNCLASSIFIED",
             "singleuser_type": "singleuser",
-            "deploy_keycloak": true,
-            "deploy_minio": true,
+            "deploy_keycloak": True,
+            "deploy_minio": True,
             "external_minio_url": "external/minio_url",
-            "external_keycloak_url": "https://keycloak.opalacceptance.dso.mil"
-        }"""
-        context_json = json.loads(context)
-        return context_json
+            "external_keycloak_url": "https://keycloak.opalacceptance.dso.mil",
+            "keycloak_realm": "master"
+        }
+
+        return context
 
     def test_get_certs_path_keycloak(self,contextData):
         compose_root = Path(".")
@@ -338,7 +339,7 @@ class TestDeployment():
                     'services': {
                         'postgresql': {'env_file': ['./.test_context.env']}, 
                         'singleuser': {'build': {'context': '.', 'dockerfile': './singleuser/Dockerfile', 'args': {'OPAL_BANNER_COLOR': 'GREEN', 'OPAL_BANNER_TEXT': 'UNCLASSIFIED'}}}, 
-                        'jupyterhub': {'build': {'args': {'OPAL_BANNER_COLOR': 'GREEN', 'OPAL_BANNER_TEXT': 'UNCLASSIFIED'}}, 'volumes': ['./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py'], 'env_file': ['./.test_context.env'], 'environment': ['OPAL_BANNER_COLOR=Y', "OPAL_BANNER_TEXT='orange'"], 'links': ['traefik:keycloak'], 'labels': ['traefik.http.routers.jupyterhub.rule=Host(`opal`)', 'traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api`)'], 'depends_on': {'keycloak': {'condition': 'service_healthy'}}}, 
+                        'jupyterhub': {'build': {'args': {'OPAL_BANNER_COLOR': 'GREEN', 'OPAL_BANNER_TEXT': 'UNCLASSIFIED'}}, 'volumes': ['./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py'], 'env_file': ['./.test_context.env'], 'environment': ['OPAL_BANNER_COLOR=GREEN', "OPAL_BANNER_TEXT='UNCLASSIFIED'"], 'links': ['traefik:keycloak'], 'labels': ['traefik.http.routers.jupyterhub.rule=Host(`opal`)', 'traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api`)'], 'depends_on': {'keycloak': {'condition': 'service_healthy'}}}, 
                         'traefik': {'volumes': ['./keycloak/certs/test_context:/etc/traefik/certs/'], 'env_file': ['./.test_context.env'], 'depends_on': {'keycloak': {'condition': 'service_healthy'}, 'keycloak_setup': {'condition': 'service_started'}}}, 
                         'keycloak': {'image': '${KEYCLOAK_IMAGE}', 'depends_on': {'postgresql': {'condition': 'service_healthy'}}, 'volumes': ['./keycloak/certs/test_context/tls.key:/etc/x509/https/tls.key', './keycloak/certs/test_context/tls.crt:/etc/x509/https/tls.crt'], 'env_file': ['./.env.secrets', './.test_context.env', './.env'], 'healthcheck': {'test': ['CMD-SHELL', 'curl --fail http://localhost:9990/health'], 'interval': '60s', 'timeout': '5s', 'start_period': '60s', 'retries': 10}, 'labels': ['traefik.enable=true', 'traefik.http.routers.keycloak.rule=Host(`keycloak`)', 'traefik.http.routers.keycloak.entrypoints=websecure', 'traefik.http.services.keycloak.loadbalancer.server.port=8080', 'traefik.http.routers.keycloak.service=keycloak'], 'restart': 'always'}, 
                         'keycloak_setup': {'image': '${KEYCLOAK_IMAGE}', 'depends_on': {'keycloak': {'condition': 'service_healthy'}}, 'env_file': ['./.env.secrets', './.test_context.env', './.env'], 'healthcheck': {'test': ['CMD-SHELL', 'curl --fail http://localhost:9990/health'], 'interval': '60s', 'timeout': '5s', 'start_period': '60s', 'retries': 10}, 'restart': 'no', 'volumes': ['./keycloak/keycloak_script.sh:/usr/local/bin/keycloak_script.sh'], 'entrypoint': ['sh', '/usr/local/bin/keycloak_script.sh']}, 

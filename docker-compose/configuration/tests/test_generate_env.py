@@ -8,21 +8,21 @@ class TestGenerateEnv():
     @pytest.fixture
     def contextData(self):
        
-        context = """{
+        context = {
             "deployment_name": "test_context",
             "dns_base": "",
             "mod_base": "",
-            "banner_color": "Y",
-            "banner_text": "orange",
+            "banner_color": "GREEN",
+            "banner_text": "UNCLASSIFIED",
             "singleuser_type": "singleuser",
-            "deploy_keycloak": true,
-            "deploy_minio": true,
-            "keycloak_realm": "master",    
+            "deploy_keycloak": True,
+            "deploy_minio": True,
             "external_minio_url": "external/minio_url",
-            "external_keycloak_url": "https://externalURL"
-        }"""
-        context_json = json.loads(context)
-        return context_json
+            "external_keycloak_url": "https://keycloak.opalacceptance.dso.mil",
+            "keycloak_realm": "master"
+        }
+
+        return context
 
 
     def test_format_env_file(self):
@@ -67,7 +67,7 @@ class TestGenerateEnv():
 
     def test_keycloak_endpoint_deploykeycloak_false(self, contextData):
         contextData['deploy_keycloak'] = False
-        expected = 'https://externalURL'
+        expected = 'https://keycloak.opalacceptance.dso.mil'
         actual = module.keycloak_endpoint(contextData)
         assert actual == expected
 
@@ -118,7 +118,7 @@ class TestGenerateEnv():
 
     def test_minio_env_deployMinio_false(self, contextData):
         contextData['deploy_minio'] = False
-        expected = {"S3_ENDPOINT": "http://external/minio_url"}
+        expected = {'S3_ENDPOINT': 'external/minio_url', 'MINIO_IDENTITY_OPENID_CONFIG_URL': 'https://keycloak/auth/realms/master/.well-known/openid-configuration', 'MINIO_IDENTITY_OPENID_CLIENT_ID': 'opal-jupyterhub', 'MINIO_IDENTITY_OPENID_CLAIM_NAME': 'policy'}
         actual = module.minio_env(contextData)
         assert actual == expected
 
