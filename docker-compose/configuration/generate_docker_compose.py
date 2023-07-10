@@ -211,8 +211,24 @@ def minio_service(context:dict) -> dict:
                 "./.env"
             ],
             "volumes": [
+                "minio_storage:/home/minio/",
                 volume_string
             ],
+            "ports": [
+                "9000:9000"
+            ],
+            "healthcheck":{
+                "test": [
+                    "CMD",
+                    "curl",
+                    "-f",
+                    "-k",
+                    "http://localhost:9000/minio/health/live"
+                ],
+                "interval": "30s",
+                "timeout": "20s",
+                "retries": 3
+            },
             "links": keycloak_link(context),
             "labels": [
                 "traefik.enable=true",
@@ -226,7 +242,7 @@ def minio_service(context:dict) -> dict:
                 "traefik.http.routers.minio_api.service=minio"
             ],
             "restart": "always"
-        } 
+        }
     } if context['deploy_minio'] else {}
 
 def add_depends_to_service(service_dict, arg):
@@ -306,11 +322,15 @@ def generate_docker_compose(context: dict) -> dict:
     services.update(keycloak_service(context))
     services.update(minio_service(context))
 
-    return {
-        "version": "3.9",
-        "services": services
-    }
+    compose = {"version": "3.9",
+           "services": services
+           }
 
+    if context["deploy_minio"]:
+        vols = {"volumes": {"minio_storage": None}}
+        compose.update(vols)
+
+    return compose
 
 if __name__ == "__main__":
     import sys
