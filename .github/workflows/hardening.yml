@@ -46,5 +46,6 @@ jobs:
       - name: Code Coverage Summary Report
         uses: kcjpop/coverage-comments@v2.2
         with:
+          working-directory: '${GITHUB_WORKSPACE}/docker-compose/configuration/tests/'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-file: './coverage/lcov.info'
