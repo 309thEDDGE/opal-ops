@@ -42,7 +42,7 @@ jobs:
       - name: Run tests
         run: |
           cd ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/
-          pytest --cov-report --cov-report xml:cov.xml term-missing --cov=../generate_files
+          pytest --cov-report xml:cov.xml --cov=../generate_files
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
