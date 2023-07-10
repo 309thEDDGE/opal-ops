@@ -42,13 +42,12 @@ jobs:
       - name: Run tests
         run: |
           cd ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/
-          pytest --cov-report lcov:./coverage/lcov.info --cov=../generate_files
-      - name: Code Coverage Summary Report
-        run: |
-          pwd
-      - name: Temp
-        uses: kcjpop/coverage-comments@v2.2
+          pytest --cov-report xml:./coverage/coverage.xml --cov=../generate_files
+      # - name: Code Coverage Summary Report
+      #   uses: romeovs/lcov-reporter-action@v0.3.1
+      #   with:
+      #     lcov-file: ./docker-compose/configuration/tests/coverage/lcov.info
+      - name: Publish Results
+        uses: MishaKav/pytest-coverage-comment@main
         with:
-          working-directory: './docker-compose/configuration/tests'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-file: './coverage/lcov.info'
+          pytest-xml-coverage-path: ./docker-compose/configuration/tests/coverage/coverage.xml
