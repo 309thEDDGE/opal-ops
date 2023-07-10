@@ -46,4 +46,6 @@ jobs:
       - name: Code Coverage Summary Report
         uses: romeovs/lcov-reporter-action@v0.2.16
         with:
-          lcov-file: ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/coverage/lcov.info
+          github-token: ${{ github.token }}
+          working-directory: ${GITHUB_WORKSPACE}/docker-compose/configuration/tests
+          lcov-file: ./coverage/lcov.info
