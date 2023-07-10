@@ -43,8 +43,7 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/
           pytest --cov-report xml:cov.xml --cov=../generate_files
-          cat cov.xml
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/cov.xml
+          filename: cov.xml
