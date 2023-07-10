@@ -45,7 +45,7 @@ jobs:
           pytest --cov-report lcov:./coverage/lcov.info --cov=../generate_files
       - name: Code Coverage Summary Report
         run: |
-          echo "pwd"
+          pwd
       - name: Temp
         uses: kcjpop/coverage-comments@v2.2
         with:
