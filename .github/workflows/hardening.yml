@@ -44,6 +44,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/
           pytest --cov-report lcov:./coverage/lcov.info --cov=../generate_files
       - name: Code Coverage Summary Report
-        uses: romeovs/lcov-reporter-action@v0.3.1
+        uses: kcjpop/coverage-comments@v2.2
         with:
-          lcov-file: ./${GITHUB_WORKSPACE}/docker-compose/configuration/tests/coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          coverage-file: './coverage/lcov.info'
