@@ -42,7 +42,7 @@ jobs:
       - name: Run tests
         run: |
           cd ${GITHUB_WORKSPACE}/docker-compose/configuration/tests/
-          pytest --cov-report -cov-report xml:./coverage/coverage.xml --junitxml=./coverage/junit_coverage.xml --cov=../generate_files
+          pytest --cov-report --cov-report xml:./coverage/coverage.xml --junitxml=./coverage/junit_coverage.xml --cov=../generate_files
       # - name: Code Coverage Summary Report
       #   uses: romeovs/lcov-reporter-action@v0.3.1
       #   with:
