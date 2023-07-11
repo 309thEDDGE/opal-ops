@@ -23,7 +23,7 @@ keycloak_jupyterhub_token_url  = keycloak_opal_api_url
 keycloak_jupyterhub_userdata_url = os.environ['KEYCLOAK_JUPYTERHUB_USERDATA_URL']
 keycloak_jupyterhub_username_key = os.environ['KEYCLOAK_JUPYTERHUB_USERNAME_KEY']
 
-def set_shared_traitlets(c):
+def set_shared_traitlets(c, vols):
     c.JupyterHub.hub_ip = ' 0.0.0.0'
     c.JupyterHub.hub_connect_ip = 'jupyterhub'
     c.JupyterHub.spawner_class = 'cdsdashboards.hubextension.spawners.variabledocker.VariableDockerSpawner'
@@ -62,6 +62,7 @@ def set_shared_traitlets(c):
         metaflow_path:metaflow_mount_path,
         manifest_path:"/home/jovyan/.extra/deployment-manifest.json"
     }
+    c.DockerSpawner.volumes.update(vols)
 
     cmds_msgs = [
         (
