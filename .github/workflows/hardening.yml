@@ -47,7 +47,12 @@ jobs:
       #   uses: romeovs/lcov-reporter-action@v0.3.1
       #   with:
       #     lcov-file: ./docker-compose/configuration/tests/coverage/lcov.info
-      - name: Publish Results
-        uses: MishaKav/pytest-coverage-comment@main
+      # - name: Publish Results
+      #   uses: MishaKav/pytest-coverage-comment@main
+      #   with:
+      #     pytest-xml-coverage-path: ./docker-compose/configuration/tests/coverage/coverage.xml
+      - name: Test Summary
+        uses: test-summary/action@v2
         with:
-          pytest-xml-coverage-path: ./docker-compose/configuration/tests/coverage/coverage.xml
+          paths: "./docker-compose/configuration/tests/coverage/coverage.xml"
+        if: always()
