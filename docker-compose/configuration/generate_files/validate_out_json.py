@@ -175,7 +175,7 @@ class OutJsonValidator:
 #    logging.error(error)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
 
     logging.basicConfig(level=logging.WARNING, format='%(levelname)s:%(message)s')
 
