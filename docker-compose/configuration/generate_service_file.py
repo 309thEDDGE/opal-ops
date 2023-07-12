@@ -4,13 +4,13 @@ def format_service_file(context, full_cwd):
 
     file = f"""[Unit]
 Description=OPAL Datascience Platform
-After=docker.service
+Requires=docker.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 TimeoutStopSec=120
-ExecStart=/bin/bash -c "cd {full_cwd} && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up --detach --remove-orphans"
+ExecStart=/bin/bash -c "cd {full_cwd} && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json down --remove-orphans && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json up --detach --remove-orphans"
 ExecStop=/bin/bash -c "cd {full_cwd} && {COMPOSE} -f docker-compose.yml -f {context['deployment_name']}.docker-compose.json down --remove-orphans"
 StandardOutput=syslog
 StandardError=syslog
