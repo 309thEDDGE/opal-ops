@@ -3,10 +3,8 @@ kind: Kustomization
 
 namespace: opal
 
-bases:
-  - ../../base/
-
 resources:
+  - ../../base/
   - ingress.yaml
   - init_singleuser_image.yaml
 

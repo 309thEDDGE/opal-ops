@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: opal
 
 resources:
-- kubernetes_files/catalog.yaml
 - kubernetes_files/jupyterhub.yaml
 - kubernetes_files/keycloak.yaml
 - kubernetes_files/minio.yaml
@@ -29,7 +28,7 @@ configMapGenerator:
   name: jupyterhub-startup-script
 - files:
   - extra_resources/Dockerfile
-  name: singleuser-torch-dockerfile
+  name: singleuser-dockerfile
 - files:
   - extra_resources/keycloak_script.sh
   name: keycloak-setup-script

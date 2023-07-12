@@ -17,7 +17,6 @@ Each file contains its Service and Deployment definitions along with any other c
 - minio.yaml
 - keycloak.yaml
 - traefik.yaml
-- catalog.yaml
 
 ### Overlays
 

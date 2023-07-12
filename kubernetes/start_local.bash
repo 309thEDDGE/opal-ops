@@ -4,7 +4,6 @@ cd $(dirname $0)
 DOCKER_LOGINS="$HOME/.docker/config.json"
 
 # refresh docker login credentials
-docker login registry.il2.dso.mil
 docker login registry1.dso.mil
 
 # start minikube
@@ -12,7 +11,28 @@ minikube status || minikube start
 
 # set up a few things
 tar -C ../docker-compose/jupyterhub/ -cf base/extra_resources/jupyterhub-conf-dir.tar config
+#pushd ../docker-compose/
+#if [[ ! -d opal ]]
+#then
+#    printf "../docker-compose/opal/ not found. Please clone it and rerun this script"
+#    exit
+#fi
+#if [[ ! -d weave ]]
+#then
+#    git clone https://github.com/309thEDDGE/weave.git
+#else
+#    pushd weave
+#    git pull
+#    popd
+#fi
+#popd
+#tar -C ../docker-compose/ -cf base/extra_resources/opal.tar opal
+#tar -C ../docker-compose/ -cf base/extra_resources/weave.tar weave
 cp $DOCKER_LOGINS base/extra_resources/dockerconfig.json
+python3 ../docker-compose/configuration/generate_secrets.py overlays/local_dev/k8s-context.json > base/extra_resources/.env.secrets
+if [[ ! -f overlays/local_dev/tls.crt ]] || [[ ! -f overlays/local_dev/tls.key ]]
+   then openssl req -new -newkey rsa:2048 -days 365 -nodes -x509  -subj /CN=*.10.96.30.9.nip.io -extensions san -config overlays/local_dev/ssl.conf -keyout overlays/local_dev/tls.key -out overlays/local_dev/tls.crt
+fi
 
 # make it go
 kubectl apply -k overlays/local_dev
