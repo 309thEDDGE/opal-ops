@@ -43,7 +43,6 @@ c.KubeSpawner.environment = {
     "S3_ENDPOINT": "http://minio:9000",
     "USERNAME": "jovyan",
     "METAFLOW_DATASTORE_SYSROOT_LOCAL":metaflow_mount_path,
-    "CATALOG_BACKEND_URL": "http://opalcatalog-be:9001/services/opal-catalog",
 }
 
 # assign a security context for write permissions to
@@ -191,19 +190,6 @@ c.OAuthenticator.scope = ['openid', 'profile', 'roles']
 ########## extra services ##########
 
 jupyterhub_api_token = os.environ['JUPYTERHUB_API_TOKEN']
-opal_catalog_callback = os.environ["OPAL_CATALOG_CALLBACK"]
-
-c.JupyterHub.services = [
-    {
-        'name': 'opal-catalog',
-        'api_token': jupyterhub_api_token,
-        'url': 'http://opalcatalog-fe:9003/services/opal-catalog',
-        'oauth_client_id': "service-opal-catalog-be",
-        'oauth_redirect_uri': opal_catalog_callback,
-        'admin': True,
-        'oauth_no_confirm': True
-    }
-]
 
 # Cdsdashboards stuff
 from cdsdashboards.app import CDS_TEMPLATE_PATHS
