@@ -32,7 +32,7 @@ if __name__ == "__main__": # pragma: no cover
         print(f"usage: python {this_fname} [context_file.json]")
         exit(1)
 
-    
+    COMPOSE = sys.argv[2]
 
     with open(sys.argv[1]) as f:
         context_data = json.load(f)

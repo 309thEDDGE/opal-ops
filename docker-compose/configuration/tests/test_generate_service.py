@@ -25,19 +25,9 @@ class TestGenerateService():
         return context
 
     def test_format_service_file(self,contextData):
-        expected = """[Unit]
-Description=OPAL Datascience Platform
-
-[Service]
-Type=simple
-ExecStart=/bin/bash -c "cd \testDir -f docker-compose.yml -f test_context.docker-compose.json up --detach --remove-orphans"
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=OPAL
-
-[Install]
-WantedBy=multi-user.target
-    """
+        compose = "docker-compose.yml"
+        module.COMPOSE = compose
+        expected = """[Unit]\nDescription=OPAL Datascience Platform\nRequires=docker.service\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nTimeoutStopSec=120\nExecStart=/bin/bash -c "cd \testDir && docker-compose.yml -f docker-compose.yml -f test_context.docker-compose.json down --remove-orphans && docker-compose.yml -f docker-compose.yml -f test_context.docker-compose.json up --detach --remove-orphans"\nExecStop=/bin/bash -c "cd \testDir && docker-compose.yml -f docker-compose.yml -f test_context.docker-compose.json down --remove-orphans"\nStandardOutput=syslog\nStandardError=syslog\nSyslogIdentifier=OPAL\n\n[Install]\nWantedBy=multi-user.target\n    """
         cwd = '\testDir'
         actual = module.format_service_file(contextData,cwd)
         assert actual == expected
