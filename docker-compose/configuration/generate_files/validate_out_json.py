@@ -177,7 +177,7 @@ class OutJsonValidator:
 
 if __name__ == '__main__': # pragma: no cover
 
-    logging.basicConfig(level=logging.WARNING, format='%(levelname)s:%(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(message)s')
 
     full_cwd = os.getcwd()
 
