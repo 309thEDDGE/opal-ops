@@ -114,7 +114,7 @@ _yellow "\t- Copy OPAL_$DEPLOYMENT_NAME.service to /etc/systemd/system/ and run:
 _yellow "\t- 'systemctl daemon-reload && systemctl enable OPAL_$DEPLOYMENT_NAME.service'"
 _yellow "\t- to automatically start OPAL on system reboot"
 
-$PYTHON3 configuration/generate_service_file.py $CONTEXT_FILE $COMPOSE > OPAL_$DEPLOYMENT_NAME.service
+$PYTHON3 configuration/generate_files/generate_service_file.py $CONTEXT_FILE $COMPOSE > OPAL_$DEPLOYMENT_NAME.service
 
 # generate secrets if necessary
 if test -f .env.secrets; then
