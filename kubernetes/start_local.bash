@@ -29,13 +29,13 @@ tar -C ../docker-compose/jupyterhub/ -cf base/extra_resources/jupyterhub-conf-di
 #tar -C ../docker-compose/ -cf base/extra_resources/opal.tar opal
 #tar -C ../docker-compose/ -cf base/extra_resources/weave.tar weave
 cp $DOCKER_LOGINS base/extra_resources/dockerconfig.json
-python3 ../docker-compose/configuration/generate_secrets.py overlays/local_dev/k8s-context.json > base/extra_resources/.env.secrets
-if [[ ! -f overlays/local_dev/tls.crt ]] || [[ ! -f overlays/local_dev/tls.key ]]
-   then openssl req -new -newkey rsa:2048 -days 365 -nodes -x509  -subj /CN=*.10.96.30.9.nip.io -extensions san -config overlays/local_dev/ssl.conf -keyout overlays/local_dev/tls.key -out overlays/local_dev/tls.crt
+python3 ../docker-compose/configuration/generate_secrets.py overlays/local_dev_prod/k8s-context.json > base/extra_resources/.env.secrets
+if [[ ! -f overlays/local_dev_prod/tls.crt ]] || [[ ! -f overlays/local_dev_prod/tls.key ]]
+   then openssl req -new -newkey rsa:2048 -days 365 -nodes -x509  -subj /CN=*.10.96.30.9.nip.io -extensions san -config overlays/local_dev_prod/ssl.conf -keyout overlays/local_dev_prod/tls.key -out overlays/local_dev_prod/tls.crt
 fi
 
 # make it go
-kubectl apply -k overlays/local_dev
+kubectl apply -k overlays/local_dev_prod
 
 # post-startup stuff
 kubectl config set-context --current --namespace=opal

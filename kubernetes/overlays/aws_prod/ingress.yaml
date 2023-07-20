@@ -8,7 +8,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   rules:
-    - host: minio-k8.opalacceptance.dso.mil
+    - host: minio-prod.opalacceptance.dso.mil
       http:
         paths:
           - path: /
@@ -18,7 +18,7 @@ spec:
                 name: minio
                 port:
                   number: 9002
-    - host: keycloak-k8.opalacceptance.dso.mil
+    - host: keycloak-prod.opalacceptance.dso.mil
       http:
         paths:
           - path: /
@@ -28,7 +28,7 @@ spec:
                 name: keycloak
                 port:
                   number: 8080
-    - host: traefik-k8.opalacceptance.dso.mil
+    - host: traefik-prod.opalacceptance.dso.mil
       http:
         paths:
           - path: /
@@ -38,7 +38,7 @@ spec:
                 name: traefik
                 port:
                   name: dashboard
-    - host: opal-k8.opalacceptance.dso.mil
+    - host: opal-prod.opalacceptance.dso.mil
       http:
         paths:
           - path: /
@@ -47,4 +47,4 @@ spec:
               service:
                 name: proxy-public
                 port:
-                  number: 80
+                  number: 443

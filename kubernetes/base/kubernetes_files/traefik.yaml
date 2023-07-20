@@ -74,12 +74,12 @@ data:
     scheme = "https"
 
     [entryPoints.web]
-    address = ":80"
+    address = ":8000"
 
     [entryPoints.websecure.http.tls]
 
     [entryPoints.websecure]
-    address = ":443"
+    address = ":8443"
 
     [api]
     insecure = true
