@@ -36,7 +36,12 @@ spec:
       port: 80
       protocol: TCP
       targetPort: 8000
-  type: LoadBalancer
+    - name: https
+      port: 443
+      targetPort: 443
+    - name: api
+      port: 8001
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment

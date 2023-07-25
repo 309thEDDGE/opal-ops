@@ -64,13 +64,13 @@ data:
     defaultEntryPoints = ["web","websecure"]
 
     [providers.kubernetesIngress.ingressEndpoint]
-    publishedService = "jupyterhub/traefik"
+    publishedService = "opal-prod/traefik"
 
     [providers.file]
     filename = "/etc/traefik/traefik_dynamic.yml"
 
     [entryPoints.web.http.redirections.entryPoint]
-    to = "websecure"
+    to = ":443"
     scheme = "https"
 
     [entryPoints.web]
@@ -84,6 +84,8 @@ data:
     [api]
     insecure = true
     dashboard = true
+
+    #[ping]
 
     [log]
     level = "DEBUG"
@@ -130,11 +132,11 @@ spec:
           image: registry1.dso.mil/ironbank/opensource/traefik/traefik:v2.9.1
           ports:
             - name: web
-              containerPort: 80
+              containerPort: 8000
             - name: dashboard
               containerPort: 8080
             - name: websecure
-              containerPort: 443
+              containerPort: 8443
           volumeMounts:
             - name: traefik-cfg
               mountPath: /etc/traefik/traefik.toml
@@ -168,14 +170,15 @@ spec:
     - protocol: TCP
       port: 80
       name: web
-      targetPort: 80
-    - protocol: TCP
-      port: 443
-      name: websecure
-      targetPort: 443
+      targetPort: web
     - protocol: TCP
       port: 8080
       name: dashboard
-      targetPort: 8080
-  clusterIP: "10.96.30.9"
+      targetPort: dashboard
+    - protocol: TCP
+      port: 443
+      name: websecure
+      targetPort: websecure
+  #clusterIP: "172.20.30.9"
+  #clusterIP: "10.96.30.9"
 ---

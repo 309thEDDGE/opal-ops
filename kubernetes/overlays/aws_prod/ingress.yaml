@@ -8,7 +8,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   rules:
-    - host: minio-prod.opalacceptance.dso.mil
+    - host: minio-k8s-prod.opalacceptance.dso.mil
       http:
         paths:
           - path: /
@@ -18,17 +18,7 @@ spec:
                 name: minio
                 port:
                   number: 9002
-    - host: keycloak-prod.opalacceptance.dso.mil
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: keycloak
-                port:
-                  number: 8080
-    - host: traefik-prod.opalacceptance.dso.mil
+    - host: traefik-k8s-prod.opalacceptance.dso.mil
       http:
         paths:
           - path: /
@@ -38,7 +28,17 @@ spec:
                 name: traefik
                 port:
                   name: dashboard
-    - host: opal-prod.opalacceptance.dso.mil
+    - host: kc-k8s-prod.opalacceptance.dso.mil
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 8080
+    - host: opal-k8s-prod.opalacceptance.dso.mil
       http:
         paths:
           - path: /
@@ -47,4 +47,26 @@ spec:
               service:
                 name: proxy-public
                 port:
-                  number: 443
+                  number: 80
+#---
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: traefik-dashboard-ingress
+#  namespace: jupyterhub
+#  annotations:
+#    traefik.ingress.kubernetes.io/router.entrypoints: traefik
+#    #traefik.ingress.kubernetes.io/router.tls: "true"
+#spec:
+#  rules:
+#    - host: traefik-k8s-prod.opalacceptance.dso.mil
+#      http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: traefik
+#                port:
+#                  name: dashboard
+#                  #number: 8080

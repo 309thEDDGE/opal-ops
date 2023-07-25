@@ -6,7 +6,7 @@ metadata:
   labels:
     component: keycloak
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: http
       port: 80
@@ -59,18 +59,28 @@ spec:
               value: admin
             - name: KEYCLOAK_PASSWORD
               value: opal
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Dcom.redhat.fips=false"
           envFrom:
             - secretRef:
                 name: token-env
           ports:
             - name: http
               containerPort: 8080
+          startupProbe:
+            exec:
+              command:
+                ["curl", "--fail", "http://localhost:9990/health"]
+            initialDelaySeconds: 90
+            timeoutSeconds: 2
+            failureThreshold: 60
+            periodSeconds: 5
           readinessProbe:
             exec:
               command:
                 ["curl", "--fail", "http://localhost:9990/health"]
             initialDelaySeconds: 15
-            periodSeconds: 5  
+            periodSeconds: 5
 ---
 apiVersion: batch/v1
 kind: Job
