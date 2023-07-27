@@ -59,8 +59,8 @@ spec:
               value: admin
             - name: KEYCLOAK_PASSWORD
               value: opal
-            - name: JAVA_TOOL_OPTIONS
-              value: "-Dcom.redhat.fips=false"
+            #- name: JAVA_TOOL_OPTIONS
+            #  value: "-Dcom.redhat.fips=false"
           envFrom:
             - secretRef:
                 name: token-env
