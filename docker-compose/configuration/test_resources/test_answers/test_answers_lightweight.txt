@@ -1,7 +1,0 @@
-test_context
-n
-.companyname.com
-n
-orange
-THIS IS A TEST BANNER
-Y
