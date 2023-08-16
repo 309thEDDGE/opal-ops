@@ -18,16 +18,6 @@ spec:
                 name: minio
                 port:
                   number: 9002
-    - host: keycloak-k8.10.96.30.9.nip.io
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: keycloak
-                port:
-                  number: 8080
     - host: traefik-k8.10.96.30.9.nip.io
       http:
         paths:

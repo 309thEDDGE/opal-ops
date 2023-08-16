@@ -5,11 +5,10 @@ namespace: opal
 
 resources:
 - kubernetes_files/jupyterhub.yaml
-- kubernetes_files/keycloak.yaml
 - kubernetes_files/minio.yaml
-- kubernetes_files/postgres.yaml
 - kubernetes_files/traefik.yaml
-
+#- kubernetes_files/keycloak.yaml
+#- kubernetes_files/postgres.yaml
 # disable suffixes on configmaps and secrets
 # necessary for jupyterhub to find those things
 # when it starts a new user server

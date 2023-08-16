@@ -180,5 +180,5 @@ spec:
       name: websecure
       targetPort: websecure
   #clusterIP: "172.20.30.9"
-  #clusterIP: "10.96.30.9"
+  clusterIP: "10.96.30.9"
 ---
