@@ -12,6 +12,7 @@ weave/
 *_util.sh
 *.docker-compose.json
 *_deployment_manifest.json
+jupyter_mounts/
 out.json
 *.crt
 *.key

@@ -1,14 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: opal
-
-bases:
-  - ../../base
+namespace: opal-prod
 
 resources:
+  - ../../base
   - ingress.yaml
-  - init_singleuser_image_pytorch.yaml
+  - init_singleuser_image.yaml
 
 configMapGenerator:
   - name: deployment-env
