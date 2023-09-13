@@ -43,6 +43,12 @@ def set_shared_traitlets(c, vols):
         "config"
     )
 
+    singleuser_config_path = os.path.join(
+        os.environ["HOST_PATH"],
+        "jupyterhub",
+        "lab_config"
+    )
+
     metaflow_path = os.path.join(
         os.environ["HOST_PATH"],
         "jupyter_mounts",
@@ -60,7 +66,8 @@ def set_shared_traitlets(c, vols):
         'jupyterhub-user-{raw_username}':'/home/jovyan',
         config_path:"/opt/opal/conf",
         metaflow_path:metaflow_mount_path,
-        manifest_path:"/home/jovyan/.extra/deployment-manifest.json"
+        manifest_path:"/home/jovyan/.extra/deployment-manifest.json",
+        singleuser_config_path:"/etc/jupyter"
     }
     c.DockerSpawner.volumes.update(vols)
 
