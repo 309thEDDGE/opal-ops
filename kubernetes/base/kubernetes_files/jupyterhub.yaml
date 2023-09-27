@@ -64,16 +64,9 @@ spec:
         - name: regcred
       containers:
         - name: chp
-          image: registry1.dso.mil/ironbank/opensource/metrostar/jupyterhub:2.1.1_v3
-          command:
-            - configurable-http-proxy
-            - --ip=0.0.0.0
-            - --api-ip=0.0.0.0
-            - --api-port=8001
-            - --default-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT)
-            - --error-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT)/hub/error
-            - --port=8000
-            - --log-level=debug
+          image: registry1.dso.mil/ironbank/opensource/metrostar/jupyterhub:jupyterhub_v8
+          command: ["bash"]
+          args: ["-c", "source /opt/conda/bin/activate && conda activate jupyterhub && configurable-http-proxy --ip=0.0.0.0 --api-ip=0.0.0.0 --api-port=8001 --default-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT) --error-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT)/hub/error --port=8000 --log-level=debug"]
           securityContext:
             allowPrivilegeEscalation: false
           env:
@@ -161,9 +154,9 @@ spec:
         - name: regcred
       containers:
         - name: jupyter-hub
-          image: registry1.dso.mil/ironbank/opensource/metrostar/jupyterhub:2.1.1_v3
+          image: registry1.dso.mil/ironbank/opensource/metrostar/jupyterhub:jupyterhub_v8
           command: ["bash"]
-          args: ["-c", "source /opt/conda/bin/activate && conda activate jupyterhub && conda install -c conda-forge jupyterhub-kubespawner -y && jupyterhub -f /home/jovyan/jupyterhub_config.py"]
+          args: ["-c", "source /opt/conda/bin/activate && conda activate jupyterhub && jupyterhub -f /home/jovyan/jupyterhub_config.py"]
           ports:
             - containerPort: 8081
           env:
