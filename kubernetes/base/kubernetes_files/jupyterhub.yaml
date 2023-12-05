@@ -187,7 +187,6 @@ spec:
               echo "jovyan" > /etc/cron.d/cron.allow &&
               python3 -m pip install metaflow &&
               cd /share/flows &&
-              #tar -xvf flowbits.tar &&
               service cron start &&
               echo "starting cronmanager" &&
               touch /share/flows/managerlog.txt &&

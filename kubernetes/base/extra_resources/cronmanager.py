@@ -24,11 +24,13 @@ class CronManager:
             active_jobs = self.scan_dir(self.cron_dir)
             desired_jobs = self.scan_dir(self.desired_job_dir)
             # we don't want users touching the cron.allow file
-            active_jobs.remove('cron.allow')
+            if 'cron.allow' in active_jobs:
+                active_jobs.remove('cron.allow')
             if 'cron.allow' in desired_jobs:
                 desired_jobs.remove('cron.allow')
             # don't know what this is but we don't want it
-            desired_jobs.remove('.placeholder')
+            if '.placeholder' in desired_jobs:
+                desired_jobs.remove('.placeholder')
 
             if '.ipynb_checkpoints' in desired_jobs:
                 desired_jobs.remove('.ipynb_checkpoints')
