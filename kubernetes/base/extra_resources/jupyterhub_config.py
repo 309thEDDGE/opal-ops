@@ -79,8 +79,30 @@ c.KubeSpawner.volumes = [
         "persistentVolumeClaim": {
             "claimName": "metaflow-datastore"
         }
+    },
+    {
+        'name': "flow-share-mnt",
+        "persistentVolumeClaim": {
+            "claimName": "flow-share"
+        }
+    },
+    {
+        'name': "cron-dir-mnt",
+        "persistentVolumeClaim": {
+            "claimName": "cron-dir"
+        }
     }
 ]
+
+#goes into above list if wanted
+#    {
+#        'name': "flowbits-mnt",
+#        "configMap": {
+#            "name": "flowbits",
+#            "defaultMode": 0o755
+#            }
+#    },
+
 
 c.KubeSpawner.volume_mounts = [
     {
@@ -96,6 +118,16 @@ c.KubeSpawner.volume_mounts = [
     {
         'mountPath': metaflow_mount_path,
         "name": "metaflow-store",
+        "readOnly": False
+    },
+    {
+        'mountPath': "/home/jovyan/share/flows/",
+        "name": "flow-share-mnt",
+        "readOnly": False
+    },
+    {
+        'mountPath': "/home/jovyan/share/cronjobs",
+        "name": "cron-dir-mnt",
         "readOnly": False
     }
 ]

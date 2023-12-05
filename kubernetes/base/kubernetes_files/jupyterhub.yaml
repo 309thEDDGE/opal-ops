@@ -176,10 +176,69 @@ spec:
             - name: jupyterhub-config-py-mnt
               mountPath: /home/jovyan/jupyterhub_config.py
               subPath: jupyterhub_config.py
+        - name: cron
+          image: ubuntu
+          command: ["bash", "-c"]
+          args:
+            - >-
+              apt-get update &&
+              apt-get install cron python3 python3-pip vim -y &&
+              useradd -g 100 jovyan &&
+              echo "jovyan" > /etc/cron.d/cron.allow &&
+              python3 -m pip install metaflow &&
+              cd /share/flows &&
+              #tar -xvf flowbits.tar &&
+              service cron start &&
+              echo "starting cronmanager" &&
+              touch /share/flows/managerlog.txt &&
+              /usr/bin/python3 /cronmanager/cronmanager.py "/etc/cron.d" "/share/cronjobs" "60" "/share/flows/managerlog.txt"
+          resources:
+            requests:
+              cpu: 100m
+          volumeMounts:
+#            - name: flowbits-mnt
+#              mountPath: /share/flows/flowbits.tar
+#              subPath: flowbits.tar
+#            - name: idle-script-mnt
+#              mountPath: /sleeper/idle.py
+#              subPath: idle.py
+            - name: cronmanager-mnt
+              mountPath: /cronmanager/cronmanager.py
+              subPath: cronmanager.py
+            - name: flow-share-mnt
+              mountPath: /share/flows/
+              readOnly: false
+            - name: cron-dir-mnt
+              mountPath: /share/cronjobs
+              readOnly: false
+            - name: metaflow-mnt
+              mountPath: /opt/opal/metaflow-metadata
+              readOnly: false
       volumes:
       - name: jupyterhub-config-py-mnt
         configMap:
           name: jupyterhub-config-py
+#      - name: flowbits-mnt
+#        configMap:
+#          name: flowbits
+#          defaultMode: 0o777
+      - name: cronmanager-mnt
+        configMap:
+          name: cronmanager
+          defaultMode: 0o600
+#      - name: idle-script-mnt
+#        configMap:
+#          name: idle-script
+#          defaultMode: 0o600
+      - name: flow-share-mnt
+        persistentVolumeClaim:
+          claimName: flow-share
+      - name: cron-dir-mnt
+        persistentVolumeClaim:
+          claimName: cron-dir
+      - name: metaflow-mnt
+        persistentVolumeClaim:
+          claimName: metaflow-datastore
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -192,3 +251,29 @@ spec:
   resources:
     requests:
       storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: flow-share
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage:
+        100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cron-dir
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage:
+        100Mi

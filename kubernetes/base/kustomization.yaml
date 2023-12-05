@@ -35,6 +35,18 @@ configMapGenerator:
 - files:
   - extra_resources/jupyterhub-conf-dir.tar
   name: jupyterhub-config
+#- files:
+#  - extra_resources/flowbits.tar
+#  name: flowbits
+- files:
+  - extra_resources/cronmanager.py
+  name: cronmanager
+#- files:
+#  - extra_resources/idle.py
+#  name: idle-script
+#- files:
+#  - extra_resources/cronthing
+#  name: cronfile
 
 secretGenerator:
 - envs:
