@@ -51,7 +51,7 @@ _check_pck iptables $IPTABLES_VERSION 1.4
 
 _blue Untarring docker and copying docker, docker-compose binary files to /usr/bin
 
-tar xzvf ./docker-20.10.9.tgz
+tar xzvf ./docker-25.0.3.tgz
 cp docker/* /usr/bin/
 cp ./docker-compose /usr/bin/ && chmod +x /usr/bin/docker-compose
 
