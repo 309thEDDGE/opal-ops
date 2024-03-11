@@ -1,1 +1,1 @@
-CREATE DATABASE "weave-db";
+CREATE DATABASE "weave_db";
