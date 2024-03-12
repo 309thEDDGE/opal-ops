@@ -23,6 +23,12 @@ keycloak_jupyterhub_token_url  = keycloak_opal_api_url
 keycloak_jupyterhub_userdata_url = os.environ['KEYCLOAK_JUPYTERHUB_USERDATA_URL']
 keycloak_jupyterhub_username_key = os.environ['KEYCLOAK_JUPYTERHUB_USERNAME_KEY']
 
+# ENVIRONMENT VARIABLES FOR WEAVE SQL SUPPORT
+weave_sql_host = os.environ[ 'WEAVE_SQL_HOST' ]
+weave_sql_username = os.environ[ 'WEAVE_SQL_USERNAME' ]
+weave_sql_password = os.environ[ 'WEAVE_SQL_PASSWORD' ]
+weave_sql_port = os.environ[ 'WEAVE_SQL_PORT' ]
+
 def set_shared_traitlets(c, vols):
     c.JupyterHub.hub_ip = ' 0.0.0.0'
     c.JupyterHub.hub_connect_ip = 'jupyterhub'
@@ -156,6 +162,10 @@ def set_shared_traitlets(c, vols):
         "CHOWN_HOME":"yes",
         "CHOWN_HOME_OPTS":"-R",
         "CHOWN_EXTRA":"/home/jovyan",
+        "WEAVE_SQL_HOST": weave_sql_host,
+        "WEAVE_SQL_USERNAME": weave_sql_username,
+        "WEAVE_SQL_PASSWORD": weave_sql_password,
+        "WEAVE_SQL_PORT": weave_sql_port,
     }
 
     # Keycloak GenericOauth

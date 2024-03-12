@@ -25,6 +25,22 @@ services:
       timeout: 5s
       retries: 5
     restart: always
+
+  jhub-postgresql:
+    image: ${POSTGRESQL_IMAGE}
+    volumes:
+      - ./postgresql/jhub-postgres-bootstrap.sql:/docker-entrypoint-initdb.d/postgres-bootstrap.sql
+      - jhub_postgres_storage:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+      - ./.env.secrets
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
   jupyterhub:
     privileged: True
     userns_mode: "host"
@@ -103,3 +119,4 @@ services:
 volumes:
   postgres_storage:
   mongo_storage:
+  jhub_postgres_storage:
