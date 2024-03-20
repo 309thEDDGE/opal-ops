@@ -10,6 +10,8 @@ RUN sed '/local-channel/s/.*/ - .\/local-channel/' /home/jovyan/local-channel/lo
     && printf "\n  - pip:" >> /home/jovyan/singleuser_env.yaml \
     && printf "\n    - /opt/data/opal/opal-packages" >> /home/jovyan/singleuser_env.yaml \
     && printf "\n    - /opt/data/weave" >> /home/jovyan/singleuser_env.yaml \
+    && conda config --add channels file:///home/jovyan/local-channel \
+    && conda search --channel file:///home/jovyan/local-channel --offline \
     && conda env create -f /home/jovyan/singleuser_env.yaml --offline \
     && rm -rf /home/jovyan/tip_deps_channel /home/jovyan/local-channel /home/jovyan/conf /home/jovyan/tip_channel /home/jovyan/tip_scripts
 ENV PATH="/opt/conda/envs/singleuser/bin:$PATH"
