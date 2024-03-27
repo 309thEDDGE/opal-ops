@@ -173,7 +173,7 @@ def set_shared_traitlets(c, vols):
     c.GenericOAuthenticator.userdata_params = {"state": "state"}
     c.GenericOAuthenticator.client_id = keycloak_jupyterhub_client_id
     c.GenericOAuthenticator.client_secret = keycloak_jupyterhub_client_secret
-    c.GenericOAuthenticator.tls_verify = False
+    c.GenericOAuthenticator.validate_server_cert = False
     c.GenericOAuthenticator.oauth_callback_url = keycloak_jupyterhub_oauth_callback_url
     c.GenericOAuthenticator.authorize_url = keycloak_jupyterhub_authorize_url
     c.GenericOAuthenticator.token_url = keycloak_opal_api_url

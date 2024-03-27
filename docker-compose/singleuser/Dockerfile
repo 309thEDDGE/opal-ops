@@ -6,7 +6,8 @@ COPY --chown=jovyan:jovyan opal /opt/data/opal
 COPY --chown=jovyan:jovyan weave /opt/data/weave
 # Sed replaces the "  - ./local-channel" entry in the conda env file and replaces it with the three local channels: tip_channel, tip_deps_channel, and local-channel
 # local_channel in this block refers to the local conda channel as it exists within the IB singleuser image
-RUN sed '/local-channel/s/.*/ - .\/local-channel/' /home/jovyan/local-channel/local_channel_env.yaml > /home/jovyan/singleuser_env.yaml \
+RUN conda search --channel file:///home/jovyan/local-channel --offline \
+    && sed '/local-channel/s/.*/ - .\/local-channel/' /home/jovyan/local-channel/local_channel_env.yaml > /home/jovyan/singleuser_env.yaml \
     && printf "\n  - pip:" >> /home/jovyan/singleuser_env.yaml \
     && printf "\n    - /opt/data/opal/opal-packages" >> /home/jovyan/singleuser_env.yaml \
     && printf "\n    - /opt/data/weave" >> /home/jovyan/singleuser_env.yaml \
