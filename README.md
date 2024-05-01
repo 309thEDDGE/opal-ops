@@ -8,23 +8,49 @@ This repo contains all the deployment code and configuration files necessary for
 
 #### Instructions for deploying platform locally
 
-1. Clone clone this repo
-2. Clone https://github.com/309thEDDGE/opal into this repository's `docker-compose` directory
-3. Run the following:
+1. Clone the opal-ops repo from https://github.com/309thEDDGE/opal-ops.git
+2. cd into the repo directory, and into the docker-compose directory.
+3. Clone https://github.com/309thEDDGE/opal into this repository's `docker-compose` directory
+4. Clone https://github.com/309thEDDGE/weave into this repositroy's `docker-compose` directory
+5. Make sure you are logged into the docker repository for repository1.dso.mil for the next step.
+The command to log in with docker:
+>docker login repository1.dso.mil
 
-```
-cd docker-compose
-docker login registry.il2.dso.mil #IL2 IMAGE REGISTRY
-docker login registry1.dso.mil #IRONBANK IMAGE REGISTRYs
-./start_dev.sh
-```
+6. cd into the configuration directory 
+7. run the following in the terminal `bash new_deployment.bash`
+8.  You now have to configure your deployment with the following settings:
+    **Deployment name:** 
+
+        what ever you choice to call your local depolyment(i.e. test, cui, etc)
+    **Localhost deployment (y/n)?** 
+
+        enter n
+    **Base DNS name of this deployment (i.e. .companyname.com)**
+
+        .127.0.0.1.nip.io 
+    **Add opal to base URL? (y,n)**
+
+        enter n
+    **Banner color (Looks like classification banner, must be HTML color):**
+
+        this can be any color to the user's preference green, blue, red, etc.
+    **Banner name (Can be used for network name or classification markings)**
+
+        this can be any text according the the preference of the user.
+    **Deploy keycloak with OPAL (y/n)**
+    
+        Always choice y, unless you are an expert with OPAL and have an external keycloak deployment.
+9. After the configuration is complete go back into the docker-compose directory.
+10. Now you should see a bash script from whatever name you called the deployment.(ie. test_util.sh)
+11. run the script as 'bash <name_of_deployment>_util.sh start
+12. this script will download all the appropriate packages and complete the installation process for OPAL.
 ---
 
 #### URLs for local dev
 
 https://minio.127.0.0.1.nip.io/login
 https://keycloak.127.0.0.1.nip.io/
-https://jupyterhub.127.0.0.1.nip.io/hub/
+https://opal.127.0.0.1.nip.io/hub/
 
 NOTE: If the links above do not resolve then you will need to modify your hosts file and have minio.127.0.0.1.nip.io, jupyterhub.127.0.0.1.nip.io, keycloak.127.0.0.1.nip.io resolve to localhost.
 
