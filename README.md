@@ -20,18 +20,25 @@ The command to log in with docker:
 7. run the following in the terminal `bash new_deployment.bash`
 8.  You now have to configure your deployment with the following settings:
     **Deployment name:** 
+
         what ever you choice to call your local depolyment(i.e. test, cui, etc)
     **Localhost deployment (y/n)?** 
+
         enter n
     **Base DNS name of this deployment (i.e. .companyname.com)**
+
         .127.0.0.1.nip.io 
     **Add opal to base URL? (y,n)**
+
         enter n
     **Banner color (Looks like classification banner, must be HTML color):**
+
         this can be any color to the user's preference green, blue, red, etc.
     **Banner name (Can be used for network name or classification markings)**
+
         this can be any text according the the preference of the user.
     **Deploy keycloak with OPAL (y/n)**
+    
         Always choice y, unless you are an expert with OPAL and have an external keycloak deployment.
 9. After the configuration is complete go back into the docker-compose directory.
 10. Now you should see a bash script from whatever name you called the deployment.(ie. test_util.sh)
