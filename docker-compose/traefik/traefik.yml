@@ -20,7 +20,7 @@ entrypoints:
 
 api:
   dashboard: false
-  insecure: true
+  insecure: false
 
 ping: true
 
