@@ -91,6 +91,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml"
       - "./traefik/traefik.yml:/etc/traefik/traefik.yml"
+      - "./traefik/access_logs/:/logs/"
     env_file:
       - ./.env
       - ./.env.secrets
