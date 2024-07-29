@@ -24,11 +24,6 @@ api:
 
 ping: true
 
-accessLog:
-  filepath: "/logs/access.json"
-  format: json
-  bufferingSize: 10
-
 #Uncomment below for increased logging
 # log:
 #   level: DEBUG
