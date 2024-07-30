@@ -120,3 +120,4 @@ volumes:
   postgres_storage:
   mongo_storage:
   jhub_postgres_storage:
+  log_storage:
