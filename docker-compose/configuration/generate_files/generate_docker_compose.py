@@ -131,6 +131,7 @@ def keycloak_service(context: dict) -> dict:
     return ({
         "keycloak": {
             "image": "${KEYCLOAK_IMAGE}",
+            "command": "start",
             "depends_on": {
                 "postgresql": {
                     "condition": "service_healthy"
