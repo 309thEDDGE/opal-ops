@@ -25,8 +25,8 @@ def keycloak_env(context):
             "KC_DB_URL_DATABASE":"keycloak-db",
             "KC_DB_USERNAME":"postgres",
             "KC_DB_PASSWORD":"postgres",
-            "KEYCLOAK_USER":"admin",
-            "KEYCLOAK_PASSWORD":"opal",
+            "KEYCLOAK_ADMIN":"admin",
+            "KEYCLOAK_ADMIN_PASSWORD":"opal",
             "MINIO_TEST_USER": "opaluser",
             "MINIO_TEST_USER_PASSWORD": "opalpassword"
         }

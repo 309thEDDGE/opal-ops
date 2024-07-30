@@ -43,8 +43,8 @@ class TestGenerateEnv():
             "KC_DB_URL_DATABASE":"keycloak-db",
             "KC_DB_USERNAME":"postgres",
             "KC_DB_PASSWORD":"postgres",
-            'KEYCLOAK_USER': 'admin',
-            'KEYCLOAK_PASSWORD' : 'opal',
+            'KEYCLOAK_ADMIN': 'admin',
+            'KEYCLOAK_ADMIN_PASSWORD' : 'opal',
             'MINIO_TEST_USER' : 'opaluser',
             'MINIO_TEST_USER_PASSWORD' : 'opalpassword',
             'MINIO_ROOT_USER' : 'opal-administrator',
@@ -56,7 +56,7 @@ class TestGenerateEnv():
             'S3_ENDPOINT' : 'http://minio:9000',
             'MINIO_BROWSER_REDIRECT_URL' : 'https://minio',
             }
-        expected = 'DEPLOYMENT_NAME=test_context\nJUPYTERHUB_PORT=443\nKEYCLOAK_AUTH_SERVER_URL=https://keycloak/auth\nKEYCLOAK_CALLBACK_URL=https://opal/services/opal-catalog/oauth_callback\nJUPYTERHUB_API_URL=http://jupyterhub:8081/hub/api\nOPAL_CATALOG_CALLBACK=https://opal/services/opal-catalog/oauth_callback\nKEYCLOAK_JUPYTERHUB_OAUTH_CALLBACK_URL=https://opal/hub/oauth_callback\nKEYCLOAK_JUPYTERHUB_AUTHORIZE_URL=https://keycloak/auth/realms/master/protocol/openid-connect/auth\nKEYCLOAK_JUPYTERHUB_USERDATA_URL=https://keycloak/auth/realms/master/protocol/openid-connect/userinfo\nKEYCLOAK_OPAL_API_URL=https://keycloak/auth/realms/master/protocol/openid-connect/token\nKC_DB=postgres\nKC_DB_URL_HOST=postgresql\nKC_DB_URL_PORT=5432\nKC_DB_URL_DATABASE=keycloak-db\nKC_DB_USERNAME=postgres\nKC_DB_PASSWORD=postgres\nKEYCLOAK_USER=admin\nKEYCLOAK_PASSWORD=opal\nMINIO_TEST_USER=opaluser\nMINIO_TEST_USER_PASSWORD=opalpassword\nMINIO_ROOT_USER=opal-administrator\nMINIO_ROOT_PASSWORD=opal_minio_password\nMINIO_IDENTITY_OPENID_CONFIG_URL=https://keycloak/auth/realms/master/.well-known/openid-configuration\nMINIO_IDENTITY_OPENID_CLIENT_ID=opal-jupyterhub\nMINIO_IDENTITY_OPENID_CLAIM_NAME=policy\nMINIO_IDENTITY_OPENID_REDIRECT_URI=https://minio/oauth_callback\nS3_ENDPOINT=http://minio:9000\nMINIO_BROWSER_REDIRECT_URL=https://minio'
+        expected = 'DEPLOYMENT_NAME=test_context\nJUPYTERHUB_PORT=443\nKEYCLOAK_AUTH_SERVER_URL=https://keycloak/auth\nKEYCLOAK_CALLBACK_URL=https://opal/services/opal-catalog/oauth_callback\nJUPYTERHUB_API_URL=http://jupyterhub:8081/hub/api\nOPAL_CATALOG_CALLBACK=https://opal/services/opal-catalog/oauth_callback\nKEYCLOAK_JUPYTERHUB_OAUTH_CALLBACK_URL=https://opal/hub/oauth_callback\nKEYCLOAK_JUPYTERHUB_AUTHORIZE_URL=https://keycloak/auth/realms/master/protocol/openid-connect/auth\nKEYCLOAK_JUPYTERHUB_USERDATA_URL=https://keycloak/auth/realms/master/protocol/openid-connect/userinfo\nKEYCLOAK_OPAL_API_URL=https://keycloak/auth/realms/master/protocol/openid-connect/token\nKC_DB=postgres\nKC_DB_URL_HOST=postgresql\nKC_DB_URL_PORT=5432\nKC_DB_URL_DATABASE=keycloak-db\nKC_DB_USERNAME=postgres\nKC_DB_PASSWORD=postgres\nKEYCLOAK_ADMIN=admin\nKEYCLOAK_ADMIN_PASSWORD=opal\nMINIO_TEST_USER=opaluser\nMINIO_TEST_USER_PASSWORD=opalpassword\nMINIO_ROOT_USER=opal-administrator\nMINIO_ROOT_PASSWORD=opal_minio_password\nMINIO_IDENTITY_OPENID_CONFIG_URL=https://keycloak/auth/realms/master/.well-known/openid-configuration\nMINIO_IDENTITY_OPENID_CLIENT_ID=opal-jupyterhub\nMINIO_IDENTITY_OPENID_CLAIM_NAME=policy\nMINIO_IDENTITY_OPENID_REDIRECT_URI=https://minio/oauth_callback\nS3_ENDPOINT=http://minio:9000\nMINIO_BROWSER_REDIRECT_URL=https://minio'
         actual = module.format_env_file(data)
         assert actual == expected
     
@@ -89,8 +89,8 @@ class TestGenerateEnv():
             "KC_DB_URL_DATABASE":"keycloak-db",
             "KC_DB_USERNAME":"postgres",
             "KC_DB_PASSWORD":"postgres",
-            "KEYCLOAK_USER":"admin",
-            "KEYCLOAK_PASSWORD":"opal",
+            "KEYCLOAK_ADMIN":"admin",
+            "KEYCLOAK_ADMIN_PASSWORD":"opal",
             "MINIO_TEST_USER": "opaluser",
             "MINIO_TEST_USER_PASSWORD": "opalpassword"
         }
@@ -140,8 +140,8 @@ class TestGenerateEnv():
             "KC_DB_URL_DATABASE":"keycloak-db",
             "KC_DB_USERNAME":"postgres",
             "KC_DB_PASSWORD":"postgres",
-            'KEYCLOAK_USER': 'admin',
-            'KEYCLOAK_PASSWORD' : 'opal',
+            'KEYCLOAK_ADMIN': 'admin',
+            'KEYCLOAK_ADMIN_PASSWORD' : 'opal',
             'MINIO_TEST_USER' : 'opaluser',
             'MINIO_TEST_USER_PASSWORD' : 'opalpassword',
             'MINIO_ROOT_USER' : 'opal-administrator',
