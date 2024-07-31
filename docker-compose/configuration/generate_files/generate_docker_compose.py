@@ -140,7 +140,7 @@ def keycloak_service(context: dict) -> dict:
             "volumes": [
                 f"./{keycloak_certs / 'tls.key'}:/etc/x509/https/tls.key",
                 f"./{keycloak_certs / 'tls.crt'}:/etc/x509/https/tls.crt",
-                "log_storage:/logs"
+                "keycloak_log_storage:/logs"
             ],
             "env_file": [
                 "./.env.secrets",

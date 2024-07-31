@@ -91,7 +91,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml"
       - "./traefik/traefik.yml:/etc/traefik/traefik.yml"
-      - "log_storage:/logs"
+      - "traefik_log_storage:/logs"
     env_file:
       - ./.env
       - ./.env.secrets
@@ -121,4 +121,5 @@ volumes:
   postgres_storage:
   mongo_storage:
   jhub_postgres_storage:
-  log_storage:
+  keycloak_log_storage:
+  traefik_log_storage:
