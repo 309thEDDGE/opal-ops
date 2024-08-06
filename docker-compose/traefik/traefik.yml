@@ -25,7 +25,7 @@ api:
 ping: true
 
 accessLog:
-  filepath: "/logs/access.json"
+  filepath: "/logs/traefik/traefik_access.json"
   format: json
   bufferingSize: 10
 

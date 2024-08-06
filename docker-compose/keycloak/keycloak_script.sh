@@ -4,7 +4,7 @@
 # https://github.com/keycloak/keycloak-documentation/blob/main/server_admin/topics/admin-cli.adoc
 # https://www.keycloak.org/docs-api/15.0/rest-api/index.html
 
-cd /opt/jboss/keycloak/bin/
+cd /opt/keycloak/bin/
 
 if [[ -z "${EXTERNAL_KEYCLOAK}" ]]; then
     EXTERNAL_KEYCLOAK=http://keycloak:8080/
@@ -13,8 +13,8 @@ fi
 authenticate_keycloak () {
 ./kcadm.sh config credentials \
             --server $EXTERNAL_KEYCLOAK/auth \
-            --user $KEYCLOAK_USER \
-            --password $KEYCLOAK_PASSWORD \
+            --user $KEYCLOAK_ADMIN \
+            --password $KEYCLOAK_ADMIN_PASSWORD \
             --realm master
 }
 
@@ -71,6 +71,11 @@ echo "Creating miniopolicyclaim mapper for opal-jupyterhub client with $JUPYTERH
             -s 'config."access.token.claim"=true' \
             -s 'config."claim.name"=policy' \
             -s 'config."jsonType.label"=String'
+
+
+# Enable event logging for the master realm. Events expire after 14 days
+./kcadm.sh update events/config -r master -s eventsEnabled=true -s 'enabledEventTypes=[]' -s eventsExpiration=1209600
+
 
 
 # This is for creating a Minio client. Currently minio and jupyterhub share a client

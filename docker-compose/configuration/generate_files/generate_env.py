@@ -19,14 +19,14 @@ def minio_endpoint(context) -> str:
 def keycloak_env(context):
     return (
         {
-            "DB_VENDOR":"postgres",
-            "DB_ADDR":"postgresql",
-            "DB_PORT":5432,
-            "DB_DATABASE":"keycloak-db",
-            "DB_USER":"postgres",
-            "DB_PASSWORD":"postgres",
-            "KEYCLOAK_USER":"admin",
-            "KEYCLOAK_PASSWORD":"opal",
+            "KC_DB":"postgres",
+            "KC_DB_URL_HOST":"postgresql",
+            "KC_DB_URL_PORT":5432,
+            "KC_DB_URL_DATABASE":"keycloak-db",
+            "KC_DB_USERNAME":"postgres",
+            "KC_DB_PASSWORD":"postgres",
+            "KEYCLOAK_ADMIN":"admin",
+            "KEYCLOAK_ADMIN_PASSWORD":"opal",
             "MINIO_TEST_USER": "opaluser",
             "MINIO_TEST_USER_PASSWORD": "opalpassword"
         }

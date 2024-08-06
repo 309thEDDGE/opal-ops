@@ -131,6 +131,7 @@ def keycloak_service(context: dict) -> dict:
     return ({
         "keycloak": {
             "image": "${KEYCLOAK_IMAGE}",
+            "command": "start",
             "depends_on": {
                 "postgresql": {
                     "condition": "service_healthy"
@@ -138,7 +139,8 @@ def keycloak_service(context: dict) -> dict:
             },
             "volumes": [
                 f"./{keycloak_certs / 'tls.key'}:/etc/x509/https/tls.key",
-                f"./{keycloak_certs / 'tls.crt'}:/etc/x509/https/tls.crt"
+                f"./{keycloak_certs / 'tls.crt'}:/etc/x509/https/tls.crt",
+                "./access_logs:/logs"
             ],
             "env_file": [
                 "./.env.secrets",
@@ -146,7 +148,7 @@ def keycloak_service(context: dict) -> dict:
                 "./.env"
             ],
             "healthcheck": {
-                "test": ["CMD-SHELL", "curl --fail http://localhost:9990/health"],
+                "test": ["CMD-SHELL", "curl --fail http://localhost:9000/health"],
                 "interval": "60s",
                 "timeout": "5s",
                 "start_period": "60s",
