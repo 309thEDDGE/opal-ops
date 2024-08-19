@@ -1,5 +1,5 @@
 def format_control_script(context):
-    file = f"""#!/bin/bash
+    file = rf"""#!/bin/bash
 _blue() {{
   echo -e $'\e[1;36m'"$@"$'\e[0m'
 }}
