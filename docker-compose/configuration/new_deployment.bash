@@ -94,7 +94,7 @@ fi
 
 # get the deployment name from out.json
 # jq might not be insalled on the system, so it's sed time
-DEPLOYMENT_NAME=$(grep -r '"deployment_name\": "[^"]*"' $CONTEXT_FILE | sed 's/.*://g;s/[\ ",]//g')
+DEPLOYMENT_NAME=$(grep -r '"deployment_name": "[^"]*"' $CONTEXT_FILE | sed 's/.*://g;s/[\ ",]//g')
 
 _green "-------------------------------------"
 _green "    Generating files for $DEPLOYMENT_NAME"
