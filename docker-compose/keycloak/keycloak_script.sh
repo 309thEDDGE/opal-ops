@@ -133,7 +133,7 @@ JUPYTERHUB_STAFF_GROUP_ID=$(./kcadm.sh get groups -r master | grep jupyterhub_st
 # Adds policy=readwrite to staff_group
 
 ./kcadm.sh update groups/$JUPYTERHUB_STAFF_GROUP_ID -s 'attributes.policy=["readwrite"]' -r master
-./kcadm.sh update groups/$JUPYTERHUB_ADMINS_GROUP_ID -s 'attributes.policy=["consolewrite"]' -r master
+./kcadm.sh update groups/$JUPYTERHUB_ADMINS_GROUP_ID -s 'attributes.policy=["consoleAdmin"]' -r master
 
 # Adds policy=consoleAdmin to the 'admin' user in keycloak, allowing login to minio
 #ADMIN_USER_ID=$(./kcadm.sh get users -r master -q username=admin | grep id | awk -F'"' '{print $4}')
