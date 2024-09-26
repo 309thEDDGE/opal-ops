@@ -54,19 +54,13 @@ https://opal.127.0.0.1.nip.io/hub/
 
 NOTE: If the links above do not resolve then you will need to modify your hosts file and have minio.127.0.0.1.nip.io, jupyterhub.127.0.0.1.nip.io, keycloak.127.0.0.1.nip.io resolve to localhost.
 
-The user login for jupyterhub:
-
-```
-user: opaluser
-pass: opalpassword
-```
-
-The admin user credentials for keycloak:
+The user login for jupyterhub and keycloak is:
 
 ```
 user: admin
 pass: opal
 ```
+
 
 #### Adding other users to the deployment
 
