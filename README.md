@@ -12,9 +12,9 @@ This repo contains all the deployment code and configuration files necessary for
 2. cd into the repo directory, and into the docker-compose directory.
 3. Clone https://github.com/309thEDDGE/opal into this repository's `docker-compose` directory
 4. Clone https://github.com/309thEDDGE/weave into this repositroy's `docker-compose` directory
-5. Make sure you are logged into the docker repository for repository1.dso.mil for the next step.
+5. Make sure you are logged into the docker repository for registry1.dso.mil for the next step.
 The command to log in with docker:
->docker login repository1.dso.mil
+>docker login registry1.dso.mil
 
 6. cd into the configuration directory 
 7. run the following in the terminal `bash new_deployment.bash`
@@ -49,7 +49,7 @@ The command to log in with docker:
 #### URLs for local dev
 
 https://minio.127.0.0.1.nip.io/login
-https://keycloak.127.0.0.1.nip.io/
+https://keycloak.127.0.0.1.nip.io/auth
 https://opal.127.0.0.1.nip.io/hub/
 
 NOTE: If the links above do not resolve then you will need to modify your hosts file and have minio.127.0.0.1.nip.io, jupyterhub.127.0.0.1.nip.io, keycloak.127.0.0.1.nip.io resolve to localhost.
@@ -133,3 +133,16 @@ Prior to pushing any commits to this repository, enable the Trufflehog pre-commi
 
 In order to use the test_overwrite_files() located within the update_deployment.bash, you need to ensure the function is uncommented in the main()
 and have deepDiff installed locally (use "pip install deepdiff")
+
+#### Troubleshooting guide
+##### Troubleshoot docker login
+###### Update Certs
+If installroot is not installed already, it can be found from the below URL 
+https://public.cyber.mil/pki-pke/end-users/getting-started/#toggle-id-1
+Run installroot as administrator and "Install Certs"
+
+##### Troubleshoot deployment
+May need to remove old docker volume before redeploying 
+`docker volume rm opal_postgres_storage` 
+Write the docker logs to a txt file and look through errors
+`docker-compose logs > logs.txt`
