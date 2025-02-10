@@ -1,0 +1,44 @@
+# Static config
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    filename: "/etc/traefik/traefik_dynamic.yml"
+
+entrypoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+    http:
+      tls: {}
+
+certificatesResolvers:
+  le:
+    acme:
+      email: "{{ email }}"
+      storage: "/letsencrypt/acme.json"
+      #caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      dnsChallenge:
+        provider: "cloudflare"
+        delayBeforeCheck: 2s
+
+api:
+  dashboard: false
+  insecure: false
+
+ping: true
+
+accessLog:
+  filepath: "/logs/traefik/traefik_access.json"
+  format: json
+  bufferingSize: 10
+
+#Uncomment below for increased logging
+# log:
+#   level: DEBUG
