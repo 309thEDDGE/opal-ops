@@ -92,12 +92,11 @@ to
 IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v3
 ```
 15. run the script as 'bash <name_of_deployment>_util.sh start
+> [!note]
+>
+> In general, it will be necessary to run the start script with admin privileges ```sudo``` at the start of a bash command. This can be circumvented if docker is set up in certain ways and if certain files under `access_logs` have their ownership modified, but these workarounds should be avoided.
 ```
 bash deploy_util.sh start
-```
-you might need to run
-```
-sudo bash deploy_util.sh start
 ```
 
 16. this script will download all the appropriate packages and complete the installation process for OPAL. This takes a while (little over an hour, maybe 1.5 hours, with the launch pad internet)
@@ -122,35 +121,38 @@ pass: opal
 
 To add a user perform the following:
 
-- Click `Administration Console` (you may automatically be redirected without this step `https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/`)
+- click `Administration Console` (you may automatically be redirected without this step `https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/`)
 
 The url would be
 ```
 https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/
 ```
 
-- Click `Users` (on the left side under the `Manage` section)
-- Click `Add User` button in the `Users` section (should be in the center of the screen)
-- Create a username, click `Create`.
+- click `Users` (on the left side under the `Manage` section)
+- click `Add User` button in the `Users` section (should be in the center of the screen)
+- create a username, click `Create`.
 
 After the user is generated, the following steps are performed within the user configuration. If this is not automatically pulled up, it can be accessed by clicking `Users` on the left bar, searching for the username, and clicking the blue UID for the user:
 
-- To allow Minio access, click `Groups` on the left side
+
+To allow Minio access: 
+- click `Groups` on the left side
 - click `jupyterhub_staff` in the middle third section (if the window takes the full screen)
-- and then `Attributes` under `jupyterhub_staff`.
-- Add the key: `policy` and the value: `consoleAdmin` and click `Save`. 
+- click `Attributes` under `jupyterhub_staff`.
+- add the key: `policy` and the value: `consoleAdmin`
+- click `Save`. 
   - For less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
-- Click `Users` under the `Manage` section
-- then click the user (the blue uid) you just made.
-- `Groups` in the center sectino under your new user, 
-- `Join Group`, and check `jupyterhub_staff` to allow the user to log into jupyterhub
-- Click the `Credentials` tab under your new user (middle of screen)
+- click `Users` under the `Manage` section
+- click the user (the blue uid) you just made
+- click `Groups` in the center sectino under your new user
+- click `Join Group`, and check `jupyterhub_staff` to allow the user to log into jupyterhub
+- click the `Credentials` tab under your new user (middle of screen)
 - `Set password` button. 
-- Add a temporary password in the `Password` and `Password Comfirmation` fields
-- This should send the username and temporary password to the user
+- add a temporary password in the `Password` and `Password Comfirmation` fields
+  - this should send the username and temporary password to the user
 
 The user should now be able to log into jupyterhub.
-```
+
 https://opal.127.0.0.1.nip.io/hub/
 ```
 
@@ -227,11 +229,9 @@ To start Opal again
 - ```
   bash deploy_util.sh start
   ```
-- you might need to run sudo before
-- ```
-  sudo bash deploy_util.sh start
-  ```
-- could take a handful of minutes to start it again
+> [!note]
+> 
+> This could take several minutes to start again, depending on the resources the computer has available.
 
 To stop Opal
 
