@@ -147,7 +147,7 @@ To allow Minio access:
 - click `Groups` in the center sectino under your new user
 - click `Join Group`, and check `jupyterhub_staff` to allow the user to log into jupyterhub
 - click the `Credentials` tab under your new user (middle of screen)
-- `Set password` button. 
+- click `Set password` button
 - add a temporary password in the `Password` and `Password Comfirmation` fields
   - this should send the username and temporary password to the user
 
