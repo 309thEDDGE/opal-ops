@@ -135,7 +135,7 @@ https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/
 After the user is generated, the following steps are performed within the user configuration. If this is not automatically pulled up, it can be accessed by clicking `Users` on the left bar, searching for the username, and clicking the blue UID for the user:
 
 
-To allow Minio access: 
+To allow Minio access:
 - click `Groups` on the left side
 - click `jupyterhub_staff` in the middle third section (if the window takes the full screen)
 - click `Attributes` under `jupyterhub_staff`.
