@@ -57,7 +57,7 @@ bash new_deployment.bash
 
     **Deployment name:** 
 
-        what ever you choose to call your local depolyment. This could be cui, deploy, test, etc. (ex. deploy)
+        what ever you choose to call your local depolyment. (ex. deploy)
     **Localhost deployment (y/n)?** 
 
         n
@@ -135,9 +135,18 @@ https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/
 
 After the user is generated, the following steps are performed within the user configuration. If this is not automatically pulled up, it can be accessed by clicking `Users` on the left bar, searching for the username, and clicking the blue UID for the user:
 
-- To allow Minio access, click `Groups` on the left side, click `jupyterhub_staff` in the middle third section (if the window takes the full screen), and then `Attributes` under `jupyterhub_staff`. Add the key: `policy` and the value: `consoleAdmin` and click `Save`. For less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
-- Click `Users` under the `Manage` section, then click the user (the blue uid) you just made. Then `Groups` in the center sectino under your new user, `Join Group`, and check `jupyterhub_staff` to allow the user to log into jupyterhub
-- Click the `Credentials` tab under your new user (middle of screen), and `Set password` button. Add a temporary password in the `Password` and `Password Comfirmation` fields
+- To allow Minio access, click `Groups` on the left side
+- click `jupyterhub_staff` in the middle third section (if the window takes the full screen)
+- and then `Attributes` under `jupyterhub_staff`.
+- Add the key: `policy` and the value: `consoleAdmin` and click `Save`. 
+  - For less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
+- Click `Users` under the `Manage` section
+- then click the user (the blue uid) you just made.
+- `Groups` in the center sectino under your new user, 
+- `Join Group`, and check `jupyterhub_staff` to allow the user to log into jupyterhub
+- Click the `Credentials` tab under your new user (middle of screen)
+- `Set password` button. 
+- Add a temporary password in the `Password` and `Password Comfirmation` fields
 - This should send the username and temporary password to the user
 
 The user should now be able to log into jupyterhub.
