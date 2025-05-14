@@ -141,7 +141,7 @@ To allow Minio access:
 - click `Attributes` under `jupyterhub_staff`.
 - add the key: `policy` and the value: `consoleAdmin`
 - click `Save`. 
-  - For less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
+  - for less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
 - click `Users` under the `Manage` section
 - click the user (the blue uid) you just made
 - click `Groups` in the center sectino under your new user
@@ -154,7 +154,7 @@ To allow Minio access:
 The user should now be able to log into jupyterhub.
 
 https://opal.127.0.0.1.nip.io/hub/
-```
+
 
 Tips:
 
