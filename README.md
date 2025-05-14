@@ -16,7 +16,7 @@ git clone https://github.com/309thEDDGE/opal-ops.git
 ```
 cd opal-ops/docker-compose
 ```
-3. Clone https://github.com/309thEDDGE/opal into this repository's 
+3. Clone https://github.com/309thEDDGE/opal into this repository's
 `docker-compose` directory
 ```
 git clone https://github.com/309thEDDGE/opal
