@@ -25,11 +25,7 @@ git clone https://github.com/309thEDDGE/opal
 ```
 git clone https://github.com/309thEDDGE/weave
 ```
-5. If you do not have docker installed, install docker. You can download docker.desktop.
-```
-https://www.docker.com/products/docker-desktop/
-```
-I created a personal account using my government email. Have this application running when using opal.
+5. If Docker is not installed, install it via your system's package manager (e.g., apt, brew, choco) or download Docker Desktop. Have this application running when using opal.
 
 6. Log into registry1.dso.mil on the internet.
 ```
@@ -76,7 +72,9 @@ bash new_deployment.bash
     **Deploy keycloak with OPAL (y/n)**
 
         y
-        Always choose y, unless you are an expert with OPAL and have an external keycloak deployment.
+    > [!note]
+    >
+    > Always choose y, unless you are an expert with OPAL and have an external keycloak deployment.
 12. After the configuration is complete go back into the docker-compose directory.
 ```
 cd ..
