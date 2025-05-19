@@ -72,9 +72,9 @@ bash new_deployment.bash
     **Deploy keycloak with OPAL (y/n)**
 
         y
-    > [!note]
-    >
-    > Always choose y, unless you are an expert with OPAL and have an external keycloak deployment.
+> [!note]
+>
+> Always choose y, unless you are an expert with OPAL and have an external keycloak deployment.
 12. After the configuration is complete go back into the docker-compose directory.
 ```
 cd ..
