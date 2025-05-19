@@ -25,7 +25,7 @@ git clone https://github.com/309thEDDGE/opal
 ```
 git clone https://github.com/309thEDDGE/weave
 ```
-5. If Docker is not installed, install it via your system's package manager (e.g., apt, brew, choco) or download Docker Desktop. Have this application running when using opal.
+5. If Docker is not installed, install it via your system's package manager (e.g., apt, brew, choco) or download Docker Desktop. Have docker running when using opal.
 
 6. Log into registry1.dso.mil on the internet.
 ```
