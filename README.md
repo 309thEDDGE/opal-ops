@@ -9,43 +9,43 @@ This repo contains all the deployment code and configuration files necessary for
 #### Instructions for deploying platform locally
 
 1. Clone the opal-ops repo from https://github.com/309thEDDGE/opal-ops.git
-```
+```bash
 git clone https://github.com/309thEDDGE/opal-ops.git
 ```
 2. cd into the repo directory, and into the docker-compose directory.
-```
+```bash
 cd opal-ops/docker-compose
 ```
 3. Clone https://github.com/309thEDDGE/opal into this repository's
 `docker-compose` directory
-```
+```bash
 git clone https://github.com/309thEDDGE/opal
 ```
 4. Clone https://github.com/309thEDDGE/weave into the same `docker-compose` directory. `~/opal-ops/docker-compose`
-```
+```bash
 git clone https://github.com/309thEDDGE/weave
 ```
 5. If Docker is not installed, install it via your system's package manager (e.g., apt, brew, choco) or download Docker Desktop. Have docker running when using opal.
 
 6. Log into registry1.dso.mil on the internet.
-```
+```bash
 https://registry1.dso.mil/account/sign-in
 ```
 
 7. Once you are logged click your username on the top right, then click `User Profile`. Your  `Username` and `CLI secret` will be used in the next step.
 
 8. Back in terminal log in to registry1.dso.mil with docker.
-```
+```bash
 docker login registry1.dso.mil
 ```
 When it asked for your username and password it is your `Username` and `CLI secret` respectively from the previous step.
 
 9. cd into the configuration directory 
-```
+```bash
 cd configuration
 ```
 10. run the following in the terminal 
-```
+```bash
 bash new_deployment.bash
 ```
 
@@ -76,24 +76,24 @@ bash new_deployment.bash
 >
 > Always choose y, unless you are an expert with OPAL and have an external keycloak deployment.
 12. After the configuration is complete go back into the docker-compose directory.
-```
+```bash
 cd ..
 ```
 
 13. Now you should see a bash script from whatever name you called the deployment. (ex. deploy_util.sh)
 14. Open `~/opal-ops/docker-compose/.env` and change
-```
+```bash
 IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v7
 ```
 to 
-```
+```bash
 IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v3
 ```
 15. run the script as 'bash <name_of_deployment>_util.sh start
 > [!note]
 >
 > In general, it will be necessary to run the start script with admin privileges ```sudo``` at the start of a bash command. This can be circumvented if docker is set up in certain ways and if certain files under `access_logs` have their ownership modified, but these workarounds should be avoided.
-```
+```bash
 bash deploy_util.sh start
 ```
 
@@ -224,7 +224,7 @@ To start Opal again
 
 - make sure docker is running
 - bash <name_of_deployment>_util.sh start in the docker-compose folder 
-- ```
+- ```bash
   bash deploy_util.sh start
   ```
 > [!note]
@@ -234,7 +234,7 @@ To start Opal again
 To stop Opal
 
 - bash <name_of_deployment>_util.sh stop
-- ```
+- ```bash
   bash deploy_util.sh stop
   ```
 
@@ -258,7 +258,7 @@ sudo apt install pre-commit
 pre-commit install
 ``` 
 from the root of this repository  `~/opal-ops`. This will require a working install of docker and [pre-commit](https://pre-commit.com/)
-```
+```bash
 pip install pre-commit
 ```
 
@@ -266,7 +266,7 @@ pip install pre-commit
 
 In order to use the `overwrite_files` function located within the `update_deployment.bash`, you need to ensure the function is uncommented in the `main()`
 and have `deepDiff` installed locally 
-```
+```bash
 pip install deepdiff
 ```
 
