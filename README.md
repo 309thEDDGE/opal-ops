@@ -9,64 +9,96 @@ This repo contains all the deployment code and configuration files necessary for
 #### Instructions for deploying platform locally
 
 1. Clone the opal-ops repo from https://github.com/309thEDDGE/opal-ops.git
+```bash
+git clone https://github.com/309thEDDGE/opal-ops.git
+```
 2. cd into the repo directory, and into the docker-compose directory.
-3. Clone https://github.com/309thEDDGE/opal into this repository's `docker-compose` directory
-4. Clone https://github.com/309thEDDGE/weave into this repositroy's `docker-compose` directory
-5. Make sure you are logged into the docker repository for registry1.dso.mil for the next step.
-The command to log in with docker:
->docker login registry1.dso.mil
+```bash
+cd opal-ops/docker-compose
+```
+3. Clone https://github.com/309thEDDGE/opal into this repository's
+`docker-compose` directory
+```bash
+git clone https://github.com/309thEDDGE/opal
+```
+4. Clone https://github.com/309thEDDGE/weave into the same `docker-compose` directory. `~/opal-ops/docker-compose`
+```bash
+git clone https://github.com/309thEDDGE/weave
+```
+5. If Docker is not installed, install it via your system's package manager (e.g., apt, brew, choco) or download Docker Desktop. Have docker running when using opal.
 
-6. cd into the configuration directory 
-7. run the following in the terminal `bash new_deployment.bash`
-8.  You now have to configure your deployment with the following settings:
+6. Log into registry1.dso.mil on the internet.
+```bash
+https://registry1.dso.mil/account/sign-in
+```
+
+7. Once you are logged click your username on the top right, then click `User Profile`. Your  `Username` and `CLI secret` will be used in the next step.
+
+8. Back in terminal log in to registry1.dso.mil with docker.
+```bash
+docker login registry1.dso.mil
+```
+When it asked for your username and password it is your `Username` and `CLI secret` respectively from the previous step.
+
+9. cd into the configuration directory 
+```bash
+cd configuration
+```
+10. run the following in the terminal 
+```bash
+bash new_deployment.bash
+```
+
+11. You now have to configure your deployment with the following settings:
+
     **Deployment name:** 
 
-        what ever you choice to call your local depolyment(i.e. test, cui, etc)
+        what ever you choose to call your local depolyment. (ex. deploy)
     **Localhost deployment (y/n)?** 
 
-        enter n
+        n
     **Base DNS name of this deployment (i.e. .companyname.com)**
 
         .127.0.0.1.nip.io 
     **Add opal to base URL? (y,n)**
 
-        enter n
+        n
     **Banner color (Looks like classification banner, must be HTML color):**
 
-        this can be any color to the user's preference green, blue, red, etc.
+        this can be any color to the user's preference green, blue, red, etc. (ex. red)
     **Banner name (Can be used for network name or classification markings)**
 
-        this can be any text according the the preference of the user.
+        this can be any text according the the preference of the user (ex. classification).
     **Deploy keycloak with OPAL (y/n)**
-    
-        Always choice y, unless you are an expert with OPAL and have an external keycloak deployment.
-9. After the configuration is complete go back into the docker-compose directory.
-10. Now you should see a bash script from whatever name you called the deployment.(ie. test_util.sh)
-11. run the script as 'bash <name_of_deployment>_util.sh start
-12. this script will download all the appropriate packages and complete the installation process for OPAL.
+
+        y
+> [!note]
+>
+> Always choose y, unless you are an expert with OPAL and have an external keycloak deployment.
+12. After the configuration is complete go back into the docker-compose directory.
+```bash
+cd ..
+```
+
+13. Now you should see a bash script from whatever name you called the deployment. (ex. deploy_util.sh)
+14. Open `~/opal-ops/docker-compose/.env` and change
+```bash
+IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v7
+```
+to 
+```bash
+IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v3
+```
+15. run the script as 'bash <name_of_deployment>_util.sh start
+> [!note]
+>
+> In general, it will be necessary to run the start script with admin privileges ```sudo``` at the start of a bash command. This can be circumvented if docker is set up in certain ways and if certain files under `access_logs` have their ownership modified, but these workarounds should be avoided.
+```bash
+bash deploy_util.sh start
+```
+
+16. this script will download all the appropriate packages and complete the installation process for OPAL. This takes a while (little over an hour, maybe 1.5 hours, with the launch pad internet)
 ---
-
-#### URLs for local dev
-
-https://minio.127.0.0.1.nip.io/login
-https://keycloak.127.0.0.1.nip.io/auth
-https://opal.127.0.0.1.nip.io/hub/
-
-NOTE: If the links above do not resolve then you will need to modify your hosts file and have minio.127.0.0.1.nip.io, jupyterhub.127.0.0.1.nip.io, keycloak.127.0.0.1.nip.io resolve to localhost.
-
-The user login for jupyterhub:
-
-```
-user: opaluser
-pass: opalpassword
-```
-
-The admin user credentials for keycloak:
-
-```
-user: admin
-pass: opal
-```
 
 #### Adding other users to the deployment
 
@@ -74,26 +106,64 @@ The url pattern for keycloak is `keycloak.<domain>/auth`
 
 Keycloak has a root user and password. These may be obtained as necessary by the admin of the deployment.
 
-To add a user, login to the keycloak url with these root credentials and perform the following:
+Go to the below url to add other users to the deployment
+```
+keycloak.127.0.0.1.nip.io
+```
 
-- Click `Administration Console` (you may automatically be redirected without this step)
-- Click `Users`
-- Click `Add User`
-- Create a username, click save.
+Log in with the root credentials
+```
+user: admin
+pass: opal
+```
+
+To add a user perform the following:
+
+- click `Administration Console` (you may automatically be redirected without this step `https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/`)
+
+The url would be
+```
+https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/
+```
+
+- click `Users` (on the left side under the `Manage` section)
+- click `Add User` button in the `Users` section (should be in the center of the screen)
+- create a username, click `Create`.
 
 After the user is generated, the following steps are performed within the user configuration. If this is not automatically pulled up, it can be accessed by clicking `Users` on the left bar, searching for the username, and clicking the blue UID for the user:
 
-- To allow Minio access, click `Attributes` and add the key `policy` and the value `consoleAdmin`. For less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
-- Click `Groups`, then click `jupyterhub_staff`, then click `join` to allow the user to log into jupyterhub
-- Click `Credentials`, add a temporary password in the `Password` and `Password Comfirmation` fields
-- Send the username and temporary password to the user
+
+To allow Minio access:
+- click `Groups` on the left side
+- click `jupyterhub_staff` in the middle third section (if the window takes the full screen)
+- click `Attributes` under `jupyterhub_staff`.
+- add the key: `policy` and the value: `consoleAdmin`
+- click `Save`. 
+  - for less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
+- click `Users` under the `Manage` section
+- click the user (the blue uid) you just made
+- click `Groups` in the center sectino under your new user
+- click `Join Group`, and check `jupyterhub_staff` to allow the user to log into jupyterhub
+- click the `Credentials` tab under your new user (middle of screen)
+- click `Set password` button
+- add a temporary password in the `Password` and `Password Comfirmation` fields
+  - this should send the username and temporary password to the user
 
 The user should now be able to log into jupyterhub.
+
+https://opal.127.0.0.1.nip.io/hub/
+
+
+Tips:
+
+- Make sure your docker desktop is running.
+
+- You might need to clear cache or cookies or open jupyterhub in incognito mode.
 
 
 #### Instructions for updating base image tags
 
-The `opal-ops/.env` file holds all the references to the base image
+The `opal-ops/docker-compose/.env` file holds all the references to the base image
 tags. To update any of the tags in acceptance, change the tags in this
 file and create a Merge Request. An example for updating the tip image is below.
 
@@ -113,6 +183,61 @@ Create the merge request in a new branch, and then message the ops
 team in the `acceptance` channel with a link to the Merge Request.
 
 
+#### URLs for local dev
+
+- https://minio.127.0.0.1.nip.io/login
+- https://keycloak.127.0.0.1.nip.io/auth
+- https://opal.127.0.0.1.nip.io/hub/
+
+NOTE: If the links above do not resolve then you will need to modify your hosts file and have 
+`minio.127.0.0.1.nip.io`, `jupyterhub.127.0.0.1.nip.io`, `keycloak.127.0.0.1.nip.io` resolve to localhost.
+
+To do this go to
+- ```C:\Windows\System32\drivers\etc```
+- edit the `hosts` file (ex. using notepad running as adminstrator)
+- at the bottom of the file add
+```
+    # Added keycloak to resolve to local host
+    127.0.0.1 https://minio.127.0.0.1.nip.io/login
+    127.0.0.1 https://keycloak.127.0.0.1.nip.io/auth
+    127.0.0.1 https://opal.127.0.0.1.nip.io/hub/
+```
+
+##### Credentials for websites
+
+The admin user credentials for keycloak:
+
+```
+user: admin
+pass: opal
+```
+
+The user login for jupyterhub:
+
+```
+user: opaluser
+pass: opalpassword
+```
+
+#### Start and Stop Opal
+To start Opal again
+
+- make sure docker is running
+- bash <name_of_deployment>_util.sh start in the docker-compose folder 
+- ```bash
+  bash deploy_util.sh start
+  ```
+> [!note]
+> 
+> This could take several minutes to start again, depending on the resources the computer has available.
+
+To stop Opal
+
+- bash <name_of_deployment>_util.sh stop
+- ```bash
+  bash deploy_util.sh stop
+  ```
+
 #### Release format
 
 Releases follow the format `YYYY.MM.DD`.
@@ -127,12 +252,23 @@ Do the following to create a tag in the github GUI for opal-ops:
 
 #### Contributing
 
-Prior to pushing any commits to this repository, enable the Trufflehog pre-commit hook with `pre-commit install` from the root of this repository. This will require a working install of docker and [pre-commit](https://pre-commit.com/)
+Prior to pushing any commits to this repository , enable the Trufflehog pre-commit hook with 
+```
+sudo apt install pre-commit
+pre-commit install
+``` 
+from the root of this repository  `~/opal-ops`. This will require a working install of docker and [pre-commit](https://pre-commit.com/)
+```bash
+pip install pre-commit
+```
 
 #### Testing the update_deployment.bash
 
-In order to use the test_overwrite_files() located within the update_deployment.bash, you need to ensure the function is uncommented in the main()
-and have deepDiff installed locally (use "pip install deepdiff")
+In order to use the `overwrite_files` function located within the `update_deployment.bash`, you need to ensure the function is uncommented in the `main()`
+and have `deepDiff` installed locally 
+```bash
+pip install deepdiff
+```
 
 #### Troubleshooting guide
 ##### Troubleshoot docker login
