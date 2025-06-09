@@ -1,0 +1,13 @@
+{
+    "deployment_name": "deploy",
+    "dns_base": ".127.0.0.1.nip.io",
+    "mod_base": ".127.0.0.1.nip.io",
+    "banner_color": "teal",
+    "banner_text": "Development Environment",
+    "deploy_keycloak": true,
+    "deploy_minio": true,
+    "keycloak_realm": "master",
+    "external_keycloak_url": "",
+    "keycloak_secret": "",
+    "external_minio_url": ""
+}
