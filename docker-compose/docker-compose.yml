@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   singleuser: # This is only needed so that running deploy will check for the singleuser image preventing jhub errors
     image: deploytime_singleuser

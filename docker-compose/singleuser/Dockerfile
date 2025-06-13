@@ -1,6 +1,6 @@
 ARG IB_SINGLEUSER_IMAGE
 
-FROM $IB_SINGLEUSER_IMAGE as base_singleuser
+FROM $IB_SINGLEUSER_IMAGE AS base_singleuser
 RUN rm -rf /opt/data/opal
 COPY --chown=jovyan:jovyan opal /opt/data/opal
 COPY --chown=jovyan:jovyan weave /opt/data/weave
