@@ -49,6 +49,14 @@ cd configuration
 bash new_deployment.bash
 ```
 
+> [!note]
+>
+> Instead of manually configuring the deployment by following step 11, the configuration can be passed a json file with options already configured.
+> This is mostly useful when a deployment should be copied or configuration steps should be saved.
+> To use this option, pass the full path of a json file as an argument to the `new_deployment.bash` script (`bash new_deployment.bash ~/opal-ops/docker-compose/configuration/example-options.json`).
+> This file should have the same options as the example file, located at `opal-ops/docker-compose/configuration/example-options.json`.
+> The file is currently configured to have the same setup as the suggestions in step 11.
+
 11. You now have to configure your deployment with the following settings:
 
     **Deployment name:** 
