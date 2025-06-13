@@ -246,3 +246,5 @@ def set_shared_traitlets(c, vols):
     c.GenericOAuthenticator.allowed_groups = ["jupyterhub_staff"]
     c.GenericOAuthenticator.admin_groups = ["jupyterhub_admins"]
     c.GenericOAuthenticator.scope = ['openid', 'profile', 'roles']
+
+    c.GenericOAuthenticator.manage_groups = True
