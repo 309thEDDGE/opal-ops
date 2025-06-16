@@ -337,8 +337,7 @@ class TestDeployment():
         assert actual == None
 
     def test_generate_docker_compose(self,contextData):
-        expected = {'version': '3.9', 
-                    'services': {
+        expected = {'services': {
                         'postgresql': {'env_file': ['./.test_context.env']}, 
                         'singleuser': {'build': {'context': '.', 'dockerfile': './singleuser/Dockerfile', 'args': {'OPAL_BANNER_COLOR': 'GREEN', 'OPAL_BANNER_TEXT': 'UNCLASSIFIED'}}}, 
                         'jupyterhub': {'build': {'args': {'OPAL_BANNER_COLOR': 'GREEN', 'OPAL_BANNER_TEXT': 'UNCLASSIFIED'}}, 'volumes': ['./jupyterhub/dev.jupyterhub_config.py:/home/jovyan/jupyterhub_config.py'], 'env_file': ['./.test_context.env'], 'environment': ['OPAL_BANNER_COLOR=GREEN', "OPAL_BANNER_TEXT='UNCLASSIFIED'"], 'links': ['traefik:keycloak'], 'labels': ['traefik.http.routers.jupyterhub.rule=Host(`opal`)', 'traefik.http.routers.jupyterhub_api.rule=Host(`jupyterhub_api`)'], 'depends_on': {'keycloak': {'condition': 'service_healthy'}}}, 
