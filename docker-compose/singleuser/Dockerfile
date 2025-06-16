@@ -17,6 +17,7 @@ RUN conda search --channel file:///home/jovyan/local-channel --offline \
 ENV PATH="/opt/conda/envs/singleuser/bin:$PATH"
 
 RUN source /opt/conda/bin/activate \
+    && conda env config vars set MONGODB_HOST=mongodb MONGODB_USERNAME=root MONGODB_PASSWORD=example \
     && conda activate singleuser 
 
 ENTRYPOINT ["tini", "-g", "--"]
