@@ -324,9 +324,7 @@ def generate_docker_compose(context: dict) -> dict:
     services.update(keycloak_service(context))
     services.update(minio_service(context))
 
-    compose = {"version": "3.9",
-           "services": services
-           }
+    compose = {"services": services}
 
     if context["deploy_minio"]:
         vols = {"volumes": {"minio_storage": None}}
