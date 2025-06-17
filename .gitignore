@@ -22,3 +22,6 @@ kubernetes/jupyterhub-conf-dir.tar
 *.pyc
 jupyterhub-conf-dir.tar
 dockerconfig.json
+
+docker-compose/access_logs/keycloak/*
+docker-compose/access_logs/traefik/*
