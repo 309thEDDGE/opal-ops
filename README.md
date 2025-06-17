@@ -59,7 +59,7 @@ bash new_deployment.bash
         n
     **Base DNS name of this deployment (i.e. .companyname.com)**
 
-        .127.0.0.1.nip.io 
+        .127.0.0.1.nip.io
     **Add opal to base URL? (y,n)**
 
         n
