@@ -1,0 +1,11 @@
+tls:
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: le
+        domain:
+          main: opal.{{ domain }}
+          sans:
+            - keycloak.{{ domain }}
+            - minio.{{ domain }}
+            - s3.{{ domain }}
