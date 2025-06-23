@@ -90,6 +90,11 @@ echo "creating staff groups"
 ./kcadm.sh create groups -r master -s name=jupyterhub_staff
 echo "created jupyterhub_admins and jupyterhub_staff groups"
 
+# Add 'policy=readwrite' attribute to jupyterhub_staff group
+JUPYTERHUB_STAFF_GROUP_ID=$(./kcadm.sh get groups -r master | grep jupyterhub_staff -B 1 | grep id | awk -F'"' '{print $4}')
+./kcadm.sh update groups/$JUPYTERHUB_STAFF_GROUP_ID -r master -s 'attributes.policy=readwrite'
+echo "Set policy=readwrite on jupyterhub_staff group"
+
 # Adds admin user to jupyterhub_admins and jupyterhub_staff groups
 MINIO_ADMIN_ID=$(./kcadm.sh get users -r master -q username=$MINIO_TEST_USER | grep id | awk -F'"' '{print $4}')
 JUPYTERHUB_ADMINS_GROUP_ID=$(./kcadm.sh get groups -r master | grep jupyterhub_admins -B 1 | grep id | awk -F'"' '{print $4}')
