@@ -89,15 +89,7 @@ cd ..
 ```
 
 13. Now you should see a bash script from whatever name you called the deployment. (ex. deploy_util.sh)
-14. Open `~/opal-ops/docker-compose/.env` and change
-```bash
-IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v7
-```
-to 
-```bash
-IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v3
-```
-15. run the script as 'bash <name_of_deployment>_util.sh start
+14. run the script as 'bash <name_of_deployment>_util.sh start
 > [!note]
 >
 > In general, it will be necessary to run the start script with admin privileges ```sudo``` at the start of a bash command. This can be circumvented if docker is set up in certain ways and if certain files under `access_logs` have their ownership modified, but these workarounds should be avoided.
@@ -105,7 +97,7 @@ IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda
 bash deploy_util.sh start
 ```
 
-16. this script will download all the appropriate packages and complete the installation process for OPAL. This takes a while (little over an hour, maybe 1.5 hours, with the launch pad internet)
+15. this script will download all the appropriate packages and complete the installation process for OPAL. This takes a while (little over an hour, maybe 1.5 hours, with the launch pad internet)
 ---
 
 #### Adding other users to the deployment
