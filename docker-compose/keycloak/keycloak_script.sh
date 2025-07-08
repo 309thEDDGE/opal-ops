@@ -124,12 +124,37 @@ echo "creating staff groups"
 ./kcadm.sh create groups -r master -s name=jupyterhub_staff
 echo "created jupyterhub_admins and jupyterhub_staff groups"
 
+# Add 'policy=consoleAdmin' attribute to jupyterhub_staff group
+JUPYTERHUB_STAFF_GROUP_ID=$(./kcadm.sh get groups -r master | grep jupyterhub_staff -B 1 | grep id | awk -F'"' '{print $4}')
+./kcadm.sh update groups/$JUPYTERHUB_STAFF_GROUP_ID -r master -f - <<EOF
+{
+  "name": "jupyterhub_staff",
+  "attributes": {
+    "policy": ["consoleAdmin"]
+  }
+}
+EOF
+
+echo "Set policy=consoleAdmin on jupyterhub_staff group"
+
+# Add 'policy=consoleAdmin' attribute to jupyterhub_admin group
+JUPYTERHUB_ADMINS_GROUP_ID=$(./kcadm.sh get groups -r master | grep jupyterhub_admins -B 1 | grep id | awk -F'"' '{print $4}')
+./kcadm.sh update groups/$JUPYTERHUB_ADMINS_GROUP_ID -r master -f - <<EOF
+{
+  "name": "jupyterhub_admins",
+  "attributes": {
+    "policy": ["consoleAdmin"]
+  }
+}
+EOF
+
+echo "Set policy=consoleAdmin on jupyterhub_admin group"
+
 # Adds admin user to jupyterhub_admins and jupyterhub_staff groups
 MINIO_ADMIN_ID=$(./kcadm.sh get users -r master -q username=$MINIO_TEST_USER | grep id | awk -F'"' '{print $4}')
-JUPYTERHUB_ADMINS_GROUP_ID=$(./kcadm.sh get groups -r master | grep jupyterhub_admins -B 1 | grep id | awk -F'"' '{print $4}')
-./kcadm.sh update users/$MINIO_ADMIN_ID/groups/$JUPYTERHUB_ADMINS_GROUP_ID -r master -s realm=master -s userId=$MINIO_ADMIN_ID -s groupId=$JUPYTERHUB_ADMINS_GROUP_ID -n
 
-JUPYTERHUB_STAFF_GROUP_ID=$(./kcadm.sh get groups -r master | grep jupyterhub_staff -B 1 | grep id | awk -F'"' '{print $4}')
+# Adds minio test user to jupyterhub_admins and jupyterhub_staff groups
+./kcadm.sh update users/$MINIO_ADMIN_ID/groups/$JUPYTERHUB_ADMINS_GROUP_ID -r master -s realm=master -s userId=$MINIO_ADMIN_ID -s groupId=$JUPYTERHUB_ADMINS_GROUP_ID -n
 ./kcadm.sh update users/$MINIO_ADMIN_ID/groups/$JUPYTERHUB_STAFF_GROUP_ID -r master -s realm=master -s userId=$MINIO_ADMIN_ID -s groupId=$JUPYTERHUB_STAFF_GROUP_ID -n
 
 # Adds policy=consoleAdmin to the 'admin' user in keycloak, allowing login to minio
