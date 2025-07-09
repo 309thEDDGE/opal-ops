@@ -153,7 +153,6 @@ https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/
 
 
 To add user to a group:
- - for less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
 - click `Users` under the `Manage` section
 - click the user (the blue uid) you just made
 - click `Groups` in the center sectino under your new user
