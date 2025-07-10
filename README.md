@@ -50,12 +50,20 @@ bash new_deployment.bash
 ```
 
 > [!note]
->
-> Instead of manually configuring the deployment by following step 11, the configuration can be passed a json file with options already configured.
-> This is mostly useful when a deployment should be copied or configuration steps should be saved.
-> To use this option, pass the full path of a json file as an argument to the `new_deployment.bash` script (`bash new_deployment.bash ~/opal-ops/docker-compose/configuration/example-options.json`).
-> This file should have the same options as the example file, located at `opal-ops/docker-compose/configuration/example-options.json`.
-> The file is currently configured to have the same setup as the suggestions in step 11.
+> You can skip manual configuration in Step 11 by providing a pre-filled JSON file with all the required options.  
+>  
+> This approach is especially useful for duplicating an existing deployment or preserving configuration steps.  
+>  
+> To use it, pass the full path to the JSON file as an argument to the script:
+>  
+> ```bash
+> bash new_deployment.bash ~/opal-ops/docker-compose/configuration/example-options.json
+> ```
+>  
+> The file should match the format of the example file located at:  
+> `opal-ops/docker-compose/configuration/example-options.json`  
+>  
+> This example is pre-configured to reflect the recommendations outlined in Step 11.
 
 11. You now have to configure your deployment with the following settings:
 
@@ -83,21 +91,14 @@ bash new_deployment.bash
 > [!note]
 >
 > Always choose y, unless you are an expert with OPAL and have an external keycloak deployment.
+
 12. After the configuration is complete go back into the docker-compose directory.
 ```bash
 cd ..
 ```
 
 13. Now you should see a bash script from whatever name you called the deployment. (ex. deploy_util.sh)
-14. Open `~/opal-ops/docker-compose/.env` and change
-```bash
-IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v7
-```
-to 
-```bash
-IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda_v3
-```
-15. run the script as 'bash <name_of_deployment>_util.sh start
+14. run the script as 'bash <name_of_deployment>_util.sh start
 > [!note]
 >
 > In general, it will be necessary to run the start script with admin privileges ```sudo``` at the start of a bash command. This can be circumvented if docker is set up in certain ways and if certain files under `access_logs` have their ownership modified, but these workarounds should be avoided.
@@ -105,10 +106,19 @@ IB_SINGLEUSER_IMAGE=registry1.dso.mil/ironbank/opensource/metrostar/pytorch:cuda
 bash deploy_util.sh start
 ```
 
-16. this script will download all the appropriate packages and complete the installation process for OPAL. This takes a while (little over an hour, maybe 1.5 hours, with the launch pad internet)
+15. this script will download all the appropriate packages and complete the installation process for OPAL. This takes a while (little over an hour, maybe 1.5 hours, with the launch pad internet)
 ---
 
 #### Adding other users to the deployment
+
+> [!note]
+> The default user `opaluser` is automatically created and added to the `jupyterhub_admins` group. Both `jupyterhub_admins` and `jupyterhub_staff` are configured by default to have `consoleAdmin` privileges in MinIO. 
+> You may customize these groups to have more restrictive permissions if needed.  
+>  
+> For more details on MinIO policy options, see the [MinIO policy documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html).  
+>  
+> ⚠️ If group policies are modified manually, make sure to click `Add` and then `Save` after making changes. Failure to do so may result in a `500: internal Server Error` when the user attempts to log in to JupyterHub.
+
 
 The url pattern for keycloak is `keycloak.<domain>/auth`
 
@@ -138,16 +148,11 @@ https://keycloak.127.0.0.1.nip.io/auth/admin/master/console/
 - click `Add User` button in the `Users` section (should be in the center of the screen)
 - create a username, click `Create`.
 
-After the user is generated, the following steps are performed within the user configuration. If this is not automatically pulled up, it can be accessed by clicking `Users` on the left bar, searching for the username, and clicking the blue UID for the user:
+> **Note:**  After the user is generated, the following steps are performed within the user configuration. 
+> If this is not automatically pulled up, it can be accessed by clicking `Users` on the left bar, searching for the username, and clicking the blue UID for the user:
 
 
-To allow Minio access:
-- click `Groups` on the left side
-- click `jupyterhub_staff` in the middle third section (if the window takes the full screen)
-- click `Attributes` under `jupyterhub_staff`.
-- add the key: `policy` and the value: `consoleAdmin`
-- click `Save`. 
-  - for less permissive policies see [the minio documentation](https://docs.min.io/minio/baremetal/security/minio-identity-management/policy-based-access-control.html). Ensure `Add` and then `Save` are clicked, otherwise jupyterhub will show a `500: internal Server Error` when the user attempts login
+To add user to a group:
 - click `Users` under the `Manage` section
 - click the user (the blue uid) you just made
 - click `Groups` in the center sectino under your new user

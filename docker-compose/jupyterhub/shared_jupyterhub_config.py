@@ -139,8 +139,8 @@ def set_shared_traitlets(c, vols):
             "make metaflowconfig dir"
         ),
         (
-            "envsubst < /opt/opal/conf/metaflow_config.json > /home/jovyan/.metaflowconfig/config.json",
-            "set metaflow config file"
+            "python /opt/opal/conf/generate_metaflow_config.py",
+            "generate metaflow config file using python"
         ),
         ("python /opt/opal/conf/python_setup.py","run python setup script"),
     ]

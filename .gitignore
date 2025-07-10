@@ -25,3 +25,5 @@ dockerconfig.json
 
 docker-compose/access_logs/keycloak/*
 docker-compose/access_logs/traefik/*
+.vscode/
+backups/
