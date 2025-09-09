@@ -166,6 +166,9 @@ def set_shared_traitlets(c, vols):
         "WEAVE_SQL_USERNAME": weave_sql_username,
         "WEAVE_SQL_PASSWORD": weave_sql_password,
         "WEAVE_SQL_PORT": weave_sql_port,
+        "MONGODB_HOST": 'mongodb', 
+        "MONGODB_USERNAME": 'root',
+        "MONGODB_PASSWORD": 'example', 
     }
 
     # Keycloak GenericOauth
